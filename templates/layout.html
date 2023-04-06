@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" 
+                integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" rel="stylesheet">
+        
+        <!-- CSS -->
+        <link href="/static/styles.css" rel="stylesheet">
+
+         <!-- Bootstrap icons -->
+         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"/>
+        
+        <!-- Font for search bar - colorlib -->
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+
+        <!-- Google translate -->
+        <script src='//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'></script>
+
+        <script>
+            var message = '{{ message }}';
+        </script>   
+
+        <!-- Javascript -->
+        <script type="text/javascript" src="/static/script.js" async></script>
+
+        <title>CS50P Final Project: {% block title %}{% endblock %}</title> 
+
+    </head>
+
+    <body>
+        <div id="overlay"></div>
+        <div id="overlay2"></div>
+
+        {% include 'config.html' %}
+        {% include 'register.html' %}
+        {% include 'login.html' %}
+        {% include 'forgot.html' %}
+        {% include 'resetPassword.html' %}
+        {% include 'security.html' %}
+
+        <div class="header">
+            <div>
+               <a href="/"><img class="logo" src="/static/bookaseat1.png"></img></a>
+            </div>
+
+            <div class="nav-right"> 
+            
+            {% if session["user_id"] %}
+                <a href="#" id="greeting">Hello, {{ session["user_username"] }}!</a>
+            {% endif %} 
+            <div class="menu">
+                <input type="checkbox" id="check">
+                <label for="check" class="button">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </label>
+                <nav>
+                {% if session["user_id"] %}
+                    <a href="/favorites">Favorites</a>
+                    <a href="#" onclick="openForm('securityForm')" id="security" name="security">Security</a>
+                    <a href="/logout">Log out</a>
+                {% else %}
+                    <a href="#" onclick="openForm('registerForm')" id="register" name="register">Register</a>
+                    <a href="#" onclick="openForm('loginForm')" id="login" name="login">Sign in</a>
+                {% endif %}
+                </nav>
+            </div>	
+    
+            <div>
+                <button class="config" id="configOpen" onclick="openForm('configForm')"><img src="/static/icons8-earth-planet-96.png"></button> 
+            </div> 
+            </div> 
+        </div>
+
+        <div class="container">    
+              
+            {% block section %}{% endblock %}  
+        </div>
+        
+        <footer class="mb text-center">
+            <div>
+                Data provided by <a id="source" href="https://skyscanner-api.p.rapidapi.com/v3e/flights/live/search/synced">
+                    Skyscanner API</a>
+            </div>
+        </footer>
+</body>
+
+</html>

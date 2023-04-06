@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Search Flights
+{% endblock %}
+
+{% block section %}
+
+
+<div>
+    <!--Form tamplate: https://colorlib.com/wp/template/colorlib-booking-5/-->
+    <div id="booking" class="section">
+		<div class="section-center">
+			<div class="container">
+				<div class="row">
+					<div class="booking-form">
+						<form action="/" method="post" autocomplete="off">
+							<div class="form-group">
+								<div class="form-checkbox">
+									<label for="roundtrip">
+										<input type="radio" id="roundtrip" name="flight-type" value="roundtrip" checked>
+										<span></span>Roundtrip
+									</label>
+									<label for="one-way">
+										<input type="radio" id="one-way" name="flight-type" value="one-way">
+										<span></span>One way
+									</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<span class="form-label">Flying from</span>
+										<input class="form-control" type="text" id="airports_from" name="airports_from" placeholder="City or airport" required>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<span class="form-label">Flying to</span>
+										<input class="form-control" type="text" id="airports_to" name="airports_to" placeholder="City or airport" required>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-3">
+									<div class="form-group">
+										<span class="form-label">Departing</span>
+										<input class="form-control" id="departing" name="departing" type="date" min="{{ session['today'] }}" max="{{ session['oneyearlater'] }}" required>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<span class="form-label">Returning</span>
+										<input class="form-control" id="returning" name="returning" type="date" min="{{ session['today'] }}" max="{{ session['oneyearlater'] }}" required>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="form-group">
+										<span class="form-label">Adults (12+)</span>
+										<select class="form-control" id="adults" name="adults">
+											<option>1</option>
+											<option>2</option>
+											<option>3</option>
+                                            <option>4</option>
+                                            <option>5</option>
+											<option>6</option>
+											<option>7</option>
+											<option>8</option>
+										</select>
+										<span class="select-arrow"></span>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="form-group">
+										<span class="form-label">Children (0-2)</span>
+										<select class="form-control" id="toddler" name="toddler">
+											<option>0</option>
+											<option>1</option>
+											<option>2</option>
+                                            <option>3</option>
+											<option>4</option>
+										</select>
+										<span class="select-arrow"></span>
+									</div>
+								</div>
+                                <div class="col-md-2">
+									<div class="form-group">
+										<span class="form-label">Children (2-11)</span>
+										<select class="form-control" id="child" name="child">
+											<option>0</option>
+											<option>1</option>
+											<option>2</option>
+                                            <option>3</option>
+                                            <option>4</option>
+										</select>
+										<span class="select-arrow"></span>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-3">
+									<div class="form-group">
+										<span class="form-label">Travel class</span>
+										<select class="form-control" id="cabin_class" name="cabin_class">
+											<option>Economy class</option>
+											<option>Business class</option>
+											<option>First class</option>
+										</select>
+										<span class="select-arrow"></span>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-btn">
+										<button type="submit" class="submit-btn">Show flights</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div><!-- This templates was made by Colorlib (https://colorlib.com) -->
+
+<!-- end document-->
+{% endblock %}

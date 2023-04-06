@@ -1,0 +1,31 @@
+
+<div>
+    <div class="formPopup hidden" id="forgotForm">
+      <form action="/passwordLink" method="post" class="formContainer" id="forgot-form">
+        <h2>Forgot password?</h2>
+
+        {% with messages = get_flashed_messages(category_filter=['forgot-password']) %}
+        {% if messages %}
+            {% for message in messages %}
+                <p class="alert text-center alert-danger">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}   
+
+        <h1 id="error">{{ message }}</h1>
+
+        <div class="col-md">
+            <div class="col-md">
+            <div class="form-group">
+                <span class="form-label">E-mail</span>
+                <input autocomplete="off" class="form-control shadow-none config-options" id="forgot-email" name="forgot-email" placeholder="E-mail" type="email" onchange="checkEmail(this)" required>
+            </div>
+        </div>
+        <div class="popup-buttons">
+            <button type="submit" class="btn-save" id="forgot-submit" name="forgot-submit" onclick="loading(this)">Send link</button>
+            <button class="btn-save" type="button" id="spinner" name="spinner"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>   Loading...</button>
+            <button type="button" class="btn-cancel" onclick="closeForm('forgotForm')">Close</button>
+        </div>
+      </form>
+    </div>
+</div> 
