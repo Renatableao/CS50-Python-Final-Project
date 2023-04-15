@@ -1,32 +1,52 @@
 <div>
-    <div class="formPopup hidden" id="configForm">
-      <form action="/config" method="post" class="formContainer">
-        <h2>Regional settings</h2>
-        <div class="col-md">
-            <div class="form-group">
-                <span class="form-label" id="language">Translate to</span>
-                <input type="hidden" id="input_language" name ="input_language" value="en">
-                <div id='google_translate_element'></div>
-            </div>
+  <div class="formPopup hidden" id="configForm">
+    <form action="/config" method="post" class="formContainer">
+      <h2>Regional settings</h2>
+      <div class="col-md">
+        <div class="form-group">
+          <span class="form-label" id="language">Translate to</span>
+          <input
+            type="hidden"
+            id="input_language"
+            name="input_language"
+            value="en"
+          />
+          <div id="google_translate_element"></div>
         </div>
-        <div class="col-md">
-            <div class="form-group">
-                <span class="form-label" id="country">Country</span>
-                <select class="form-control shadow-none config-options" id="country-select" name="country-select" onchange="getCurrencies()">
-                </select>
-            </div>
+      </div>
+      <div class="col-md">
+        <div class="form-group">
+          <span class="form-label" id="country">Country</span>
+          <select
+            class="form-control shadow-none config-options"
+            id="country-select"
+            name="country-select"
+            onchange="getCurrencies()"
+          ></select>
         </div>
-        <div class="col-md">
-            <div class="form-group">
-                <span class="form-label" id="currency">Currency</span>
-                <select class="form-control shadow-none config-options" id="currency-select" name="currency-select">
-                </select>
-            </div>
+      </div>
+      <div class="col-md">
+        <div class="form-group">
+          <span class="form-label" id="currency">Currency</span>
+          <select
+            class="form-control shadow-none config-options"
+            id="currency-select"
+            name="currency-select"
+          ></select>
         </div>
-        <div class="popup-buttons">
-            <button type="submit" class="btn-save" onclick="select_language()">Save</button>
-            <button type="button" class="btn-cancel" onclick="closeForm('configForm')">Close</button>
-        </div>
-      </form>
-    </div>
-</div> 
+      </div>
+      <div class="popup-buttons">
+        <button type="submit" class="btn-save" onclick="select_language()">
+          Save
+        </button>
+        <button
+          type="button"
+          class="btn-cancel"
+          onclick="closeForm('configForm')"
+        >
+          Close
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

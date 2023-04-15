@@ -4,36 +4,43 @@ from dotenv import load_dotenv, find_dotenv
 from flask import redirect, session
 from functools import wraps
 
+
 def main():
+    querylegs = [
+        {
+            "originPlaceId": {"iata": "CNF"},
+            "destinationPlaceId": {"iata": "SAO"},
+            "date": {"year": 2023, "month": 6, "day": 23},
+        },
+        {
+            "originPlaceId": {"iata": "SAO"},
+            "destinationPlaceId": {"iata": "CNF"},
+            "date": {"year": 2023, "month": 7, "day": 10},
+        },
+    ]
 
-    querylegs = {
-				"originPlaceId": {"iata": "CNF"},
-				"destinationPlaceId": {"iata": "SAO"},
-				"date": {
-					"year": 2023,
-					"month": 6,
-					"day": 23
-				}
-			}
+    # search_flights = search("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY")
+    # sorted_search = search_flights['sortingOptions']['cheapest']
+    # itineraryIds = {}
+    # for itinerary in sorted_search:
+    #    itineraryIds[itinerary["itineraryId"]] = itinerary['score']
 
-    search("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY")
-    get_market()
-    get_currency()
+    # get_market()
+    # get_currency()
 
-    
+
 def get_market():
-    
     load_dotenv(find_dotenv())
     try:
         url = "https://skyscanner-api.p.rapidapi.com/v3/culture/markets/en-US"
 
         headers = {
-	        "X-RapidAPI-Key": os.environ.get('API_key'),
-	        "X-RapidAPI-Host": "skyscanner-api.p.rapidapi.com"
+            "X-RapidAPI-Key": os.environ.get("API_key"),
+            "X-RapidAPI-Host": "skyscanner-api.p.rapidapi.com",
         }
 
         response = requests.request("GET", url, headers=headers)
-    
+
     except requests.RequestException:
         return None
 
@@ -41,23 +48,23 @@ def get_market():
     try:
         result = response.json()
         return result
-        
+
     except (KeyError, TypeError, ValueError):
         return None
-    
+
+
 def get_currency():
-    
     load_dotenv(find_dotenv())
     try:
         url = "https://skyscanner-api.p.rapidapi.com/v3/culture/currencies"
 
         headers = {
-	        "X-RapidAPI-Key": os.environ.get('API_key'),
-	        "X-RapidAPI-Host": "skyscanner-api.p.rapidapi.com"
+            "X-RapidAPI-Key": os.environ.get("API_key"),
+            "X-RapidAPI-Host": "skyscanner-api.p.rapidapi.com",
         }
 
         response = requests.request("GET", url, headers=headers)
-    
+
     except requests.RequestException:
         return None
 
@@ -65,7 +72,7 @@ def get_currency():
     try:
         result = response.json()
         return result
-        
+
     except (KeyError, TypeError, ValueError):
         return None
 
@@ -89,7 +96,7 @@ def search(market, locale, currency, queryLegs, adults, children, cabin_class):
         }
         headers = {
             "content-type": "application/json",
-            "X-RapidAPI-Key": os.environ.get('API_key'),
+            "X-RapidAPI-Key": os.environ.get("API_key"),
             "X-RapidAPI-Host": "skyscanner-api.p.rapidapi.com",
         }
 
@@ -101,8 +108,8 @@ def search(market, locale, currency, queryLegs, adults, children, cabin_class):
     # Parse response
     try:
         result = response.json()
-        return result
-    
+        return result["content"]
+
     except (KeyError, TypeError, ValueError):
         return None
 
