@@ -115,7 +115,7 @@ block section %}
                         {{ search_results['places'][search_results['segments'][segment]['destinationPlaceId']]['iata'] }}{% if not loop.last %},{% endif %}
                         {% endfor %}</span>
                     </span>
-                    {% for segment in leg1_info['segmentIds'] %}
+              
                     <span class="change-airport"><span>&#9888;</span> Airport change</span>
                   </span>
                 </div>
@@ -129,7 +129,7 @@ block section %}
                   </div>
                   <div class="flight-seg destination">
                     <div class="time plus">{{ depart_arrives_in.strftime('%I:%M %p') }}
-                      {% set days = difference(leg1_info['departureDateTime']|date, leg1_info['arrivalDateTime']|date ) %}
+                      {% set days = days_difference(leg1_info['departureDateTime']|date, leg1_info['arrivalDateTime']|date ) %}
                       <span>
                       {% if days > 0 %}
                       +{{ days }}
@@ -145,70 +145,53 @@ block section %}
               </div>
             </div>
 
+           
             <div id="demo{{ loop.index }}" class="fly-wrap collapse">
-              <div class="fly-det">
+                
+                {% for segment in leg1_info['segmentIds'] %}
+                {% set depart_segment_info = search_results['segments'][segment] %}
+
+                {% if not loop.first %}
+
+                <div class="delay-frame">
+  
+                  <div class="welc"><i class="bi bi-clock"></i>Layover {{ hours_difference(search_results['segments'][leg1_info['segmentIds'][loop.index0 - 1]]['arrivalDateTime']|date_hours, depart_segment_info['departureDateTime']|date_hours) }}</div>
+                </div>
+  
+                {% endif %}
+                
+              
+                <div class="fly-det">
                 <div class="f-item">
                   <div class="airway-title">
                     <img
                       class="airline-logo"
-                      src="https://www.turkishairlines.com/theme/img/carrierairlines/carriercode_tk.png"
+                      src="{{ search_results['carriers'][depart_segment_info['operatingCarrierId']]['imageUrl'] }}" onError="this.onerror=null;this.src='';this.parentElement.innerText='{{ search_results['carriers'][depart_segment_info['operatingCarrierId']]['name'] }}';"
                     />
-                    <span>Turkish Airlines</span>
                   </div>
                   <div class="root-de">
-                    <div class="times">22h 45m</div>
+                    <div class="times">{{ depart_segment_info['durationInMinutes']|to_hours }}</div>
                     <div class="directs">
                       <div class="itin-time">
                         <div class="itin-lines"></div>
                       </div>
 
                       <div class="hour-sm">
-                        <div class="hour-time-sm">02:10</div>
+                        <div class="hour-time-sm">{{ (depart_segment_info['departureDateTime']|date_hours).strftime('%I:%M %p') }}</div>
 
-                        <div class="hour-time-sm">05:55</div>
+                        <div class="hour-time-sm">{{ (depart_segment_info['arrivalDateTime']|date_hours).strftime('%I:%M %p') }}</div>
                       </div>
                     </div>
 
                     <div class="itin-target">
-                      <div class="tar-label">IST İstanbul Atatürk</div>
-                      <div class="tar-label">BAH Bahreyn</div>
+                      <div class="tar-label">{{ search_results['places'][depart_segment_info['originPlaceId']]['iata'] }} {{ search_results['places'][depart_segment_info['originPlaceId']]['name'] }}</div>
+                      <div class="tar-label">{{ search_results['places'][depart_segment_info['destinationPlaceId']]['iata'] }} {{ search_results['places'][depart_segment_info['destinationPlaceId']]['name'] }}</div>
                     </div>
                   </div>
                 </div>
               </div>
-
-              <div class="delay-frame">
-                <div class="welc"><i class="bi bi-clock"></i>Layover 7h</div>
-              </div>
-
-              <div class="f-item">
-                <div class="airway-title">
-                  <img
-                    class="airline-logo"
-                    src="https://www.turkishairlines.com/theme/img/carrierairlines/carriercode_tk.png"
-                  />
-                  <span>Turkish Airlines</span>
-                </div>
-                <div class="root-de">
-                  <div class="times">4 Hour</div>
-                  <div class="directs">
-                    <div class="itin-time">
-                      <div class="itin-lines"></div>
-                    </div>
-
-                    <div class="hour-sm">
-                      <div class="hour-time-sm">02:10</div>
-
-                      <div class="hour-time-sm">05:55</div>
-                    </div>
-                  </div>
-
-                  <div class="itin-target">
-                    <div class="tar-label">IST İstanbul Atatürk</div>
-                    <div class="tar-label">BAH Bahreyn</div>
-                  </div>
-                </div>
-              </div>
+           
+              {% endfor %}
             </div>
           </div>
         </div>
@@ -279,7 +262,7 @@ block section %}
                   </div>
                   <div class="flight-seg destination">
                     <div class="time plus">{{ return_arrives_in.strftime('%I:%M %p') }}
-                      {% set days = difference(leg2_info['departureDateTime']|date, leg2_info['arrivalDateTime']|date ) %}
+                      {% set days = days_difference(leg2_info['departureDateTime']|date, leg2_info['arrivalDateTime']|date ) %}
                       <span>
                       {% if days > 0 %}
                       +{{ days }}
@@ -296,70 +279,51 @@ block section %}
             </div>
 
             <div id="demo{{ loop.index }}" class="fly-wrap collapse">
-              <div class="fly-det">
-                <div class="f-item">
-                  <div class="airway-title">
-                    <img
-                      class="airline-logo"
-                      src="https://www.turkishairlines.com/theme/img/carrierairlines/carriercode_tk.png"
-                    />
-                    <span>Turkish Airlines</span>
-                  </div>
-                  <div class="root-de">
-                    <div class="times">22h 45m</div>
-                    <div class="directs">
-                      <div class="itin-time">
-                        <div class="itin-lines"></div>
-                      </div>
-
-                      <div class="hour-sm">
-                        <div class="hour-time-sm">02:10</div>
-
-                        <div class="hour-time-sm">05:55</div>
-                      </div>
-                    </div>
-
-                    <div class="itin-target">
-                      <div class="tar-label">IST İstanbul Atatürk</div>
-                      <div class="tar-label">BAH Bahreyn</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                
+              {% for segment in leg2_info['segmentIds'] %}
+              {% set return_segment_info = search_results['segments'][segment] %}
+            
+              {% if not loop.first %}
 
               <div class="delay-frame">
-                <div class="welc"><i class="bi bi-clock"></i>Layover 7h</div>
+  
+                <div class="welc"><i class="bi bi-clock"></i>Layover {{ hours_difference(search_results['segments'][leg2_info['segmentIds'][loop.index0 - 1]]['arrivalDateTime']|date_hours, return_segment_info['departureDateTime']|date_hours ) }}</div>
               </div>
+  
+              {% endif %}
 
+              <div class="fly-det">
               <div class="f-item">
                 <div class="airway-title">
                   <img
                     class="airline-logo"
-                    src="https://www.turkishairlines.com/theme/img/carrierairlines/carriercode_tk.png"
+                    src="{{ search_results['carriers'][return_segment_info['operatingCarrierId']]['imageUrl'] }}" onError="this.onerror=null;this.src='';this.parentElement.innerText='{{ search_results['carriers'][return_segment_info['operatingCarrierId']]['name'] }}';" 
                   />
-                  <span>Turkish Airlines</span>
                 </div>
                 <div class="root-de">
-                  <div class="times">4 Hour</div>
+                  <div class="times">{{ return_segment_info['durationInMinutes']|to_hours }}</div>
                   <div class="directs">
                     <div class="itin-time">
                       <div class="itin-lines"></div>
                     </div>
 
                     <div class="hour-sm">
-                      <div class="hour-time-sm">02:10</div>
+                      <div class="hour-time-sm">{{ (return_segment_info['departureDateTime']|date_hours).strftime('%I:%M %p') }}</div>
 
-                      <div class="hour-time-sm">05:55</div>
+                      <div class="hour-time-sm">{{ (return_segment_info['arrivalDateTime']|date_hours).strftime('%I:%M %p') }}</div>
                     </div>
                   </div>
 
                   <div class="itin-target">
-                    <div class="tar-label">IST İstanbul Atatürk</div>
-                    <div class="tar-label">BAH Bahreyn</div>
+                    <div class="tar-label">{{ search_results['places'][return_segment_info['originPlaceId']]['iata'] }} {{ search_results['places'][return_segment_info['originPlaceId']]['name'] }}</div>
+                    <div class="tar-label">{{ search_results['places'][return_segment_info['destinationPlaceId']]['iata'] }} {{ search_results['places'][return_segment_info['destinationPlaceId']]['name'] }}</div>
                   </div>
                 </div>
               </div>
             </div>
+
+            {% endfor %}
+          </div>
           </div>
         </div>
       </div>

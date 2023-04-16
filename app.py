@@ -70,10 +70,19 @@ def min_to_hours(min: int) -> str:
     return "{:02d}h {:02d}m".format(hours, minutes)
 
 @app.context_processor
-def difference():
-    def _difference(date1, date2):
+def days_difference():
+    def _days_difference(date1, date2):
         return (date2 - date1).days
-    return dict(difference=_difference)
+    return dict(days_difference=_days_difference)
+
+@app.context_processor
+def hours_difference():
+    def _hours_difference(date1, date2):
+        difference = date2 - date1
+        hours = (difference).seconds // 3600
+        minutes = ((difference).seconds % 3600) // 60
+        return "{:02d}h {:02d}m".format(hours, minutes)
+    return dict(hours_difference=_hours_difference)
 
 
 @app.after_request
