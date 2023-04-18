@@ -1202,6 +1202,11 @@ body {
   font-size: 1.3rem;
 }
 
+.tp-flight-plan .fly-wrap .transfer {
+  font-size: 1.2rem;
+  color: red;
+}
+
 .tp-flight-plan .fly-wrap .arrival-info .duration-info {
   margin-left: 0.75rem;
 }

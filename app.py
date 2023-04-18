@@ -67,7 +67,7 @@ def str_to_datetime(dict: dict) -> date:
 def min_to_hours(min: int) -> str:
     hours = min // 60
     minutes = min % 60
-    return "{:02d}h {:02d}m".format(hours, minutes)
+    return "{:02d}h{:02d}m".format(hours, minutes)
 
 @app.context_processor
 def days_difference():
@@ -81,7 +81,7 @@ def hours_difference():
         difference = date2 - date1
         hours = (difference).seconds // 3600
         minutes = ((difference).seconds % 3600) // 60
-        return "{:02d}h {:02d}m".format(hours, minutes)
+        return "{:02d}h{:02d}m".format(hours, minutes)
     return dict(hours_difference=_hours_difference)
 
 
@@ -163,7 +163,6 @@ def index():
 
         search_flights = search(market, locale, currency, queryLegs, adults, children, cabin_class)
         
-
         if search_flights: 
             sorted_search = search_flights["sortingOptions"]["cheapest"]
             search_results = search_flights["results"]
@@ -190,7 +189,7 @@ def index():
 
         else:
             message="No API Result"
-            render_template("index.html", message=message)
+            return render_template("index.html", message=message)
 
     # User reached route via GET
     else:

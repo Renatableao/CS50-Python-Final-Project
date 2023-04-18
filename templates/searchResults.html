@@ -115,8 +115,20 @@ block section %}
                         {{ search_results['places'][search_results['segments'][segment]['destinationPlaceId']]['iata'] }}{% if not loop.last %},{% endif %}
                         {% endfor %}</span>
                     </span>
-              
-                    <span class="change-airport"><span>&#9888;</span> Airport change</span>
+                    
+
+                    {% for segment in leg1_info['segmentIds'] %}
+                    {% if not loop.first %}
+
+                    {% set origin_airport = search_results['segments'][segment]['originPlaceId'] %}
+                    {% set destination_airport = search_results['segments'][leg1_info['segmentIds'][loop.index0 - 1]]['destinationPlaceId'] %}
+                    
+                    {% if origin_airport != destination_airport %}
+                      <span class="change-airport"><span>&#9888;</span> Airport change</span>
+                    {% endif %}
+
+                    {% endif %}
+                    {% endfor %}
                   </span>
                 </div>
 
@@ -155,9 +167,16 @@ block section %}
 
                 <div class="delay-frame">
   
-                  <div class="welc"><i class="bi bi-clock"></i>Layover {{ hours_difference(search_results['segments'][leg1_info['segmentIds'][loop.index0 - 1]]['arrivalDateTime']|date_hours, depart_segment_info['departureDateTime']|date_hours) }}</div>
+                  <div class="welc"><i class="bi bi-clock"></i>Layover {{ hours_difference(search_results['segments'][leg1_info['segmentIds'][loop.index0 - 1]]['arrivalDateTime']|date_hours, depart_segment_info['departureDateTime']|date_hours) }}
+                    {% set origin_airport = search_results['segments'][segment]['originPlaceId'] %}
+                    {% set destination_airport = search_results['segments'][leg1_info['segmentIds'][loop.index0 - 1]]['destinationPlaceId'] %}
+                  
+                    {% if origin_airport != destination_airport %}
+                    <span class="transfer"> + Self Transfer</span>
+                    {% endif %}
+                  </div>
                 </div>
-  
+                
                 {% endif %}
                 
               
@@ -282,7 +301,7 @@ block section %}
                 
               {% for segment in leg2_info['segmentIds'] %}
               {% set return_segment_info = search_results['segments'][segment] %}
-            
+
               {% if not loop.first %}
 
               <div class="delay-frame">
