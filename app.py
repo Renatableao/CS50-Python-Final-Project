@@ -214,12 +214,13 @@ def index():
             # return render_template('searchResults.html')
 
         else:
-            message="No API Result"
+            message="No API Response"
             return render_template("index.html", message=message)
 
     # User reached route via GET
     else:
         today = date.today()
+
         session["today"] = today
         session["oneyearlater"] = today + relativedelta(years=1)
         return render_template("index.html")

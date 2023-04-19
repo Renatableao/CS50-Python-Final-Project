@@ -207,8 +207,8 @@ function checkMessage() {
     alert("Account deleted successfully!");
   } else if (message == "Changes ok") {
     alert("Changes saved successfully!");
-  } else if (message == "No API Result") {
-    alert("No API response for specified search parameters");
+  } else if (message == "No API Response") {
+    alert("No API response");
   }}
 
 if (document.readyState === "loading") {
