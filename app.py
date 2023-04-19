@@ -17,7 +17,9 @@ from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 import jwt
 import os
+import json
 import calendar
+import re
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv, find_dotenv
 from helpers import login_required, search
@@ -84,6 +86,30 @@ def hours_difference():
         return "{:02d}h{:02d}m".format(hours, minutes)
     return dict(hours_difference=_hours_difference)
 
+# Load the currencies.json file
+with open('./static/currencies.json', 'r') as f:
+    currencies = json.load(f)
+
+@app.context_processor
+def format_price():
+    # Define a template filter to format prices using a given currency code
+    def _format_price(price, currency_code):
+        # Find the currency object that matches the code
+        currency = next((c for c in currencies if c['code'] == currency_code), None)
+        if currency:
+            decimal_places = currency['decimalDigits']
+            price_str = f"{float(price):.{decimal_places}f}" if decimal_places > 0 else f"{int(price)}"
+            symbol = currency['symbol']
+            formatted_price = f"{symbol}{price_str}" if currency['symbolOnLeft'] else f"{price_str}{symbol}"
+            formatted_price = formatted_price.replace(symbol, f"{symbol} ") if currency['spaceBetweenAmountAndSymbol'] else formatted_price
+            formatted_price = formatted_price.replace('.', currency['decimalSeparator'])
+            if currency['thousandsSeparator'] != " ":
+                formatted_price = re.sub(r'(\d)(?=(\d{3})+(?!\d))', f"\\1{currency['thousandsSeparator']}", formatted_price)
+            return formatted_price
+        else:
+            return price
+
+    return dict(format_price=_format_price, currencies=currencies)
 
 @app.after_request
 def after_request(response):
@@ -194,7 +220,6 @@ def index():
     # User reached route via GET
     else:
         today = date.today()
-
         session["today"] = today
         session["oneyearlater"] = today + relativedelta(years=1)
         return render_template("index.html")

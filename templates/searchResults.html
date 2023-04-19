@@ -58,7 +58,7 @@ block section %}
       </h1>
     </div>
     <div class="price-tag">
-      <h1>{{ search_results['itineraries'][itinerary]["pricingOptions"][0]['price']['amount'] }}</h1>
+      <h1>{{ format_price(search_results['itineraries'][itinerary]["pricingOptions"][0]['price']['amount'], session["currency"]) }}</h1>
     </div>
   </div>
 

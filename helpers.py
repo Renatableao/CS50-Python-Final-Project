@@ -47,7 +47,7 @@ def get_market():
     # Parse response
     try:
         result = response.json()
-        with open('static/market.json', 'w') as f:
+        with open('static/markets.json', 'w') as f:
             json.dump(result['markets'], f, indent=4)
         return result
 
@@ -73,7 +73,7 @@ def get_currency():
     # Parse response
     try:
         result = response.json()
-        with open('static/currency.json', 'w') as f:
+        with open('static/currencies.json', 'w') as f:
             json.dump(result['currencies'], f, indent=4)
         return result
 
@@ -112,7 +112,6 @@ def search(market, locale, currency, queryLegs, adults, children, cabin_class):
     # Parse response
     try:
         result = response.json()
-        print(result)
         return result["content"]
     
 
