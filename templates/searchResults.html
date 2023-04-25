@@ -6,7 +6,7 @@ block section %}
 {% endblock %} 
 
   <!--Form tamplate: https://colorlib.com/wp/template/colorlib-booking-5/-->
-  <div id="booking-results" class="section-results">
+  <div id="booking-results">
     <div class="section-center-results">
       <div class="container">
         <div class="row">
@@ -245,13 +245,7 @@ block section %}
               data-bs-toggle="collapse"
               data-bs-target="#demo{{ loop.index }}"
             >
-            {% if session['flight_type'] == "one-way" %}
-              <a role="button" tabindex="0" class="tog-cal itin-det-btn">
-                <i class="bi bi-chevron-up"></i>
-                <i class="bi bi-chevron-down"></i>
-              </a>
-            {% endif %}  
-            
+                      
               <div class="item it-2">
                 <div class="dr-row">
                   <span class="al-name">
@@ -402,11 +396,6 @@ block section %}
               data-bs-toggle="collapse"
               data-bs-target="#demo{{ loop.index }}"
             >
-            <a role="button" tabindex="0" class="tog-cal itin-det-btn">
-              <i class="bi bi-chevron-up"></i>
-              <i class="bi bi-chevron-down"></i>
-            </a>
-
               <div class="item it-2">
                 <div class="dr-row">
                   <span class="al-name">
@@ -514,7 +503,6 @@ block section %}
                 </div>
               </div>
             </div>
-
             {% endfor %}
           </div>
           </div>
@@ -523,7 +511,11 @@ block section %}
     </div>
     
     {% endif %}
-  
+  </div>
+  <div class="return-select">
+    <a role="button" href="{{ search_results['itineraries'][itinerary]['pricingOptions'][0]['items'][0]['deepLink'] }}" target="_blank" class="itin-det-btn select">
+      Select
+    </a>
   </div>
 </div>
 

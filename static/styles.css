@@ -657,7 +657,7 @@ body {
 }
 
 .booking-form .submit-btn:hover,
-.booking-form .submit-btn:focus, #spinner {
+.booking-form .submit-btn:focus, #spinner:hover, #spinner:focus {
   opacity: 0.8;
 }
 
@@ -723,7 +723,7 @@ body {
   font-size: 2.5rem;
   color: var(--white);
   margin-top: -1rem;
-  transition: all 0.1s ease-in;
+  transition: all 0.2s ease-in;
 }
 
 #plus:hover {
@@ -732,7 +732,7 @@ body {
 
 .section-center-results {
   width: 78%;
-  margin: 16rem auto 8rem;
+  margin: 14rem auto 6rem;
   position: relative;
 }
 
@@ -762,7 +762,7 @@ body {
 
 .price-tag h1 {
   font-weight: 600;
-  font-size: 2.8rem;
+  font-size: 2.6rem;
 }
 
 .type-tag {
@@ -792,60 +792,54 @@ body {
   cursor: pointer;
 }
 
-.tp-flight-plan .crop.depart {
-  border-bottom: 1px solid #e2e2e2;
-}
- 
-.tp-flight-plan .crop .itin-det-btn {
-  -ms-transition: all 0.25s ease 0s;
-  -o-transition: all 0.25s ease 0s;
-  -moz-transition: all 0.25s ease 0s;
-  -webkit-transition: all 0.25s ease 0s;
-  transition: all 0.25s ease 0s;
+.tp-flight-plan .crop.return {
+  border-top: 1px solid #e2e2e2;
 }
 
-.tp-flight-plan .crop .itin-det-btn {
+.return-select {
+  display: flex;
+  justify-content: end;
+}
+
+.itin-det-btn {
   text-decoration: none;
   outline: none;
-  position: absolute;
-  width: 8rem;
+  position: relative;
+  width: 9rem;
   text-align: center;
-  right: 0rem;
-  bottom: -2rem;
-  font-size: 1.5rem;
+  right: 2rem;
+  bottom: -1.5rem;
+  font-size: 1.6rem;
   background-color: var(--orange);
   color: var(--white);
-  padding: 1rem;
+  padding: 0.8rem;
   border-radius: 5px;
   line-height: normal;
+  transition: all 0.2s ease-in;
 }
 
-.tp-flight-plan .crop .context-return.collapsed .itin-det-btn {
-  bottom: -4rem;
+.itin-det-btn:hover, .itin-det-btn:focus  {
+  text-decoration: none;
+  outline: none;
+  color: var(--white);
+  
 }
 
-.tp-flight-plan .crop .itin-det-btn .bi {
-  display: none;
-}
-
-.tp-flight-plan .crop .context.collapsed i.bi-chevron-down {
-  display: block;
-}
-
-.tp-flight-plan .crop .context:not(.collapsed) i.bi-chevron-up {
-  display: block;
+.itin-det-btn:hover {
+  scale: 1.05;
 }
 
 .tp-flight-plan .context {
   display: flex;
   justify-content: center;
   align-items: stretch;
-  padding: 1rem 2rem 3rem 0;
-  margin-bottom: 2rem;
+  padding: 1rem 2rem 4rem 0;
 }
 
-.context-return {
+.tp-flight-plan .context.context-return {
   margin-top: 3rem;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .tp-flight-plan .crop .item {
@@ -980,7 +974,7 @@ body {
 }
 
 .tp-flight-plan .it-1 .change-airport {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: red;
 }
 

@@ -56,12 +56,6 @@ document.getElementById('roundtrip-results').onchange = function() {
 };
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-  if (document.getElementById('one-way-results').checked = "True") {
-    document.getElementById('returning-results').disabled = "True";
-};
-})
-
 function updateDateResults(thisObj) {
   document.querySelector("#returning-results").min = thisObj.value;
 }
