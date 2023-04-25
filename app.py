@@ -166,6 +166,11 @@ def index():
         session["today"] = today
         session["oneyearlater"] = today + relativedelta(years=1)
         session['page'] = '/'
+
+        if not session['market']: 
+            session['market'] = "US"
+            session['currency'] = "USD"
+            
         message=request.args.get('message')
         return render_template("index.html", message=message)
 
@@ -213,9 +218,9 @@ def results():
         adults = session.get('adults')
         children = session.get('children')
         cabin_class = session.get('cabin_class')
-        locale = session.get("locale", "en-US")
-        market = session.get("market", "US")
-        currency = session.get("currency", "USD")
+        market = session.get("market", 'US')
+        locale = session.get("locale", 'en-US')
+        currency = session.get("currency", 'USD')
 
         # define oneway or roundtrip legs
         query_legs = []

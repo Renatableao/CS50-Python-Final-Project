@@ -83,19 +83,27 @@ async function fetchMarketData() {
       const currencyInput = document.querySelector("#currency-select");
     
       countries.forEach(function (country) {
-        var a = document.createElement("option");
+      var a = document.createElement("option");
     
-        //append countries
-        countryInput.appendChild(a);
-        a.innerHTML = country["name"];
-        a.innerHTML += " (" + country["code"] + ")";
+        
+      // Add conditional logic for selected option
+      if (market == country['code']) {
+        a.setAttribute('selected', true)
+      }
+
+      // Append countries
+      a.innerHTML = country["name"] + " (" + country["code"] + ")";
+      countryInput.appendChild(a);
     
-        var b = document.createElement("option");
+      var b = document.createElement("option");
     
-        //append currencies
-        currencyInput.appendChild(b);
-        b.innerHTML = country["currency"];
-      });
+      //append currencies
+      b.innerHTML = country["currency"];
+      if (currency == country["currency"]) {
+        b.setAttribute('selected', true)
+      }
+      currencyInput.appendChild(b);
+    });
   } catch (error) {
     console.error(error);
   }
