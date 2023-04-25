@@ -5,38 +5,211 @@ block section %}
   <script type="text/javascript" src="/static/searchResults.js" async></script>
 {% endblock %} 
 
-<div class="results-header">
-  <div class="details">{{ city_from }}</div>
-  <svg class="header-airplane">
-    <use xlink:href="#airplane"></use>
-  </svg>
-  <div class="details">{{ city_to }}</div>
-  <svg
-    class="header-calendar"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="#000000"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  >
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-    <line x1="16" y1="2" x2="16" y2="6"></line>
-    <line x1="8" y1="2" x2="8" y2="6"></line>
-    <line x1="3" y1="10" x2="21" y2="10"></line>
-  </svg>
-  <div class="details date">{{ departing }} 
-    {% if returning is not none %}
-     - {{ returning }}
-    {% endif %} 
+  <!--Form tamplate: https://colorlib.com/wp/template/colorlib-booking-5/-->
+  <div id="booking-results" class="section-results">
+    <div class="section-center-results">
+      <div class="container">
+        <div class="row">
+          <div class="booking-form">
+            <form action="/results" method="post" autocomplete="off">
+              <div class="form-group">
+                <div class="form-checkbox checkbox-results">
+                <div>
+                  <label for="roundtrip-results">
+                    <input
+                      type="radio"
+                      id="roundtrip-results"
+                      name="flight-type-results"
+                      value="roundtrip"
+                      {% if session['flight_type'] == 'roundtrip'%}checked{% endif %}
+                    />
+                    <span></span>Roundtrip
+                  </label>
+                  <label for="one-way-results">
+                    <input
+                      type="radio"
+                      id="one-way-results"
+                      name="flight-type-results"
+                      value="one-way"
+                      {% if session['flight_type'] == 'one-way'%}checked{% endif %}
+                    />
+                    <span></span>One way
+                  </label>
+                  </div>
+                  <i id="plus" class="bi bi-plus-lg" onclick="toggleInputs(this)"></i>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <span class="form-label"
+                      ><img src="/static/takeoff.png" />Flying from</span
+                    >
+                    <input
+                      class="form-control"
+                      type="text"
+                      id="airports-from-results"
+                      name="airports-from-results"
+                      placeholder="City or airport"
+                      value="{{ session['origin'] }}"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <span class="form-label"
+                      ><img src="/static/flight.png" />Flying to</span
+                    >
+                    <input
+                      class="form-control"
+                      type="text"
+                      id="airports-to-results"
+                      name="airports-to-results"
+                      placeholder="City or airport"
+                      value="{{ session['destination'] }}"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="row  off" style="display: none;">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <span class="form-label"
+                      ><img src="/static/calendario.png" />Departing</span
+                    >
+                    <input
+                      class="form-control"
+                      id="departing-results"
+                      name="departing-results"
+                      type="date"
+                      min="{{ session['today'] }}"
+                      max="{{ session['oneyearlater'] }}"
+                      onChange="updateChangeResults(this)"
+                      value="{{ session['departing_date'] }}"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <span class="form-label"
+                      ><img src="/static/calendario.png" />Returning</span
+                    >
+                    <input
+                      class="form-control"
+                      id="returning-results"
+                      name="returning-results"
+                      type="date"
+                      min="{{ session['today'] }}"
+                      max="{{ session['oneyearlater'] }}"
+                      value="{{ session['returning_date'] }}"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-2 off" style="display: none;">
+                  <div class="form-group">
+                    <span class="form-label"
+                      ><img src="/static/man.png" />Adults (12+)</span
+                    >
+                    <select class="form-control" id="adults-results" name="adults-results">
+                      <option {% if session['adults'] == 1 %}selected{% endif %}>1</option>
+                      <option {% if session['adults'] == 2 %}selected{% endif %}>2</option>
+                      <option {% if session['adults'] == 3 %}selected{% endif %}>3</option>
+                      <option {% if session['adults'] == 4 %}selected{% endif %}>4</option>
+                      <option {% if session['adults'] == 5 %}selected{% endif %}>5</option>
+                      <option {% if session['adults'] == 6 %}selected{% endif %}>6</option>
+                      <option {% if session['adults'] == 7 %}selected{% endif %}>7</option>
+                      <option {% if session['adults'] == 8 %}selected{% endif %}>8</option>
+                    </select>
+                    <span class="select-arrow"></span>
+                  </div>
+                </div>
+                <div class="col-md-2 off" style="display: none;">
+                  <div class="form-group">
+                    <span class="form-label"
+                      ><img src="/static/child.png"/>Children (2-11)</span
+                    >
+                    <select class="form-control" id="child-results" name="child-results">
+                      <option {% if session['child'] == 0 %}selected{% endif %}>0</option>
+                      <option {% if session['child'] == 1 %}selected{% endif %}>1</option>
+                      <option {% if session['child'] == 2  %}selected{% endif %}>2</option>
+                      <option {% if session['child'] == 3 %}selected{% endif %}>3</option>
+                      <option {% if session['child'] == 4 %}selected{% endif %}>4</option>
+                    </select>
+                    <span class="select-arrow"></span>
+                  </div>
+                </div>
+                <div class="col-md-2 off" style="display: none;">
+                  <div class="form-group">
+                    <span class="form-label"
+                      ><img src="/static/baby.png"/>Infants (0-2)</span
+                    >
+                    <select class="form-control" id="toddler-results" name="toddler-results">
+                      <option {% if session['toddler'] == 0 %}selected{% endif %}>0</option>
+                      <option {% if session['toddler'] == 1 %}selected{% endif %}>1</option>
+                      <option {% if session['toddler'] == 2 %}selected{% endif %}>2</option>
+                      <option {% if session['toddler'] == 3 %}selected{% endif %}>3</option>
+                      <option {% if session['toddler'] == 4 %}selected{% endif %}>4</option>
+                    </select>
+                    <span class="select-arrow"></span>
+                  </div>
+                </div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-3 off" style="display: none;">
+                  <div class="form-group">
+                    <span class="form-label"
+                      ><img src="/static/seat.png" />Travel class</span
+                    >
+                    <select
+                      class="form-control"
+                      id="cabin-class-results"
+                      name="cabin-class-results"
+                    >
+                      <option {% if session['cabin_class'] == 'Economy class'%}selected{% endif %}>Economy class</option>
+                      <option {% if session['cabin_class'] == 'Business class'%}selected{% endif %}>Business class</option>
+                      <option {% if session['cabin_class'] == 'First class'%}selected{% endif %}>First class</option>
+                    </select>
+                    <span class="select-arrow"></span>
+                  </div>
+                </div>
+                <div class="col-md-3 off" style="display: none;">
+                  <div class="form-btn">
+                    <button
+                      type="submit"
+                      class="submit-btn"
+                      onclick="searching(this)"
+                    >
+                      Search flights
+                    </button>
+                    <button 
+                      class="btn btn-primary" 
+                      type="button" 
+                      name="spinner" 
+                      id="spinner" 
+                      style="display:none">
+                      <span 
+                        class="spinner-border spinner-border " 
+                        style="width: 1.5rem; height: 1.5rem;"
+                        role="status" 
+                        aria-hidden="true"></span>&nbsp&nbspSearching...</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-
 
 {% for itinerary in itineraryIds %}
 
-  {% if flight_type == "roundtrip" %}
+  {% if session['flight_type'] == "roundtrip" %}
     {% set leg1, leg2 = itinerary.split("|") %}
   {% else %}
     {% set leg1 = itinerary %}
@@ -49,12 +222,12 @@ block section %}
 <div class="results-section">
   <div class="tags">
     <div class="type-tag">
-      <h1>{% if passengers == 1 %}
+      <h1>{% if session['passengers'] == 1 %}
           1 Adult,&nbsp
           {% else %}
-          {{ passengers }} Passengers,&nbsp
+          {{ session['passengers'] }} Passengers,&nbsp
           {% endif %}
-          {{ cabin_class }}
+          {{ session['cabin_class'] }}
       </h1>
     </div>
     <div class="price-tag">
@@ -72,7 +245,7 @@ block section %}
               data-bs-toggle="collapse"
               data-bs-target="#demo{{ loop.index }}"
             >
-            {% if flight_type == "one-way" %}
+            {% if session['flight_type'] == "one-way" %}
               <a role="button" tabindex="0" class="tog-cal itin-det-btn">
                 <i class="bi bi-chevron-up"></i>
                 <i class="bi bi-chevron-down"></i>
@@ -88,6 +261,7 @@ block section %}
                   </span>
                   {% set depart_arrives_in = leg1_info['arrivalDateTime']|date_hours %}
                   <div class="take-tim"><strong>Arrives: </strong>{{ depart_arrives_in.strftime('%A, %b %d, %Y') }}</div>
+                  <div class="take-tim local">All times are local</div>
                  </div>
               </div>
               <div class="item it-1">
@@ -217,7 +391,7 @@ block section %}
       </div>
     </div>
 
-    {% if flight_type == "roundtrip" %}
+    {% if session['flight_type'] == "roundtrip" %}
 
     <div class="tpd-plan">
       <div class="tp-flight-plan">
@@ -367,6 +541,5 @@ block section %}
     </g>
   </symbol>
 </svg>
-
 <!-- end document-->
 {% endblock %}

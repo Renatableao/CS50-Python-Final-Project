@@ -37,10 +37,6 @@ html {
   top: 20rem;
 }
 
-.spinner {
-  display: none;
-}
-
 .container {
   min-height: 100%;
   min-width: 100%;
@@ -491,6 +487,7 @@ body {
   transform: translateY(-50%);
 }
 
+
 #booking {
   font-family: "Poppins", "Arial", "Helvetica Neue", sans-serif;
   background-image: url("/static/ross-parmly-rf6ywHVkrlY-unsplash.jpg");
@@ -498,7 +495,7 @@ body {
   background-position: center;
 }
 
-#booking img {
+#booking img, #booking-results img {
   height: 2rem;
   margin-right: 0.5rem;
 }
@@ -581,6 +578,11 @@ body {
   color: var(--white);
 }
 
+.booking-form .checkbox-results {
+  display: flex;
+  justify-content: space-between;
+}
+
 .booking-form .form-checkbox input {
   position: absolute !important;
   margin-left: -9999px !important;
@@ -640,7 +642,7 @@ body {
   margin-top: 3rem;
 }
 
-.booking-form .submit-btn {
+.booking-form .submit-btn, #spinner {
   color: var(--white);
   background-color: var(--orange);
   font-weight: 400;
@@ -655,9 +657,10 @@ body {
 }
 
 .booking-form .submit-btn:hover,
-.booking-form .submit-btn:focus {
+.booking-form .submit-btn:focus, #spinner {
   opacity: 0.8;
 }
+
 
 /*Search bar*/
 .autocomplete {
@@ -711,57 +714,31 @@ body {
 }
 
 /*Flights results*/
-.results-header {
-  width: 80%;
-  margin: 15rem auto 0rem auto;
-  display: flex;
-  align-items: center;
+#booking-results {
+  transition: all 1s ease-in;
 }
 
-.results-header .details {
-  width: 40%;
-  height: 5rem;
-  color: var(--black);
-  border: 1px solid var(--orange);
-  font-size: 1.7rem;
-  font-weight: 500;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-  border-radius: 20px;
-  margin: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} 
-
-.results-header .details.date {
-  width: 20%;
-  font-size: 1.6em;
+#plus {
+  cursor: pointer;
+  font-size: 2.5rem;
+  color: var(--white);
+  margin-top: -1rem;
+  transition: all 0.1s ease-in;
 }
 
-.header-airplane {
-  z-index: 10;
-  height: 3.5rem;
-  width: 9.5rem;
-  margin: -4rem;
-  border-radius: 50%;
-  padding: 0.5rem;
-  background-color: var(--white);
-  fill: var(--grey)
+#plus:hover {
+  scale: 1.2;
 }
 
-.header-calendar {
-  z-index: 10;
-  height: 4rem;
-  margin: -2rem -1rem -2rem 1rem;
-  border-radius: 50%;
-  padding: 0.5rem;
-  stroke: var(--grey)
+.section-center-results {
+  width: 78%;
+  margin: 16rem auto 8rem;
+  position: relative;
 }
 
 .results-section {
   width: 80%;
-  margin: 5rem auto;
+  margin: 5rem auto 7rem;
   border-radius: 3px;
   background-color: var(--white);
   border: 1px solid #e2e2e2;
@@ -861,7 +838,6 @@ body {
 
 .tp-flight-plan .context {
   display: flex;
-  flex-flow: row wrap;
   justify-content: center;
   align-items: stretch;
   padding: 1rem 2rem 3rem 0;
@@ -1063,6 +1039,11 @@ body {
   letter-spacing: normal;
   text-align: center;
   margin-top: 1.5rem;
+}
+
+.tp-flight-plan .item.it-2 .take-tim.local{
+  margin-top: 0;
+  font-size: 0.9rem;
 }
 
 .tp-flight-plan .item.it-3 {

@@ -1,6 +1,6 @@
 
 <div>
-    <div class="formPopup hidden" id="registerForm">
+    <div class="formPopup hidden visuallyhidden" id="registerForm">
       <form action="/register" method="post" class="formContainer" id="resgistration-form">
         <h2>Create your Account</h2>
 
@@ -38,11 +38,12 @@
             <div class="form-group">
                 <span class="form-label">Confirm Password</span>
                 <i class="bi bi-eye" onclick="passwordVisible(this, 'reg-confirmation')"></i>
-                <input class="form-control shadow-none config-options" id="reg-confirmation" name="reg-confirmation" placeholder="Confirm Password" type="password" onchange="checkPasswordConf(this, 'reg-password')" title="Repeat password" required>
+                <input class="form-control shadow-none config-options" id="reg-confirmation" name="reg-confirmation" placeholder="Confirm Password" type="password" onchange="checkPasswordConf(this, 'reg-password', 'reg-submit')" title="Repeat password" required>
             </div>
         </div>
         <div class="popup-buttons">
-            <button type="submit" class="btn-save" id="reg-submit" name="reg-submit">Register</button>
+            <button type="submit" class="btn-save" id="reg-submit" name="reg-submit" onclick="loading(this, 'reg-spinner')">Register</button>
+            <button class="btn-save spinner" type="button" id="reg-spinner" name="reg-spinner" style="display:none"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp&nbspLoading...</button>
             <button type="button" class="btn-cancel" onclick="closeForm('registerForm')">Close</button>
         </div>
       </form>

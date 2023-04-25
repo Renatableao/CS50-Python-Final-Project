@@ -10,6 +10,7 @@ function openForm(form) {
   document.querySelector("#overlay").style.display = "block";
   document.querySelector("#overlay2").style.display = "block";
 }
+
 function closeForm(form) {
   /* Close configuration form*/
   popup = document.getElementById(form);
@@ -131,13 +132,12 @@ function checkEmail(thisObj) {
     thisObj.style.setProperty("--c", "red");
     thisObj.classList.add("error");
   } else {
-    thisObj.style.border = "1px solid var(--fifth_color)";
+    thisObj.style.border = "1px solid var(--transp_grey)";
   }
 }
 
-function checkPassword(thisObj, submit = None) {
-  document.getElementById(submit).disabled = true;
-
+function checkPassword(thisObj) {
+  
   if (!thisObj.checkValidity()) {
     thisObj.value = "";
     thisObj.placeholder = "Invalid password";
@@ -145,11 +145,11 @@ function checkPassword(thisObj, submit = None) {
     thisObj.style.setProperty("--c", "red");
     thisObj.classList.add("error");
   } else {
-    thisObj.style.border = "1px solid var(--fifth_color)";
+    thisObj.style.border = "1px solid var(--transp_grey)";
   }
 }
 
-function checkPasswordConf(thisObj, input, submit = None) {
+function checkPasswordConf(thisObj, input, submit) {
   var password = document.getElementById(input);
   if (thisObj.value != password.value) {
     thisObj.value = "";
@@ -158,7 +158,7 @@ function checkPasswordConf(thisObj, input, submit = None) {
     thisObj.style.setProperty("--c", "red");
     thisObj.classList.add("error");
   } else {
-    thisObj.style.border = "1px solid var(--fifth_color)";
+    thisObj.style.border = "1px solid var(--transp_grey)";
     document.getElementById(submit).disabled = false;
   }
 }
@@ -208,7 +208,7 @@ function checkMessage() {
   } else if (message == "Changes ok") {
     alert("Changes saved successfully!");
   } else if (message == "No API Response") {
-    alert("No API response");
+    alert("Sorry, we found no results on these parameters.");
   }}
 
 if (document.readyState === "loading") {
@@ -224,11 +224,9 @@ function redirectForm(form) {
 }
 
 /* -- Set loading spinner while sending reset password link -- */
-function loading(thisObj) {
-  if (document.querySelector("#forgot-email").value) {
+function loading(thisObj, spinner) {
     thisObj.style.display = "none";
-    document.querySelector("#forgot-spinner").style.display = "inline-block";
-  }
+    document.getElementById(spinner).style.display = "inline-block";
 }
 
 /* -- Open/Close confirmation form to delete account -- */

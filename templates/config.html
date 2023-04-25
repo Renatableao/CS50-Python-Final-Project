@@ -1,5 +1,5 @@
 <div>
-  <div class="formPopup hidden" id="configForm">
+  <div class="formPopup hidden visuallyhidden" id="configForm">
     <form action="/config" method="post" class="formContainer">
       <h2>Regional settings</h2>
       <div class="col-md">
@@ -36,7 +36,7 @@
         </div>
       </div>
       <div class="popup-buttons">
-        <button type="submit" class="btn-save" onclick="select_language()">
+        <button type="submit" class="btn-save" onclick="select_language();closeForm('configForm')">
           Save
         </button>
         <button

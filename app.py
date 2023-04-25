@@ -71,6 +71,11 @@ def min_to_hours(min: int) -> str:
     minutes = min % 60
     return "{:02d}h{:02d}m".format(hours, minutes)
 
+@app.template_filter('abb_date')
+def abb_date(date: list) -> date:
+    abb = calendar.month_abbr[int(date[1])] + " " + date[2]
+    return abb
+
 @app.context_processor
 def days_difference():
     def _days_difference(date1, date2):
@@ -124,70 +129,128 @@ def after_request(response):
 def index():
     # User reached route via POST
     if request.method == "POST":
-        # get user inputs
-        flight_type = request.form.get("flight-type")
-        origin = request.form.get("airports_from")
-        destination = request.form.get("airports_to")
-        departing = request.form.get("departing").split("-")
-        departing_abb = calendar.month_abbr[int(departing[1])] + " " + departing[2]
-        adults = int(request.form.get("adults"))
-        toddler = request.form.get("toddler")
-        child = request.form.get("child")
-        cabin = request.form.get("cabin_class")
+        
+        # get user inputs and save as session variables
+        session['flight_type'] = request.form.get("flight-type")
+        session['origin'] = request.form.get("airports-from")
+        session['destination'] = request.form.get("airports-to")
+        session['departing_date'] = request.form.get("departing")
+        session['adults'] = int(request.form.get("adults"))
+        session['toddler'] = int(request.form.get("toddler"))
+        session['child'] = int(request.form.get("child"))
+        session['cabin_class'] = request.form.get("cabin-class")
 
         # get returning date only if is roundtrip
-        if flight_type == "roundtrip":
-            returning = request.form.get("returning").split("-")
-            returning_abb = calendar.month_abbr[int(returning[1])] + " " + returning[2]
-        else:
-            returning_abb = None
-
-        # define oneway or roundtrip legs
-        queryLegs = []
-        firstleg = {
-            "originPlaceId": {"iata": origin[1:4]},
-            "destinationPlaceId": {"iata": destination[1:4]},
-            "date": {
-                "year": int(departing[0]),
-                "month": int(departing[1]),
-                "day": int(departing[2]),
-            },
-        }
-        queryLegs.append(firstleg)
-        if flight_type == "roundtrip":
-            secondleg = {
-                "originPlaceId": {"iata": destination[1:4]},
-                "destinationPlaceId": {"iata": origin[1:4]},
-                "date": {
-                    "year": int(returning[0]),
-                    "month": int(returning[1]),
-                    "day": int(returning[2]),
-                },
-            }
-            queryLegs.append(secondleg)
+        if session['flight_type'] == "roundtrip":
+            session['returning_date'] = request.form.get("returning")
+        else: 
+            session['returning_date'] = None
 
         # add ages to children's list
         children = []
-        for _ in range(int(toddler)):
+        for _ in range(session['toddler']):
             children.append(1)
-        for _ in range(int(child)):
+        for _ in range(session['child']):
             children.append(5)
-
-        passengers = adults + len(children)
         
+        session['children'] = children
+        session['passengers'] = session['adults'] + len(children)
+        session['page'] = '/results'
+        
+        return redirect('/results') 
+        
+    # User reached route via GET
+    else:
+
+        today = date.today()
+        session["today"] = today
+        session["oneyearlater"] = today + relativedelta(years=1)
+        session['page'] = '/'
+        message=request.args.get('message')
+        return render_template("index.html", message=message)
+
+
+@app.route("/results", methods=["GET", "POST"])
+def results():
+
+    # User reached route via POST
+    if request.method == "POST":
+
+        # get user inputs and save as session variables
+        session['flight_type'] = request.form.get("flight-type-results")
+        session['origin'] = request.form.get("airports-from-results")
+        session['destination'] = request.form.get("airports-to-results")
+        session['departing_date'] = request.form.get("departing-results")
+        session['adults'] = int(request.form.get("adults-results"))
+        session['toddler'] = int(request.form.get("toddler-results"))
+        session['child'] = int(request.form.get("child-results"))
+        session['cabin_class'] = request.form.get("cabin-class-results")
+
+        # get returning date only if is roundtrip
+        if session['flight_type'] == "roundtrip":
+            session['returning_date'] = request.form.get("returning-results")
+        else: 
+            session['returning_date'] = None
+
+        # add ages to children's list
+        children = []
+        for _ in range(session['toddler']):
+            children.append(1)
+        for _ in range(session['child']):
+            children.append(5)
+        
+        session['children'] = children
+        session['passengers'] = session['adults'] + len(children)
+        
+        return redirect('/results')
+
+    else:    
+
+        flight_type = session.get('flight_type')
+        origin = session.get('origin')
+        destination = session.get('destination')
+        departing_date = session.get('departing_date').split("-")
+        adults = session.get('adults')
+        children = session.get('children')
+        cabin_class = session.get('cabin_class')
+        locale = session.get("locale", "en-US")
+        market = session.get("market", "US")
+        currency = session.get("currency", "USD")
+
+        # define oneway or roundtrip legs
+        query_legs = []
+        first_leg = {
+            "originPlaceId": {"iata": origin[1:4]},
+            "destinationPlaceId": {"iata": destination[1:4]},
+            "date": {
+                "year": int(departing_date[0]),
+                "month": int(departing_date[1]),
+                "day": int(departing_date[2]),
+            },
+        }
+        query_legs.append(first_leg)
+        if flight_type == "roundtrip":
+            returning_date = session.get('returning_date').split("-")
+            second_leg = {
+                "originPlaceId": {"iata": destination[1:4]},
+                "destinationPlaceId": {"iata": origin[1:4]},
+                "date": {
+                    "year": int(returning_date[0]),
+                    "month": int(returning_date[1]),
+                    "day": int(returning_date[2]),
+                },
+            }
+            query_legs.append(second_leg)
+
         # get cabine class especification
         classes = {
             "Economy class": "CABIN_CLASS_ECONOMY",
             "First class": "CABIN_CLASS_FIRST",
             "Business class": "CABIN_CLASS_BUSINESS",
         }
-        cabin_class = classes[cabin]
+        cabin_class = classes[cabin_class]
 
-        locale = session.get("language", "en-US")
-        market = session.get("country", "US")
-        currency = session.get("currency", "USD")
-
-        search_flights = search(market, locale, currency, queryLegs, adults, children, cabin_class)
+        search_flights = search(market, locale, currency, query_legs, adults, children, cabin_class)
         
         if search_flights: 
             sorted_search = search_flights["sortingOptions"]["cheapest"]
@@ -199,31 +262,15 @@ def index():
                     break
                 itineraryIds[itinerary["itineraryId"]] = itinerary["score"]
 
-            return render_template(
-                "searchResults.html",
-                flight_type=flight_type,
-                departing=departing_abb,
-                returning=returning_abb,
-                city_from=origin[6:],
-                city_to=destination[6:],
-                cabin_class=cabin.split(" ")[0], 
-                passengers=passengers,
-                search_results=search_results,
-                itineraryIds=itineraryIds,
-            )
-            # return render_template('searchResults.html')
-
+            message=request.args.get('message')
+            session['page'] = '/results'
+            
+            return render_template("searchResults.html", search_results=search_results, itineraryIds=itineraryIds, message=message)
+    
         else:
             message="No API Response"
+            session['page'] = '/'
             return render_template("index.html", message=message)
-
-    # User reached route via GET
-    else:
-        today = date.today()
-
-        session["today"] = today
-        session["oneyearlater"] = today + relativedelta(years=1)
-        return render_template("index.html")
 
 
 @app.route("/config", methods=["GET", "POST"])
@@ -247,17 +294,17 @@ def config():
             "it": "it-IT",
         }
 
-        country = request.form.get("country-select")
+        market = request.form.get("country-select")
         currency = request.form.get("currency-select")
-        session["language"] = languages_codes[saved_language]
-        session["country"] = country[-3:-1]
+        session["locale"] = languages_codes[saved_language]
+        session["market"] = market[-3:-1]
         session["currency"] = currency
 
-        return render_template("index.html")
+        return '', 204
 
     # User reached route via GET
     else:
-        return render_template("index.html")
+        return redirect("/")
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -290,12 +337,13 @@ def register():
         session["user_id"] = user[0]
         session["user_username"] = user[1]
 
-        # Redirect user to favorites
-        return render_template("index.html")
+        html = session.get('page')
+
+        return redirect(html)
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("index.html")
+        return redirect('/')
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -303,7 +351,9 @@ def login():
     """Log user in"""
 
     # Forget any user_id
-    session.clear()
+    session.pop('user_id', None)
+    session.pop('user_username', None)
+
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
@@ -328,11 +378,14 @@ def login():
             # Remember which user has logged in
             session["user_id"] = user[0]
             session["user_username"] = user[1]
-            return redirect("/")
+
+            html = session.get('page')
+
+            return redirect(html)
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("index.html")
+        return redirect('/')
 
 
 @app.route("/passwordLink", methods=["GET", "POST"])
@@ -349,7 +402,9 @@ def passwordLink():
         if user is None:
             flash("Not a registered email!", "forgot-password")
             message = "Forgot password Error"
-            return render_template("index.html", message=message)
+
+            html = session.get('page')
+            return redirect('{}?message={}'.format(html, message))
 
         # Generate reset token
         load_dotenv(find_dotenv())
@@ -371,11 +426,13 @@ def passwordLink():
         msg.body = f"To reset your password, please follow this link:  {url_for('resetPassword', token=token, user=user, _external=True)}"
         mail.send(msg)
         message = "Link sent"
-        return render_template("index.html", message=message)
+        html = session.get('page')
+
+        return redirect('{}?message={}'.format(html, message))
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("index.html")
+        return redirect('/')
 
 
 @app.route("/resetPassword", methods=["GET", "POST"])
@@ -394,12 +451,16 @@ def resetPassword():
         )
         con.commit()
         message = "Valid password reset"
-        return render_template("index.html", message=message)
+        html = session.get('page')
+    
+        return redirect('{}?message={}'.format(html, message))
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         load_dotenv(find_dotenv())
         key = os.environ.get("SECRET_KEY")
+        session['page'] = '/'
+
         try:
             # Check if token has expired
             jwt.decode(token, key, algorithms="HS256")
@@ -447,11 +508,13 @@ def changePassword():
             con.commit()
 
         message = "Changes ok"
-        return render_template("index.html", message=message)
+        html = session.get('page')
+        
+        return redirect('{}?message={}'.format(html, message))
 
     # User reached route via GET
     else:
-        return render_template("index.html")
+        return redirect('/')
 
 
 @app.route("/deleteAccount", methods=["GET", "POST"])
@@ -465,11 +528,13 @@ def deleteAccount():
         session.clear()
 
         message = "Delete account"
-        return render_template("index.html", message=message)
+        html = session.get('page')
+        
+        return redirect('{}?message={}'.format(html, message))
 
     # User reached route via GET
     else:
-        return render_template("index.html")
+        return redirect("/")
 
 
 @app.route("/logout")
@@ -477,7 +542,10 @@ def logout():
     """Log user out"""
 
     # Forget any user_id
-    session.clear()
+    session.pop('user_id', None)
+    session.pop('user_username', None)
+
+    html = session.get('page')
 
     # Redirect user to login form
-    return redirect("/")
+    return redirect(html)

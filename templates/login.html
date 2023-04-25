@@ -1,6 +1,6 @@
 
 <div>
-    <div class="formPopup hidden" id="loginForm">
+    <div class="formPopup hidden visuallyhidden" id="loginForm">
       <form action="/login" method="post" class="formContainer" id="login-form">
         <h2>Sign in</h2>
 
@@ -29,9 +29,10 @@
             </div>
         </div>
             <p class="login-links">Not Registered? <span><a href="#" onclick="redirectForm('registerForm')">Sign Up Here</a></p></span>
-            <p class="login-links">Forgot password? <span><a href="#" id="forgot-password" onclick="redirectForm('forgotForm')">Reset here</a></p></span>
+            <p class="login-links">Forgot password? <span><a href="#" onclick="redirectForm('forgotForm')">Reset here</a></p></span>
         <div class="popup-buttons">
-            <button type="submit" class="btn-save" id="log-submit" name="log-submit">Sign in</button>
+            <button type="submit" class="btn-save" id="log-submit" name="log-submit" onclick="loading(this, 'log-spinner')">Sign in</button>
+            <button class="btn-save spinner" type="button" id="log-spinner" name="log-spinner" style="display:none"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp&nbspLoading...</button>
             <button type="button" class="btn-cancel" onclick="closeForm('loginForm')">Close</button>
         </div>
       </form>

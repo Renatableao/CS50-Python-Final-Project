@@ -1,5 +1,5 @@
 <div>
-  <div class="formPopup hidden formContainer" id="securityForm">
+  <div class="formPopup hidden visuallyhidden formContainer" id="securityForm">
     <form action="/changePassword" method="post" id="change-form">
       <h2>Account Settings</h2>
 
@@ -62,9 +62,11 @@
           class="btn-save mb-0"
           id="security-submit"
           name="security-submit"
+          onclick="loading(this, 'security-spinner')"
         >
           Save
         </button>
+        <button class="btn-save spinner" type="button" id="security-spinner" name="security-spinner" style="display:none;margin-bottom:0"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp&nbspLoading...</button>
         <button
           type="button"
           class="btn-cancel mb-0"

@@ -25,8 +25,8 @@ async function fetchAirportsData() {
   try {
     window.airports = await fetchAirportsData();
     //initiate the autocomplete function on the "airports" element, and pass along the array as possible autocomplete values:
-    autocomplete(document.querySelector("#airports_from"), airports);
-    autocomplete(document.querySelector("#airports_to"), airports);
+    autocomplete(document.querySelector("#airports-from"), airports);
+    autocomplete(document.querySelector("#airports-to"), airports);
       
   } catch (error) {
     console.error(error);
@@ -144,8 +144,8 @@ function autocomplete(inp, arr) {
 
 /* -- Set searching spinner while getting API request -- */
 function searching() {
-  const airportsFrom = document.querySelector("#airports_from").value;
-  const airportsTo = document.querySelector("#airports_to").value;
+  const airportsFrom = document.querySelector("#airports-from").value;
+  const airportsTo = document.querySelector("#airports-to").value;
   const departing = document.querySelector("#departing").value;
   const returning = document.querySelector("#returning").value;
   const roundtrip = document.querySelector("#roundtrip").checked;
@@ -175,4 +175,3 @@ function searching() {
     }
   }
 }
-
