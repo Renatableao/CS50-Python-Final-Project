@@ -167,10 +167,10 @@ def index():
         session["oneyearlater"] = today + relativedelta(years=1)
         session['page'] = '/'
 
-        if not session['market']: 
+        if not session.get('market'): 
             session['market'] = "US"
             session['currency'] = "USD"
-            
+
         message=request.args.get('message')
         return render_template("index.html", message=message)
 
@@ -327,7 +327,9 @@ def register():
         if user is not None:
             flash("User already exists! Please register another one.", "register")
             message = "Registration Error"
-            return render_template("index.html", message=message)
+
+            html = session.get('page')
+            return redirect('{}?message={}'.format(html, message))
 
         hash = generate_password_hash(request.form.get("reg-password"))
 
@@ -372,20 +374,23 @@ def login():
         if user is None:
             flash("Email not registered!", "login")
             message = "Log in Error"
-            return render_template("index.html", message=message)
+            html = session.get('page')
+
+            return redirect('{}?message={}'.format(html, message))
 
         elif not check_password_hash(user[2], request.form.get("log-password")):
             flash("Invalid password!", "login")
             message = "Log in Error"
-            return render_template("index.html", message=message)
-
+           
+            html = session.get('page')
+            return redirect('{}?message={}'.format(html, message))
+        
         else:
             # Remember which user has logged in
             session["user_id"] = user[0]
             session["user_username"] = user[1]
 
             html = session.get('page')
-
             return redirect(html)
 
     # User reached route via GET (as by clicking a link or via redirect)
@@ -530,7 +535,8 @@ def deleteAccount():
         db.execute("DELETE FROM users WHERE id = ?", [session["user_id"]])
         con.commit()
 
-        session.clear()
+        session.pop('user_id', None)
+        session.pop('user_username', None)
 
         message = "Delete account"
         html = session.get('page')
