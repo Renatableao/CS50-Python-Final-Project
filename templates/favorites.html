@@ -1,0 +1,341 @@
+{% extends "layout.html" %} {% block title %} Flight Favorites {% endblock %} {%
+block section %}
+
+{% block script %} 
+  <script type="text/javascript" src="/static/searchResults.js" async></script>
+{% endblock %} 
+
+  
+{% include 'priceList.html' %}
+
+<p id="note">* Remember to check ALL ticket details, taxes and final prices, as well as the terms and conditions on the booking website before making your reservation as the information saved here may be out of date.</p>
+{% for flight in user_flights_info %}
+
+  {% set search_results = flight[7]|fromjson %}
+  {% set itinerary_info = flight[8]|fromjson %}
+  {% set leg1_info = flight[9]|fromjson %}
+
+  {% if flight[10] != None %}
+    {% set leg2_info = flight[10]|fromjson %}
+  {% endif %}
+
+<div class="results-section">
+  <div class="tags">
+    <div class="type-tag">
+      <h1>{% if flight[4] == 1 %}
+          1 Adult,&nbsp
+          {% else %}
+          {{ flight[4]  }} Passengers,&nbsp
+          {% endif %}
+          {{ flight[6]  }}
+      </h1>
+    </div>
+    <div class="price-tag">
+      {% set price = format_price(itinerary_info["pricingOptions"][0]['price']['amount'], flight[6]) %}
+      <h1>{{ price }}</h1>
+    </div>
+  </div>
+
+  <div class="flight-info">
+    <div class="tpd-plan">
+      <div class="tp-flight-plan">
+        <div class="container-fluid">
+          <div class="crop depart">
+            <div
+              class="context collapsed"
+              data-bs-toggle="collapse"
+              data-bs-target="#favorite-demo{{ loop.index }}"
+            >
+                      
+              <div class="item it-2">
+                <div class="dr-row">
+                  <span class="al-name">
+                    {% for carrier in leg1_info["operatingCarrierIds"] %}
+                    {{ search_results['carriers'][carrier]['name'] }}{% if not loop.last %} +{% endif %}
+                    {% endfor %}
+                  </span>
+                  {% set depart_arrives_in = leg1_info['arrivalDateTime']|datehours %}
+                  <div class="take-tim"><strong>Arrives: </strong>{{ depart_arrives_in.strftime('%A, %b %d, %Y') }}</div>
+                  <div class="take-tim local">All times are local</div>
+                 </div>
+              </div>
+              <div class="item it-1">
+                <div class="route-dot">
+                  {% set leg1_stops = (leg1_info['segmentIds']|length) - 1 %}
+                  {% for i in range(leg1_stops) %}
+                  <span class="point"></span>
+                  {% endfor %}
+                </div>
+                <div class="airline-image">
+                  <div class="df-text">{{ leg1_info['durationInMinutes']|tohours }}</div>
+                  <span class="img-wrapper">
+                    <svg class="anime-airplane">
+                      <use xlink:href="#fav-airplane"></use>
+                    </svg>
+                    <span class="top-label has-stops"
+                      >{% if leg1_stops == 0 %}
+                      Direct flight
+                      {% elif leg1_stops == 1 %}
+                      1 Stop
+                      {% else %}
+                      {{ leg1_stops }} Stops
+                      {% endif %}
+                      <span class="stops">{% for segment in leg1_info['segmentIds'][0:-1] %}
+                        {{ search_results['places'][search_results['segments'][segment]['destinationPlaceId']]['iata'] }}{% if not loop.last %},{% endif %}
+                        {% endfor %}</span>
+                    </span>
+                    
+
+                    {% for segment in leg1_info['segmentIds'] %}
+                    {% if not loop.first %}
+
+                    {% set origin_airport = search_results['segments'][segment]['originPlaceId'] %}
+                    {% set destination_airport = search_results['segments'][leg1_info['segmentIds'][loop.index0 - 1]]['destinationPlaceId'] %}
+                    
+                    {% if origin_airport != destination_airport %}
+                      <span class="change-airport"><span>&#9888;</span> Airport change</span>
+                    {% endif %}
+
+                    {% endif %}
+                    {% endfor %}
+                  </span>
+                </div>
+
+                <div class="port-seg">
+                  <div class="flight-seg origin">
+                    {% set depart_leaves_in = leg1_info['departureDateTime']|datehours %}
+                    <div class="time">{{ depart_leaves_in.strftime('%I:%M %p') }}</div>
+                    <div class="port">{{ search_results['places'][leg1_info['originPlaceId']]['iata'] }}</div>
+                    <div class="name">{{ search_results['places'][leg1_info['originPlaceId']]['name'] }}</div>
+                  </div>
+                  <div class="flight-seg destination">
+                    <div class="time plus">{{ depart_arrives_in.strftime('%I:%M %p') }}
+                      {% set days = days_difference(leg1_info['departureDateTime']|date, leg1_info['arrivalDateTime']|date ) %}
+                      <span>
+                      {% if days > 0 %}
+                      +{{ days }}
+                      {% elif days < 0 %}
+                      {{ days }}
+                      {% endif %}
+                      </span>
+                    </div>
+                    <div class="port">{{ search_results['places'][leg1_info['destinationPlaceId']]['iata'] }}</div>
+                    <div class="name">{{ search_results['places'][leg1_info['destinationPlaceId']]['name'] }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+           
+            <div id="favorite-demo{{ loop.index }}" class="fly-wrap collapse">
+                
+                {% for segment in leg1_info['segmentIds'] %}
+                {% set depart_segment_info = search_results['segments'][segment] %}
+
+                {% if not loop.first %}
+
+                <div class="delay-frame">
+  
+                  <div class="welc"><i class="bi bi-clock"></i>Layover {{ hours_difference(search_results['segments'][leg1_info['segmentIds'][loop.index0 - 1]]['arrivalDateTime']|datehours, depart_segment_info['departureDateTime']|datehours) }}
+                    {% set origin_airport = search_results['segments'][segment]['originPlaceId'] %}
+                    {% set destination_airport = search_results['segments'][leg1_info['segmentIds'][loop.index0 - 1]]['destinationPlaceId'] %}
+                  
+                    {% if origin_airport != destination_airport %}
+                    <span class="transfer"> + Self Transfer</span>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                {% endif %}
+                
+              
+                <div class="fly-det">
+                <div class="f-item">
+                  <div class="airway-title">
+                    <img
+                      class="airline-logo"
+                      src="{{ search_results['carriers'][depart_segment_info['operatingCarrierId']]['imageUrl'] }}" onError="this.onerror=null;this.src='';this.parentElement.innerText='{{ search_results['carriers'][depart_segment_info['operatingCarrierId']]['name'] }}';"
+                    />
+                  </div>
+                  <div class="root-de">
+                    <div class="times">{{ depart_segment_info['durationInMinutes']|tohours }}</div>
+                    <div class="directs">
+                      <div class="itin-time">
+                        <div class="itin-lines"></div>
+                      </div>
+
+                      <div class="hour-sm">
+                        <div class="hour-time-sm">{{ (depart_segment_info['departureDateTime']|datehours).strftime('%I:%M %p') }}</div>
+
+                        <div class="hour-time-sm">{{ (depart_segment_info['arrivalDateTime']|datehours).strftime('%I:%M %p') }}</div>
+                      </div>
+                    </div>
+
+                    <div class="itin-target">
+                      <div class="tar-label">{{ search_results['places'][depart_segment_info['originPlaceId']]['iata'] }} {{ search_results['places'][depart_segment_info['originPlaceId']]['name'] }}</div>
+                      <div class="tar-label">{{ search_results['places'][depart_segment_info['destinationPlaceId']]['iata'] }} {{ search_results['places'][depart_segment_info['destinationPlaceId']]['name'] }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+           
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if leg2_info %}
+
+    <div class="tpd-plan">
+      <div class="tp-flight-plan">
+        <div class="container-fluid">
+          <div class="crop return">
+            <div
+              class="context context-return collapsed"
+              data-bs-toggle="collapse"
+              data-bs-target="#favorite-demo{{ loop.index }}"
+            >
+              <div class="item it-2">
+                <div class="dr-row">
+                  <span class="al-name">
+                    {% for carrier in leg2_info["operatingCarrierIds"] %}
+                    {{ search_results['carriers'][carrier]['name'] }}{% if not loop.last %} +{% endif %}
+                    {% endfor %}
+                  </span>
+                  {% set return_arrives_in = leg2_info['arrivalDateTime']|datehours %}
+                  <div class="take-tim"><strong>Arrives: </strong>{{ return_arrives_in.strftime('%A, %b %d, %Y') }}</div>
+                  <div class="take-tim local">All times are local</div>
+                </div>
+              </div>
+              <div class="item it-1">
+                <div class="route-dot">
+                  {% set leg2_stops = (leg2_info['segmentIds']|length) - 1 %}
+                  {% for i in range(leg2_stops) %}
+                  <span class="point"></span>
+                  {% endfor %}
+                </div>
+                <div class="airline-image">
+                  <div class="df-text">{{ leg2_info['durationInMinutes']|tohours }}</div>
+                  <span class="img-wrapper">
+                    <svg class="anime-airplane">
+                      <use xlink:href="#fav-airplane"></use>
+                    </svg>
+                    <span class="top-label has-stops"
+                    >{% if leg2_stops == 0 %}
+                    Direct flight
+                    {% elif leg2_stops == 1 %}
+                    1 Stop
+                    {% else %}
+                    {{ leg2_stops }} Stops
+                    {% endif %}
+                    <span class="stops">{% for segment in leg2_info['segmentIds'][0:-1] %}
+                      {{ search_results['places'][search_results['segments'][segment]['destinationPlaceId']]['iata'] }}{% if not loop.last %},{% endif %}
+                      {% endfor %}</span>
+                    </span>
+                  </span>
+                </div>
+
+                <div class="port-seg">
+                  <div class="flight-seg origin">
+                    {% set return_leaves_in = leg2_info['departureDateTime']|datehours %}
+                    <div class="time">{{ return_leaves_in.strftime('%I:%M %p') }}</div>
+                    <div class="port">{{ search_results['places'][leg2_info['originPlaceId']]['iata'] }}</div>
+                    <div class="name">{{ search_results['places'][leg2_info['originPlaceId']]['name'] }}</div>
+                  </div>
+                  <div class="flight-seg destination">
+                    <div class="time plus">{{ return_arrives_in.strftime('%I:%M %p') }}
+                      {% set days = days_difference(leg2_info['departureDateTime']|date, leg2_info['arrivalDateTime']|date ) %}
+                      <span>
+                      {% if days > 0 %}
+                      +{{ days }}
+                      {% elif days < 0 %}
+                      {{ days }}
+                      {% endif %}
+                      </span>
+                    </div>
+                    <div class="port">{{ search_results['places'][leg2_info['destinationPlaceId']]['iata'] }}</div>
+                    <div class="name">{{ search_results['places'][leg2_info['destinationPlaceId']]['name'] }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="favorite-demo{{ loop.index }}" class="fly-wrap collapse">
+                
+              {% for segment in leg2_info['segmentIds'] %}
+              {% set return_segment_info = search_results['segments'][segment] %}
+
+              {% if not loop.first %}
+
+              <div class="delay-frame">
+  
+                <div class="welc"><i class="bi bi-clock"></i>Layover {{ hours_difference(search_results['segments'][leg2_info['segmentIds'][loop.index0 - 1]]['arrivalDateTime']|datehours, return_segment_info['departureDateTime']|datehours ) }}</div>
+              </div>
+  
+              {% endif %}
+
+              <div class="fly-det">
+              <div class="f-item">
+                <div class="airway-title">
+                  <img
+                    class="airline-logo"
+                    src="{{ search_results['carriers'][return_segment_info['operatingCarrierId']]['imageUrl'] }}" onError="this.onerror=null;this.src='';this.parentElement.innerText='{{ search_results['carriers'][return_segment_info['operatingCarrierId']]['name'] }}';" 
+                  />
+                </div>
+                <div class="root-de">
+                  <div class="times">{{ return_segment_info['durationInMinutes']|tohours }}</div>
+                  <div class="directs">
+                    <div class="itin-time">
+                      <div class="itin-lines"></div>
+                    </div>
+
+                    <div class="hour-sm">
+                      <div class="hour-time-sm">{{ (return_segment_info['departureDateTime']|datehours).strftime('%I:%M %p') }}</div>
+
+                      <div class="hour-time-sm">{{ (return_segment_info['arrivalDateTime']|datehours).strftime('%I:%M %p') }}</div>
+                    </div>
+                  </div>
+
+                  <div class="itin-target">
+                    <div class="tar-label">{{ search_results['places'][return_segment_info['originPlaceId']]['iata'] }} {{ search_results['places'][return_segment_info['originPlaceId']]['name'] }}</div>
+                    <div class="tar-label">{{ search_results['places'][return_segment_info['destinationPlaceId']]['iata'] }} {{ search_results['places'][return_segment_info['destinationPlaceId']]['name'] }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    {% endif %}
+  </div>
+
+  <div class="open-delete-selection">
+    <form action="/favorites" method="post" autocomplete="off">
+      <button class="btn-selection delete-favorite" name="delete-favorite" onclick="return confirm('Are you sure you want to delete this item')" value='{{ flight[2] }}' title="Save as favorite">Delete</button>
+    </form>
+    <button class="btn-selection" name="open-price-list" data-results='{{ search_results|tojson|safe }}' data-itinerary='{{ itinerary_info|tojson|safe }}' data-currency="{{ flight[5] }}" onclick="openPriceList(this)">Open</button>
+  </div>
+</div>
+ <p id="saved-on"><strong>Saved on:</strong> {{ session['today'].strftime('%A, %b %d, %Y') }}</p>
+{% endfor %}
+
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" display="none">
+  <symbol id="fav-airplane" viewBox="243.5 245.183 25 21.633">
+    <g>
+      <path
+        d="M251.966,266.816h1.242l6.11-8.784l5.711,0.2c2.995-0.102,3.472-2.027,3.472-2.308
+                                c0-0.281-0.63-2.184-3.472-2.157l-5.711,0.2l-6.11-8.785h-1.242l1.67,8.983l-6.535,0.229l-2.281-3.28h-0.561v3.566
+                                c-0.437,0.257-0.738,0.724-0.757,1.266c-0.02,0.583,0.288,1.101,0.757,1.376v3.563h0.561l2.281-3.279l6.535,0.229L251.966,266.816z
+                                "
+      />
+    </g>
+  </symbol>
+</svg>
+<!-- end document-->
+{% endblock %}

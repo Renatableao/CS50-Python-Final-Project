@@ -1,37 +1,29 @@
 /* -- Open configuration form -- */
-
 function openForm(form) {
+
   /* display configuration form by clicking the planet icon */
   popup = document.getElementById(form);
   popup.classList.remove("hidden");
-  setTimeout(function () {
-    popup.classList.remove("visuallyhidden");
-  }, 20);
+  setTimeout(() => popup.classList.remove("visually-hidden"), 20);
   document.querySelector("#overlay").style.display = "block";
   document.querySelector("#overlay2").style.display = "block";
 }
 
+/* Close configuration form*/
 function closeForm(form) {
-  /* Close configuration form*/
-  popup = document.getElementById(form);
-  popup.classList.add("visuallyhidden");
-  popup.addEventListener(
-    "transitionend",
-    function (e) {
+
+  const popup = document.getElementById(form);
+  popup.classList.add("visually-hidden");
+  popup.addEventListener("transitionend", function hideForm() {
       popup.classList.add("hidden");
-    },
-    {
-      capture: false,
-      once: true,
-      passive: false,
-    }
-  );
+      popup.removeEventListener("transitionend", hideForm);
+  });
   document.querySelector("#overlay").style.display = "none";
   document.querySelector("#overlay2").style.display = "none";
 }
 
-/* -- Google Translate API -- */
 
+/* -- Google Translate API -- */
 function googleTranslateElementInit() {
   /* set API properties and languages*/
   new google.translate.TranslateElement(
@@ -59,14 +51,13 @@ function readCookie(name) {
 }
 
 // Save chosen language as input
-function select_language() {
+function selectLanguage() {
   var clicked_name = readCookie("googtrans");
   document.querySelector("#input_language").value = clicked_name;
 }
 
 /* -- Upload countries and currency data -- */
 // List from  market.json
-
 async function fetchMarketData() {
   const response = await fetch('/static/markets.json');
   const data = await response.json();
@@ -198,13 +189,13 @@ function checkMessage() {
     logLink.click();
   } else if (message == "Forgot password Error") {
     // Open forgot password form
-    openForm("forgotForm");
+    openForm("forgot-form");
   } else if (message == "Valid token") {
     // Open reset form
-    openForm("resetForm");
+    openForm("reset-form");
   } else if (message == "Token Error") {
     // Open forgot password form
-    openForm("forgotForm");
+    openForm("forgot-form");
   } else if (message == "Valid password reset") {
     alert("Password reset successfully!");
   } else if (message == "Password changed") {
@@ -227,14 +218,20 @@ if (document.readyState === "loading") {
 
 /* -- Redirect user to another form -- */
 function redirectForm(form) {
-  closeForm("loginForm");
+  closeForm("login-form");
   setTimeout(openForm, 400, form);
 }
 
-/* -- Set loading spinner while sending reset password link -- */
+/* -- Set loading spinner -- */
 function loading(thisObj, spinner) {
     thisObj.style.display = "none";
     document.getElementById(spinner).style.display = "inline-block";
+}
+
+/* -- Set loading spinner on log out -- */
+function loggingOut(thisObj) {
+  thisObj.style.display = "none";
+  document.querySelector("#logout-spinner").style.display = "flex";
 }
 
 /* -- Open/Close confirmation form to delete account -- */
@@ -242,12 +239,12 @@ function openDelete(thisObj) {
   thisObj.style.display = "None";
   document.querySelector("#security-submit").style.display = "None";
   document.querySelector("#security-close").style.display = "None";
-  document.querySelector("#deleteForm").style.display = "block";
+  document.querySelector("#delete-form").style.display = "block";
 }
 
 function cancelDelete() {
   document.querySelector("#security-submit").style.display = "inline-block";
   document.querySelector("#security-close").style.display = "inline-block";
-  document.querySelector("#deleteForm").style.display = "None";
-  document.querySelector("#deleteAccount").style.display = "block";
+  document.querySelector("#delete-form").style.display = "None";
+  document.querySelector("#delete-account").style.display = "block";
 }

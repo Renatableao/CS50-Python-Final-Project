@@ -75,17 +75,20 @@
                 <nav>
                 {% if session["user_id"] %}
                     <a href="/favorites">Favorites</a>
-                    <a href="#" onclick="openForm('securityForm')" id="security" name="security">Security</a>
-                    <a href="/logout">Log out</a>
+                    <a href="#" onclick="openForm('security-form')" id="security" name="security">Security</a>
+                    <a href="/logout" onclick="loggingOut(this)">Log out</a>
+                    <div style="display:inline-block">
+                    <a href="#" style="display:none" id='logout-spinner'><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbspBye-Bye!</a>
+                    </div>
                 {% else %}
-                    <a href="#" onclick="openForm('registerForm')" id="register" name="register">Register</a>
-                    <a href="#" onclick="openForm('loginForm')" id="login" name="login">Sign in</a>
+                    <a href="#" onclick="openForm('register-form')" id="register" name="register">Register</a>
+                    <a href="#" onclick="openForm('login-form')" id="login" name="login">Sign in</a>
                 {% endif %}
                 </nav>
             </div>	
     
             <div>
-                <button class="config" id="configOpen" onclick="openForm('configForm')"><img src="/static/icons8-earth-planet-96.png"></button> 
+                <button class="config" onclick="openForm('config-form')"><img src="/static/icons8-earth-planet-96.png"></button> 
             </div> 
             </div> 
         </div>

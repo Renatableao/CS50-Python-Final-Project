@@ -1,7 +1,7 @@
 
 <div>
-    <div class="formPopup hidden visuallyhidden" id="registerForm">
-      <form action="/register" method="post" class="formContainer" id="resgistration-form">
+    <div class="hidden visually-hidden" id="register-form">
+      <form action="/register" method="post" class="form-container" id="resgistration-form">
         <h2>Create your Account</h2>
 
         {% with messages = get_flashed_messages(category_filter=['register']) %}
@@ -44,7 +44,7 @@
         <div class="popup-buttons">
             <button type="submit" class="btn-save" id="reg-submit" name="reg-submit" onclick="loading(this, 'reg-spinner')">Register</button>
             <button class="btn-save spinner" type="button" id="reg-spinner" name="reg-spinner" style="display:none"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp&nbspLoading...</button>
-            <button type="button" class="btn-cancel" onclick="closeForm('registerForm')">Close</button>
+            <button type="button" class="btn-cancel" onclick="closeForm('register-form')">Close</button>
         </div>
       </form>
     </div>

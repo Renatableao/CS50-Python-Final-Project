@@ -112,7 +112,7 @@ block section %}
                 <div class="col-md-2 off" style="display: none;">
                   <div class="form-group">
                     <span class="form-label"
-                      ><img src="/static/man.png" />Adults (12+)</span
+                      ><img src="/static/man.png"/>Adults (12+)</span
                     >
                     <select class="form-control" id="adults-results" name="adults-results">
                       <option {% if session['adults'] == 1 %}selected{% endif %}>1</option>
@@ -207,6 +207,8 @@ block section %}
     </div>
   </div>
 
+{% include 'priceList.html' %}
+
 {% for itinerary in itineraryIds %}
 
   {% if session['flight_type'] == "roundtrip" %}
@@ -217,6 +219,8 @@ block section %}
 
 {% set leg1_info = search_results["legs"][leg1] %} 
 {% set leg2_info = search_results["legs"][leg2] %} 
+{% set itinerary_info = search_results['itineraries'][itinerary] %}
+
 
 
 <div class="results-section">
@@ -231,7 +235,8 @@ block section %}
       </h1>
     </div>
     <div class="price-tag">
-      <h1>{{ format_price(search_results['itineraries'][itinerary]["pricingOptions"][0]['price']['amount'], session["currency"]) }}</h1>
+      {% set price = format_price(itinerary_info["pricingOptions"][0]['price']['amount'], session["currency"]) %}
+      <h1>{{ price }}</h1>
     </div>
   </div>
 
@@ -249,11 +254,11 @@ block section %}
               <div class="item it-2">
                 <div class="dr-row">
                   <span class="al-name">
-                    {% for carrie in leg1_info["operatingCarrierIds"] %}
-                    {{ search_results['carriers'][carrie]['name'] }}{% if not loop.last %} +{% endif %}
+                    {% for carrier in leg1_info["operatingCarrierIds"] %}
+                    {{ search_results['carriers'][carrier]['name'] }}{% if not loop.last %} +{% endif %}
                     {% endfor %}
                   </span>
-                  {% set depart_arrives_in = leg1_info['arrivalDateTime']|date_hours %}
+                  {% set depart_arrives_in = leg1_info['arrivalDateTime']|datehours %}
                   <div class="take-tim"><strong>Arrives: </strong>{{ depart_arrives_in.strftime('%A, %b %d, %Y') }}</div>
                   <div class="take-tim local">All times are local</div>
                  </div>
@@ -266,7 +271,7 @@ block section %}
                   {% endfor %}
                 </div>
                 <div class="airline-image">
-                  <div class="df-text">{{ leg1_info['durationInMinutes']|to_hours }}</div>
+                  <div class="df-text">{{ leg1_info['durationInMinutes']|tohours }}</div>
                   <span class="img-wrapper">
                     <svg class="anime-airplane">
                       <use xlink:href="#airplane"></use>
@@ -302,7 +307,7 @@ block section %}
 
                 <div class="port-seg">
                   <div class="flight-seg origin">
-                    {% set depart_leaves_in = leg1_info['departureDateTime']|date_hours %}
+                    {% set depart_leaves_in = leg1_info['departureDateTime']|datehours %}
                     <div class="time">{{ depart_leaves_in.strftime('%I:%M %p') }}</div>
                     <div class="port">{{ search_results['places'][leg1_info['originPlaceId']]['iata'] }}</div>
                     <div class="name">{{ search_results['places'][leg1_info['originPlaceId']]['name'] }}</div>
@@ -335,7 +340,7 @@ block section %}
 
                 <div class="delay-frame">
   
-                  <div class="welc"><i class="bi bi-clock"></i>Layover {{ hours_difference(search_results['segments'][leg1_info['segmentIds'][loop.index0 - 1]]['arrivalDateTime']|date_hours, depart_segment_info['departureDateTime']|date_hours) }}
+                  <div class="welc"><i class="bi bi-clock"></i>Layover {{ hours_difference(search_results['segments'][leg1_info['segmentIds'][loop.index0 - 1]]['arrivalDateTime']|datehours, depart_segment_info['departureDateTime']|datehours) }}
                     {% set origin_airport = search_results['segments'][segment]['originPlaceId'] %}
                     {% set destination_airport = search_results['segments'][leg1_info['segmentIds'][loop.index0 - 1]]['destinationPlaceId'] %}
                   
@@ -357,16 +362,16 @@ block section %}
                     />
                   </div>
                   <div class="root-de">
-                    <div class="times">{{ depart_segment_info['durationInMinutes']|to_hours }}</div>
+                    <div class="times">{{ depart_segment_info['durationInMinutes']|tohours }}</div>
                     <div class="directs">
                       <div class="itin-time">
                         <div class="itin-lines"></div>
                       </div>
 
                       <div class="hour-sm">
-                        <div class="hour-time-sm">{{ (depart_segment_info['departureDateTime']|date_hours).strftime('%I:%M %p') }}</div>
+                        <div class="hour-time-sm">{{ (depart_segment_info['departureDateTime']|datehours).strftime('%I:%M %p') }}</div>
 
-                        <div class="hour-time-sm">{{ (depart_segment_info['arrivalDateTime']|date_hours).strftime('%I:%M %p') }}</div>
+                        <div class="hour-time-sm">{{ (depart_segment_info['arrivalDateTime']|datehours).strftime('%I:%M %p') }}</div>
                       </div>
                     </div>
 
@@ -399,12 +404,13 @@ block section %}
               <div class="item it-2">
                 <div class="dr-row">
                   <span class="al-name">
-                    {% for carrie in leg2_info["operatingCarrierIds"] %}
-                    {{ search_results['carriers'][carrie]['name'] }}{% if not loop.last %} +{% endif %}
+                    {% for carrier in leg2_info["operatingCarrierIds"] %}
+                    {{ search_results['carriers'][carrier]['name'] }}{% if not loop.last %} +{% endif %}
                     {% endfor %}
                   </span>
-                  {% set return_arrives_in = leg2_info['arrivalDateTime']|date_hours %}
+                  {% set return_arrives_in = leg2_info['arrivalDateTime']|datehours %}
                   <div class="take-tim"><strong>Arrives: </strong>{{ return_arrives_in.strftime('%A, %b %d, %Y') }}</div>
+                  <div class="take-tim local">All times are local</div>
                 </div>
               </div>
               <div class="item it-1">
@@ -415,7 +421,7 @@ block section %}
                   {% endfor %}
                 </div>
                 <div class="airline-image">
-                  <div class="df-text">{{ leg2_info['durationInMinutes']|to_hours }}</div>
+                  <div class="df-text">{{ leg2_info['durationInMinutes']|tohours }}</div>
                   <span class="img-wrapper">
                     <svg class="anime-airplane">
                       <use xlink:href="#airplane"></use>
@@ -437,7 +443,7 @@ block section %}
 
                 <div class="port-seg">
                   <div class="flight-seg origin">
-                    {% set return_leaves_in = leg2_info['departureDateTime']|date_hours %}
+                    {% set return_leaves_in = leg2_info['departureDateTime']|datehours %}
                     <div class="time">{{ return_leaves_in.strftime('%I:%M %p') }}</div>
                     <div class="port">{{ search_results['places'][leg2_info['originPlaceId']]['iata'] }}</div>
                     <div class="name">{{ search_results['places'][leg2_info['originPlaceId']]['name'] }}</div>
@@ -469,7 +475,7 @@ block section %}
 
               <div class="delay-frame">
   
-                <div class="welc"><i class="bi bi-clock"></i>Layover {{ hours_difference(search_results['segments'][leg2_info['segmentIds'][loop.index0 - 1]]['arrivalDateTime']|date_hours, return_segment_info['departureDateTime']|date_hours ) }}</div>
+                <div class="welc"><i class="bi bi-clock"></i>Layover {{ hours_difference(search_results['segments'][leg2_info['segmentIds'][loop.index0 - 1]]['arrivalDateTime']|datehours, return_segment_info['departureDateTime']|datehours ) }}</div>
               </div>
   
               {% endif %}
@@ -483,16 +489,16 @@ block section %}
                   />
                 </div>
                 <div class="root-de">
-                  <div class="times">{{ return_segment_info['durationInMinutes']|to_hours }}</div>
+                  <div class="times">{{ return_segment_info['durationInMinutes']|tohours }}</div>
                   <div class="directs">
                     <div class="itin-time">
                       <div class="itin-lines"></div>
                     </div>
 
                     <div class="hour-sm">
-                      <div class="hour-time-sm">{{ (return_segment_info['departureDateTime']|date_hours).strftime('%I:%M %p') }}</div>
+                      <div class="hour-time-sm">{{ (return_segment_info['departureDateTime']|datehours).strftime('%I:%M %p') }}</div>
 
-                      <div class="hour-time-sm">{{ (return_segment_info['arrivalDateTime']|date_hours).strftime('%I:%M %p') }}</div>
+                      <div class="hour-time-sm">{{ (return_segment_info['arrivalDateTime']|datehours).strftime('%I:%M %p') }}</div>
                     </div>
                   </div>
 
@@ -512,13 +518,22 @@ block section %}
     
     {% endif %}
   </div>
-  <div class="return-select">
-    <a role="button" href="{{ search_results['itineraries'][itinerary]['pricingOptions'][0]['items'][0]['deepLink'] }}" target="_blank" class="itin-det-btn select">
-      Select
-    </a>
+
+    <div class="open-save-selection">
+    {% if session['user_id'] %}
+    <form action="/results" method="post" autocomplete="off">
+      <button class="btn-selection favorite" name="favorite-data" value='{{ itinerary_info|tojson|safe }}' title="Save as favorite">Save</button>
+      <input type="hidden" name="favorite-data-leg1" value='{{ leg1_info|tojson|safe }}'>
+      {% if session['flight_type'] == 'roundtrip' %}
+        <input type="hidden" name="favorite-data-leg2" value='{{ leg2_info|tojson|safe }}'>
+      {% endif %}
+      <input type="hidden" name="favorite-data-results" value='{{ search_results|tojson|safe }}'>
+      <input type="hidden" name="favorite-itinerary-id" value='{{ itinerary }}'>
+    </form>
+    {% endif %}
+    <button class="btn-selection" name="open-price-list" data-results='{{ search_results|tojson|safe }}' data-itinerary='{{ itinerary_info|tojson|safe }}' data-currency="{{ session['currency'] }}" onclick="openPriceList(this)">Open</button>
   </div>
 </div>
-
 {% endfor %}
 
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" display="none">

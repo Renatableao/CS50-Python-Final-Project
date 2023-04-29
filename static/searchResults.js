@@ -1,5 +1,5 @@
 /* -- Display dots according to flight stops --*/
-function stops() {
+function displayStops() {
     const parents = document.querySelectorAll('.route-dot');
 
     parents.forEach(parent => {
@@ -11,24 +11,22 @@ function stops() {
 });})}
 
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", stops);
+    document.addEventListener("DOMContentLoaded", displayStops);
   } else {
-    stops();
+    displayStops();
   }
 
 /*-- Show/Hide inputs from search-form -- */ 
 function toggleInputs(thisObj) {
   
-  elements = document.querySelectorAll(".off")
+  const elements = document.querySelectorAll(".off")
 
-  if (elements[0].style.display == "none") {
-    elements.forEach(element => element.style.display = "block" )
-    thisObj.style.transform = "rotate(45deg)"
-  }
-  else { 
-    elements.forEach(element => element.style.display = "none" )
-    thisObj.style.transform = "rotate(0deg)"
-}}
+  elements.forEach(element => {
+    element.style.display = element.style.display === "none" ? "block" : "none";
+  });
+
+  thisObj.style.transform = elements[0].style.display === "none" ? "rotate(0deg)" : "rotate(45deg)";
+}
 
 function searching(thisObj) {
   
@@ -62,7 +60,7 @@ function updateDateResults(thisObj) {
 
 /* -- Upload airports data -- */
 // List from airports.json
-async function fetchAirportsDataResults() {
+async function fetchAirportsData() {
   const response = await fetch('/static/airports.json');
   const data = await response.json();
   return data;
@@ -70,7 +68,7 @@ async function fetchAirportsDataResults() {
 
 (async function() {
   try {
-    window.airports = await fetchAirportsDataResults();
+    window.airports = await fetchAirportsData();
     //initiate the autocomplete function on the "airports" element, and pass along the array as possible autocomplete values:
     autocompleteResults(document.querySelector("#airports-from-results"), airports);
     autocompleteResults(document.querySelector("#airports-to-results"), airports);
@@ -189,3 +187,89 @@ function autocompleteResults(inp, arr) {
   });
 }
 
+
+/*-- Open price List from different agents for each flight result -- */ 
+async function openPriceList(thisObj) {
+
+  const form = document.querySelector('#price-list-window');
+  const formContent = document.querySelector('#price-list');
+  const currency_code = thisObj.dataset.currency
+  const results = JSON.parse(thisObj.dataset.results);
+  const itinerary = JSON.parse(thisObj.dataset.itinerary);
+  const options = itinerary['pricingOptions']
+
+  // Load the currencies.json file
+  const currencies = await fetch('./static/currencies.json')
+    .then(response => response.json())
+    .catch(error => console.error(error));
+
+  for (const option of options) {
+    
+    const price = formatPrice(option.price.amount, currency_code, currencies)
+    const agent = results.agents[option.items[0].agentId];
+    var optionInfo = `
+        <div></div>
+        <div class="agent">
+          <p>${agent.name}</p>
+        </div>
+        <div></div>
+        <div class="agent-price">
+          <span>${price}</span>
+        </div>
+        <div>
+         <a target="_blank" href="${option.items[0].deepLink}" class="btn-select"> <img src="/static/icons8-advance-30.png"/></a>
+        </div>
+        <div>
+        </div>
+    `;
+    
+    const agentRow = document.createElement("DIV");
+    agentRow.setAttribute("id", "agent-row");
+    agentRow.innerHTML = optionInfo;
+    formContent.appendChild(agentRow)
+  }
+    
+  form.classList.remove("hidden");
+  setTimeout(() => form.classList.remove("visually-hidden"), 20);
+  document.querySelector("#overlay").style.display = "block";
+  document.querySelector("#overlay2").style.display = "block";
+  
+}
+
+/*-- Format price according to user selected currency -- */ 
+function formatPrice(price, currency_code, currencies) {
+
+    // Find the currency object that matches the code
+    const currency = currencies.find(c => c.code === currency_code);
+    if (!currency) {
+      return price;
+    }
+
+    const decimal_places = currency.decimalDigits;
+    let price_str = decimal_places > 0 ? parseFloat(price).toFixed(decimal_places) : parseInt(price);
+    let symbol = currency.symbol;
+    let formatted_price = currency.symbolOnLeft ? `${symbol}${price_str}` : `${price_str}${symbol}`;
+    formatted_price = currency.spaceBetweenAmountAndSymbol ? formatted_price.replace(symbol, `${symbol} `) : formatted_price;
+    formatted_price = formatted_price.replace('.', currency.decimalSeparator);
+    if (currency.thousandsSeparator !== " ") {
+      formatted_price = formatted_price.replace(/\B(?=(\d{3})+(?!\d))/g, currency.thousandsSeparator);
+    }
+      return formatted_price;
+    
+}
+
+/*-- Close price List -- */ 
+function closePriceList() {
+
+    const form = document.querySelector('#price-list-window');
+    const formContent = document.querySelector('#price-list');
+
+    formContent.innerHTML = ""
+    form.classList.add("visually-hidden");
+    form.addEventListener("transitionend", function hideForm() {
+        form.classList.add("hidden");
+        form.removeEventListener("transitionend", hideForm);
+    });
+    document.querySelector("#overlay").style.display = "none";
+    document.querySelector("#overlay2").style.display = "none";
+}

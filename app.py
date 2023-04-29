@@ -50,31 +50,31 @@ Session(app)
 con = sqlite3.connect("bookaseat.db", check_same_thread=False)
 db = con.cursor()
 
-@app.template_filter("date_hours")
+
+@app.template_filter("datehours")
 def str_to_datetime(dict: dict) -> date:
-    list = [str(value) for value in dict.values()]
-    date = '/'.join(list[0:3])
-    date += " " + ':'.join(list[3:])
-    date_object = datetime.strptime(date, "%Y/%m/%d  %H:%M:%S")
+    date_parts = [dict[key] for key in ['year', 'month', 'day', 'hour', 'minute', 'second']]
+    date_string = '{:04d}/{:02d}/{:02d} {:02d}:{:02d}:{:02d}'.format(*date_parts)
+    date_object = datetime.strptime(date_string, '%Y/%m/%d %H:%M:%S')
     return date_object
 
 @app.template_filter("date")
 def str_to_datetime(dict: dict) -> date:
-    list = [str(value) for value in dict.values()]
-    date = '/'.join(list[0:3])
-    date_object = datetime.strptime(date, "%Y/%m/%d")
+    date_parts = [dict[key] for key in ['year', 'month', 'day']]
+    date_str = '/'.join(map(str, date_parts))
+    date_object = datetime.strptime(date_str, "%Y/%m/%d")
     return date_object
 
-@app.template_filter("to_hours")
+@app.template_filter("tohours")
 def min_to_hours(min: int) -> str:
     hours = min // 60
     minutes = min % 60
     return "{:02d}h{:02d}m".format(hours, minutes)
 
-@app.template_filter('abb_date')
-def abb_date(date: list) -> date:
-    abb = calendar.month_abbr[int(date[1])] + " " + date[2]
-    return abb
+@app.template_filter('fromjson')
+def from_json(djson: str) -> dict:
+    dict_json = json.loads(djson)
+    return dict_json
 
 @app.context_processor
 def days_difference():
@@ -181,6 +181,27 @@ def results():
     # User reached route via POST
     if request.method == "POST":
 
+        # if user save flight result as favorite
+        if request.form.get("favorite-data"):
+            search_results = request.form.get("favorite-data-results")
+            #search_results = json.loads(search_results_data)
+            itinerary_id = request.form.get("favorite-itinerary-id")
+            itinerary_info = request.form.get("favorite-data")
+            #itinerary = json.loads(itinerary_data)
+            leg1_info = request.form.get("favorite-data-leg1")
+            #leg1_info = json.loads(leg1_info_data)
+            if session['flight_type'] == 'roudtrip':
+                leg2_info = request.form.get("favorite-data-leg2")
+            else:
+                leg2_info = None
+            #leg2_info = json.loads(leg2_info_data)
+                        
+            session['page'] = '/favorites'
+            
+            db.execute("INSERT INTO user_flights(user_id, itinerary_id, flight_type, passengers, currency, cabin_class, results, itinerary_info, leg1, leg2, saved_on) SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM user_flights WHERE itinerary_id = ? AND user_id = ?)", [session.get('user_id'), itinerary_id, session.get('flight_type'), session.get('passengers'), session.get('currency'), session.get('cabin_class'), search_results, itinerary_info, leg1_info, leg2_info, session.get('today').isoformat(), itinerary_id, session.get("user_id")])
+            con.commit()
+            return ('', 204)
+
         # get user inputs and save as session variables
         session['flight_type'] = request.form.get("flight-type-results")
         session['origin'] = request.form.get("airports-from-results")
@@ -276,6 +297,27 @@ def results():
             message="No API Response"
             session['page'] = '/'
             return render_template("index.html", message=message)
+
+
+@app.route("/favorites", methods=["GET", "POST"])
+@login_required
+def favorites():
+        
+        if request.method == "POST":
+
+            if request.form.get('delete-favorite'):
+                db.execute("DELETE FROM user_flights WHERE itinerary_id = ? AND user_id = ?", [request.form.get("delete-favorite"), session.get("user_id")])
+                con.commit()
+
+                return redirect('/favorites')
+
+        else:
+
+            get_user_flights_info = db.execute("SELECT * FROM user_flights WHERE user_id = ?", [session.get("user_id")])
+            user_flights_info = get_user_flights_info.fetchall()
+            print(user_flights_info[0])
+
+            return render_template("favorites.html", user_flights_info=user_flights_info)
 
 
 @app.route("/config", methods=["GET", "POST"])
@@ -398,8 +440,8 @@ def login():
         return redirect('/')
 
 
-@app.route("/passwordLink", methods=["GET", "POST"])
-def passwordLink():
+@app.route("/password_link", methods=["GET", "POST"])
+def password_link():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         # Query database for user
@@ -433,7 +475,7 @@ def passwordLink():
             sender=os.environ.get("email_username"),
             recipients=[user[3]],
         )
-        msg.body = f"To reset your password, please follow this link:  {url_for('resetPassword', token=token, user=user, _external=True)}"
+        msg.body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user, _external=True)}"
         mail.send(msg)
         message = "Link sent"
         html = session.get('page')
@@ -445,8 +487,8 @@ def passwordLink():
         return redirect('/')
 
 
-@app.route("/resetPassword", methods=["GET", "POST"])
-def resetPassword():
+@app.route("/reset_password", methods=["GET", "POST"])
+def reset_password():
     # Store user info in variables
     user = request.args.get("user")
     token = request.args.get("token")
@@ -494,8 +536,8 @@ def resetPassword():
             return render_template("index.html", message=message)
 
 
-@app.route("/changePassword", methods=["GET", "POST"])
-def changePassword():
+@app.route("/change_password", methods=["GET", "POST"])
+def change_password():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         new_username = request.form.get("change-username")
@@ -527,8 +569,8 @@ def changePassword():
         return redirect('/')
 
 
-@app.route("/deleteAccount", methods=["GET", "POST"])
-def deleteAccount():
+@app.route("/delete_account", methods=["GET", "POST"])
+def delete_account():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         # DELETE USER FROM DATABASE
@@ -556,7 +598,10 @@ def logout():
     session.pop('user_id', None)
     session.pop('user_username', None)
 
-    html = session.get('page')
+    if session.get('page') != '/favorite':
+        html = session.get('page')
+    else: 
+        redirect('/')
 
     # Redirect user to login form
     return redirect(html)

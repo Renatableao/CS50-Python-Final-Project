@@ -1,7 +1,7 @@
 
 <div>
-    <div class="formPopup hidden visuallyhidden" id="forgotForm">
-      <form action="/passwordLink" method="post" class="formContainer" id="forgot-form">
+    <div class="hidden visually-hidden" id="forgot-form">
+      <form action="/password_link" method="post" class="form-container" id="forgot-form">
         <h2>Forgot password?</h2>
 
         {% with messages = get_flashed_messages(category_filter=['forgot-password']) %}
@@ -24,7 +24,7 @@
         <div class="popup-buttons">
             <button type="submit" class="btn-save" id="forgot-submit" name="forgot-submit" onclick="loading(this, 'forgot-spinner')">Send link</button>
             <button class="btn-save spinner" type="button" id="forgot-spinner" name="forgot-spinner" style="display:none"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp&nbspSending...</button>
-            <button type="button" class="btn-cancel" onclick="closeForm('forgotForm')">Close</button>
+            <button type="button" class="btn-cancel" onclick="closeForm('forgot-form')">Close</button>
         </div>
       </form>
     </div>

@@ -60,7 +60,7 @@ body {
 #overlay {
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   background-color: var(--black);
@@ -73,7 +73,7 @@ body {
 #overlay2 {
   width: 100%;
   height: 9rem;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   background-color: transparent;
@@ -232,51 +232,40 @@ nav a:hover {
   scale: 1.1;
 }
 
-#configForm,
-#registerForm,
-#loginForm,
-#forgotForm,
-#resetForm,
-#securityForm,
-#conf-DeleteForm {
+#config-form,
+#register-form,
+#login-form,
+#forgot-form,
+#reset-form,
+#security-form,
+#price-list-window {
   position: fixed;
-  top: 45%;
-  left: 47%;
-  transform: translate(-40%, -47%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 150;
   transition: all 0.2s ease-in;
   border-radius: 5px;
   font-size: 1.3rem;
 }
 
-#registerForm {
-  top: 48%;
-}
-
-#loginForm {
-  top: 40%;
-}
-
-#securityForm {
-  top: 48%;
-}
 
 .hidden {
   display: none;
 }
 
-.visuallyhidden {
+.visually-hidden {
   opacity: 0;
 }
 
-.formContainer {
+.form-container {
   width: 55rem;
   padding: 3rem;
   background-color: var(--white);
   border-radius: 5px;
 }
 
-.formContainer h2 {
+.form-container h2 {
   font-weight: 600;
   margin-top: 1rem;
   margin-bottom: 2rem;
@@ -298,13 +287,12 @@ nav a:hover {
   width: 40%;
   margin-top: 1rem;
   margin-bottom: 2rem;
-  opacity: 0.9;
 }
 
 .btn-save:hover,
 .btn-cancel:hover,
 .btn-delete:hover {
-  opacity: 1;
+  opacity: 0.9;
 }
 
 #security-submit:disabled {
@@ -394,6 +382,17 @@ div#goog-gt- {
   text-decoration: none;
 }
 
+.nav span {
+  align-items: center;
+}
+
+#logout-spinner {
+  align-items: center;
+}
+
+#logout-spinner span {
+  font-size: 1rem;
+}
 /* Security form */
 .delete-form {
   width: 100%;
@@ -402,14 +401,14 @@ div#goog-gt- {
   flex-direction: column;
 }
 
-#deleteForm {
+#delete-form {
   display: none;
   width: 100%;
   text-align: center;
   margin-bottom: 2rem;
 }
 
-#deleteForm h3 {
+#delete-form h3 {
   font-weight: 600;
   margin-top: 1rem;
 }
@@ -425,13 +424,17 @@ div#goog-gt- {
   width: 40%;
   margin-top: 1rem;
   margin-bottom: 2rem;
-  opacity: 0.9;
   display: block;
 }
 
 .btn-confDelete {
   padding: 1rem 1rem;
   display: inline-block;
+}
+
+.btn-delete:hover,
+.btn-confDelete:hover {
+  opacity: 0.9;
 }
 
 /*Error handling*/
@@ -738,7 +741,7 @@ body {
 
 .results-section {
   width: 80%;
-  margin: 5rem auto 7rem;
+  margin: 5rem auto 0rem;
   border-radius: 3px;
   background-color: var(--white);
   border: 1px solid #e2e2e2;
@@ -796,38 +799,43 @@ body {
   border-top: 1px solid #e2e2e2;
 }
 
-.return-select {
+.open-save-selection, .open-delete-selection {
   display: flex;
   justify-content: end;
 }
 
-.itin-det-btn {
+.btn-selection {
   text-decoration: none;
   outline: none;
   position: relative;
-  width: 9rem;
   text-align: center;
-  right: 2rem;
-  bottom: -1.5rem;
-  font-size: 1.6rem;
-  background-color: var(--orange);
-  color: var(--white);
-  padding: 0.8rem;
+  right: 1rem;
+  bottom: -2rem;
+  font-size: 2rem;
+  background-color: var(--white);
+  color: var(--orange);
+  padding: 0.5rem 1rem;
   border-radius: 5px;
   line-height: normal;
   transition: all 0.2s ease-in;
 }
 
-.itin-det-btn:hover, .itin-det-btn:focus  {
+.btn-selection:hover, .btn-selection:focus  {
   text-decoration: none;
   outline: none;
   color: var(--white);
+  background-color: var(--orange);
   
 }
 
-.itin-det-btn:hover {
+.btn-selection:hover {
   scale: 1.05;
 }
+
+.favorite, .delete-favorite {
+  margin-right: 1rem;
+}
+
 
 .tp-flight-plan .context {
   display: flex;
@@ -1274,7 +1282,77 @@ body {
 }
 /* end of new flight plan*/
 
-/*Footer*/
+/* Price List */ 
+#price-list-window h2 {
+  margin-bottom: 0.5rem;
+}
+
+#price-list-window h1 {
+  font-weight: 400;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 1rem;
+  color: var(--grey)
+}
+
+#agent-row {
+  display: flex;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+#agent-row div:first-child {
+  width: 2rem  
+}
+
+.agent {
+  font-weight: 500;
+  font-size: 1.5rem;
+  width: 25rem
+}
+
+.agent p {
+  margin: 0;
+}
+
+#agent-row div:nth-child(3) {
+  width: 5rem;
+}
+
+.agent-price {
+ width: 15rem;
+ text-align: right;
+ margin-right: 1rem;
+}
+
+.agent-price span {
+  color: var(--orange);
+  font-weight: 600;
+  font-size: 1.6rem;
+}
+
+#price-list img {
+  height: 2.5rem
+}
+
+#agent-row div:last-child {
+  width: 2rem;
+}
+
+/* Favorites */
+#note {
+  font-size: 1rem;
+  margin-top: 15rem;
+  display: flex;
+  justify-content: center;
+}
+
+#saved-on {
+  font-size: 0.8rem;
+  margin: -1.8rem 0rem 6rem 16rem;
+}
+
+/* Footer */
 footer {
   bottom: 0;
   width: 100%;
