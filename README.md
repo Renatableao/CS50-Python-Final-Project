@@ -1,8 +1,8 @@
-This is my CS50's Phython Final Project: "Bookaseat".
-
+# CS50's Phython Final Project: "Bookaseat"
+#### Video Demo:  <URL HERE>
+#### Description:
+     
 You can browse and test it at: 
-
-My presentation of this project can be found here: 
 
 I've developed a responsive website built upon the data and functionality of an existing application called Skyscanner API through the Rapid API platform (https://rapidapi.com/hub).
 
