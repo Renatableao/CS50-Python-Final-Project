@@ -7,8 +7,7 @@ from flask import (
     render_template,
     request,
     session,
-    url_for,
-    jsonify,
+    url_for
 )
 from flask_session import Session
 from flask_mail import Mail, Message
@@ -18,7 +17,6 @@ from dateutil.relativedelta import relativedelta
 import jwt
 import os
 import json
-import calendar
 import re
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv, find_dotenv
@@ -315,8 +313,6 @@ def favorites():
 
             get_user_flights_info = db.execute("SELECT * FROM user_flights WHERE user_id = ?", [session.get("user_id")])
             user_flights_info = get_user_flights_info.fetchall()
-            print(user_flights_info[0])
-
             return render_template("favorites.html", user_flights_info=user_flights_info)
 
 

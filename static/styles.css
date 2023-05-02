@@ -22,6 +22,9 @@ html {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   height: 100%;
+  width: 100vw;
+  font-size: 9px;
+  overflow-x: hidden;
 }
 
 #error {
@@ -48,13 +51,15 @@ html {
 *:after {
   -webkit-box-sizing: inherit;
   -moz-box-sizing: inherit;
-  box-sizing: inherit;
+  box-sizing: border-box;
 }
 
 /*RESET*/
 body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 #overlay {
@@ -94,7 +99,7 @@ button {
   background-color: var(--orange);
   font-family: "Poppins", "Arial", "Helvetica Neue", sans-serif;
   position: fixed;
-  width: 100%;
+  width: 100vw;
   height: 9rem;
   top: 0;
   z-index: 101;
@@ -812,8 +817,8 @@ body {
   right: 1rem;
   bottom: -2rem;
   font-size: 2rem;
-  background-color: var(--white);
-  color: var(--orange);
+  background-color: var(--orange);
+  color: var(--white);
   padding: 0.5rem 1rem;
   border-radius: 5px;
   line-height: normal;
@@ -825,14 +830,27 @@ body {
   outline: none;
   color: var(--white);
   background-color: var(--orange);
-  
 }
+
+.favorite-heart {
+  position: relative;
+  right: 1rem;
+  bottom: -2.2rem;
+  padding: 0.5rem;
+  background-color: var(--white);
+  margin-right: 1rem;
+}
+
+.favorite-heart img {
+  height:2.5rem;
+}
+
 
 .btn-selection:hover {
   scale: 1.05;
 }
 
-.favorite, .delete-favorite {
+.favorite {
   margin-right: 1rem;
 }
 
@@ -1341,8 +1359,10 @@ body {
 
 /* Favorites */
 #note {
+  width: 70%;
+  margin: 15rem auto 0;
   font-size: 1rem;
-  margin-top: 15rem;
+  text-align: center;
   display: flex;
   justify-content: center;
 }
@@ -1351,6 +1371,21 @@ body {
   font-size: 0.8rem;
   margin: -1.8rem 0rem 6rem 16rem;
 }
+
+.delete-favorite {
+  position: relative;
+  right: 1rem;
+  bottom: -2.2rem;
+  padding: 0.5rem;
+  background-color: var(--white);
+  margin-right: 1rem;
+  transition: all 0.2s ease-in;
+}
+
+.delete-favorite img {
+  height:2.5rem;
+}
+
 
 /* Footer */
 footer {
@@ -1375,38 +1410,24 @@ footer a {
 
 @media screen and (max-width: 960px) {
   html {
-    font-size: 5px;
+    font-size: 4px;
   }
 
-  .logo {
-    margin: 2rem;
-    height: 4rem;
+  .tp-flight-plan .crop .anime-airplane {
+    display: none;
   }
 
-  .menu {
-    right: 2rem;
+  .tp-flight-plan .it-1 .route-dot span {
+    padding: 3px;
+    top: calc(50% - 3.5px);
   }
 
-  #check:checked ~ nav {
-    width: fit-content;
+  .tp-flight-plan .it-1 .flight-seg .port {
+    margin-top: 3rem;
   }
 
   nav a {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
-  nav {
-    top: 0.5rem;
-  }
-}
-
-@media screen and (min-width: 768px) and (max-width: 960px) {
-  .logo {
-    margin: 15rem;
-    height: 6rem;
-  }
-
-  .menu {
-    right: 15rem;
-  }
 }

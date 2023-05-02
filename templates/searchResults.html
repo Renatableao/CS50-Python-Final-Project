@@ -3,6 +3,7 @@ block section %}
 
 {% block script %} 
   <script type="text/javascript" src="/static/searchResults.js" async></script>
+  <script type="text/javascript" src="/static/sharedFunctions.js" async></script>
 {% endblock %} 
 
   <!--Form tamplate: https://colorlib.com/wp/template/colorlib-booking-5/-->
@@ -223,7 +224,7 @@ block section %}
 
 
 
-<div class="results-section">
+<div class="results-section" style="margin-bottom:8rem">
   <div class="tags">
     <div class="type-tag">
       <h1>{% if session['passengers'] == 1 %}
@@ -522,7 +523,8 @@ block section %}
     <div class="open-save-selection">
     {% if session['user_id'] %}
     <form action="/results" method="post" autocomplete="off">
-      <button class="btn-selection favorite" name="favorite-data" value='{{ itinerary_info|tojson|safe }}' title="Save as favorite">Save</button>
+      <button class="btn-selection favorite" name="favorite-data" value='{{ itinerary_info|tojson|safe }}' title="Save as favorite" onclick="saveAsFavorite(this)">Save</button>
+      <button class="favorite-heart hidden visually-hidden"><img src="/static/heart.png"></button>
       <input type="hidden" name="favorite-data-leg1" value='{{ leg1_info|tojson|safe }}'>
       {% if session['flight_type'] == 'roundtrip' %}
         <input type="hidden" name="favorite-data-leg2" value='{{ leg2_info|tojson|safe }}'>
