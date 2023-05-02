@@ -1,12 +1,12 @@
 /* -- Enable/Disable returning date according to input choice and update its value -- */
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('one-way').onchange = function() {
-  document.getElementById('returning').disabled = this.checked;
-};
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("one-way").onchange = function () {
+    document.getElementById("returning").disabled = this.checked;
+  };
 
-document.getElementById('roundtrip').onchange = function() {
-  document.getElementById('returning').disabled = !this.checked;
-};
+  document.getElementById("roundtrip").onchange = function () {
+    document.getElementById("returning").disabled = !this.checked;
+  };
 });
 
 function updateDate(thisObj) {
@@ -16,18 +16,17 @@ function updateDate(thisObj) {
 /* -- Upload airports data -- */
 // List from airports.json
 async function fetchAirportsData() {
-  const response = await fetch('/static/airports.json');
+  const response = await fetch("/static/airports.json");
   const data = await response.json();
   return data;
 }
 
-(async function() {
+(async function () {
   try {
     window.airports = await fetchAirportsData();
     //initiate the autocomplete function on the "airports" element, and pass along the array as possible autocomplete values:
     autocomplete(document.querySelector("#airports-from"), airports);
     autocomplete(document.querySelector("#airports-to"), airports);
-      
   } catch (error) {
     console.error(error);
   }
@@ -152,7 +151,12 @@ function searching() {
   const oneWay = document.querySelector("#one-way").checked;
   const background = document.querySelector("#booking");
 
-  if (airportsFrom && airportsTo && departing && (oneWay || (roundtrip && returning))) {
+  if (
+    airportsFrom &&
+    airportsTo &&
+    departing &&
+    (oneWay || (roundtrip && returning))
+  ) {
     document.querySelector(".booking-form").style.display = "none";
     // by: https://codepen.io/nietoperq/pen/LYBgdwr
     const loadText = document.querySelector(".loading-text");

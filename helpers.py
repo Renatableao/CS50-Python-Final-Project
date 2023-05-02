@@ -20,13 +20,13 @@ def main():
         },
     ]
 
-    #print(search("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY"))
-    
+    # print(search("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY"))
+
     # call api to update market.json list
-    #get_market()
-    
+    # get_market()
+
     # call api to update currency.json list
-    #get_currency()
+    # get_currency()
 
 
 def get_market():
@@ -47,8 +47,8 @@ def get_market():
     # Parse response
     try:
         result = response.json()
-        with open('static/markets.json', 'w') as f:
-            json.dump(result['markets'], f, indent=4)
+        with open("static/markets.json", "w") as f:
+            json.dump(result["markets"], f, indent=4)
         return result
 
     except (KeyError, TypeError, ValueError):
@@ -73,11 +73,11 @@ def get_currency():
     # Parse response
     try:
         result = response.json()
-        with open('static/currencies.json', 'w') as f:
-            json.dump(result['currencies'], f, indent=4)
+        with open("static/currencies.json", "w") as f:
+            json.dump(result["currencies"], f, indent=4)
         return result
 
-    except (KeyError, TypeError, ValueError):   
+    except (KeyError, TypeError, ValueError):
         return None
 
 
@@ -113,7 +113,6 @@ def search(market, locale, currency, queryLegs, adults, children, cabin_class):
     try:
         result = response.json()
         return result["content"]
-    
 
     except (KeyError, TypeError, ValueError):
         return None

@@ -1,6 +1,5 @@
 /* -- Open configuration form -- */
 function openForm(form) {
-
   /* display configuration form by clicking the planet icon */
   popup = document.getElementById(form);
   popup.classList.remove("hidden");
@@ -11,17 +10,15 @@ function openForm(form) {
 
 /* Close configuration form*/
 function closeForm(form) {
-
   const popup = document.getElementById(form);
   popup.classList.add("visually-hidden");
   popup.addEventListener("transitionend", function hideForm() {
-      popup.classList.add("hidden");
-      popup.removeEventListener("transitionend", hideForm);
+    popup.classList.add("hidden");
+    popup.removeEventListener("transitionend", hideForm);
   });
   document.querySelector("#overlay").style.display = "none";
   document.querySelector("#overlay2").style.display = "none";
 }
-
 
 /* -- Google Translate API -- */
 function googleTranslateElementInit() {
@@ -40,7 +37,9 @@ function googleTranslateElementInit() {
 //Get chosen languaged
 function readCookie(name) {
   var c = document.cookie.split("; "),
-    cookies = {}, i, C;
+    cookies = {},
+    i,
+    C;
 
   for (i = c.length - 1; i >= 0; i--) {
     C = c[i].split("=");
@@ -59,39 +58,38 @@ function selectLanguage() {
 /* -- Upload countries and currency data -- */
 // List from  market.json
 async function fetchMarketData() {
-  const response = await fetch('/static/markets.json');
+  const response = await fetch("/static/markets.json");
   const data = await response.json();
   return data;
 }
 
-(async function() {
+(async function () {
   try {
     window.countries = await fetchMarketData();
-    
-      /* display list of countries and currencies in configuration form when page loads */
-      
-      const countryInput = document.querySelector("#country-select");
-      const currencyInput = document.querySelector("#currency-select");
-    
-      countries.forEach(function (country) {
+
+    /* display list of countries and currencies in configuration form when page loads */
+
+    const countryInput = document.querySelector("#country-select");
+    const currencyInput = document.querySelector("#currency-select");
+
+    countries.forEach(function (country) {
       var a = document.createElement("option");
-    
-        
+
       // Add conditional logic for selected option
-      if (market == country['code']) {
-        a.setAttribute('selected', true)
+      if (market == country["code"]) {
+        a.setAttribute("selected", true);
       }
 
       // Append countries
       a.innerHTML = country["name"] + " (" + country["code"] + ")";
       countryInput.appendChild(a);
-    
+
       var b = document.createElement("option");
-    
+
       //append currencies
       b.innerHTML = country["currency"];
       if (currency == country["currency"]) {
-        b.setAttribute('selected', true)
+        b.setAttribute("selected", true);
       }
       currencyInput.appendChild(b);
     });
@@ -108,9 +106,9 @@ function getCurrencies() {
   country = country.slice(-3, -1);
 
   // Find country's default currency
-  var find_country = countries.find(c => c.code === country);
+  var find_country = countries.find((c) => c.code === country);
   const currency = find_country.currency;
-  
+
   // Select currency
   const options = document.querySelector("#currency-select").options;
   for (var i = 0; i < options.length; i++) {
@@ -136,7 +134,6 @@ function checkEmail(thisObj) {
 }
 
 function checkPassword(thisObj) {
-  
   if (!thisObj.checkValidity()) {
     thisObj.value = "";
     thisObj.placeholder = "Invalid password";
@@ -208,7 +205,8 @@ function checkMessage() {
     alert("Changes saved successfully!");
   } else if (message == "No API Response") {
     alert("Sorry, we found no results on these parameters.");
-  }}
+  }
+}
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", checkMessage);
@@ -224,8 +222,8 @@ function redirectForm(form) {
 
 /* -- Set loading spinner -- */
 function loading(thisObj, spinner) {
-    thisObj.style.display = "none";
-    document.getElementById(spinner).style.display = "inline-block";
+  thisObj.style.display = "none";
+  document.getElementById(spinner).style.display = "inline-block";
 }
 
 /* -- Set loading spinner on log out -- */

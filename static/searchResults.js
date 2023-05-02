@@ -1,17 +1,16 @@
-/*-- Show/Hide inputs from search-form -- */ 
+/*-- Show/Hide inputs from search-form -- */
 function toggleInputs(thisObj) {
-  
-  const elements = document.querySelectorAll(".off")
+  const elements = document.querySelectorAll(".off");
 
-  elements.forEach(element => {
+  elements.forEach((element) => {
     element.style.display = element.style.display === "none" ? "block" : "none";
   });
 
-  thisObj.style.transform = elements[0].style.display === "none" ? "rotate(0deg)" : "rotate(45deg)";
+  thisObj.style.transform =
+    elements[0].style.display === "none" ? "rotate(0deg)" : "rotate(45deg)";
 }
 
 function searching(thisObj) {
-  
   const airportsFrom = document.querySelector("#airports-from-results").value;
   const airportsTo = document.querySelector("#airports-to-results").value;
   const departing = document.querySelector("#departing-results").value;
@@ -19,28 +18,32 @@ function searching(thisObj) {
   const roundtrip = document.querySelector("#roundtrip-results").checked;
   const oneWay = document.querySelector("#one-way-results").checked;
 
-  if (airportsFrom && airportsTo && departing && (oneWay || (roundtrip && returning))) {
+  if (
+    airportsFrom &&
+    airportsTo &&
+    departing &&
+    (oneWay || (roundtrip && returning))
+  ) {
     thisObj.style.display = "none";
-    document.querySelector("#spinner").style.display = "block"
-}
+    document.querySelector("#spinner").style.display = "block";
+  }
 }
 
 /* -- Enable/Disable returning date according to input choice and update its value -- */
-document.addEventListener('DOMContentLoaded', function() {
-
+document.addEventListener("DOMContentLoaded", function () {
   // Disable "returning-results" if "one-way-results" is checked when the page loads
-  if (document.getElementById('one-way-results').checked) {
-    document.getElementById('returning-results').disabled = true;
+  if (document.getElementById("one-way-results").checked) {
+    document.getElementById("returning-results").disabled = true;
   }
 
   // Add onchange event listeners to the checkboxes
-  document.getElementById('one-way-results').onchange = function() {
-  document.getElementById('returning-results').disabled = this.checked;
-};
+  document.getElementById("one-way-results").onchange = function () {
+    document.getElementById("returning-results").disabled = this.checked;
+  };
 
-document.getElementById('roundtrip-results').onchange = function() {
-  document.getElementById('returning-results').disabled = !this.checked;
-};
+  document.getElementById("roundtrip-results").onchange = function () {
+    document.getElementById("returning-results").disabled = !this.checked;
+  };
 });
 
 function updateDateResults(thisObj) {
@@ -50,18 +53,23 @@ function updateDateResults(thisObj) {
 /* -- Upload airports data -- */
 // List from airports.json
 async function fetchAirportsData() {
-  const response = await fetch('/static/airports.json');
+  const response = await fetch("/static/airports.json");
   const data = await response.json();
   return data;
 }
 
-(async function() {
+(async function () {
   try {
     window.airports = await fetchAirportsData();
     //initiate the autocomplete function on the "airports" element, and pass along the array as possible autocomplete values:
-    autocompleteResults(document.querySelector("#airports-from-results"), airports);
-    autocompleteResults(document.querySelector("#airports-to-results"), airports);
-      
+    autocompleteResults(
+      document.querySelector("#airports-from-results"),
+      airports
+    );
+    autocompleteResults(
+      document.querySelector("#airports-to-results"),
+      airports
+    );
   } catch (error) {
     console.error(error);
   }
@@ -176,17 +184,17 @@ function autocompleteResults(inp, arr) {
   });
 }
 
-/*-- Display heart icon when user saves flight result -- */ 
+/*-- Display heart icon when user saves flight result -- */
 function saveAsFavorite(thisObj) {
-  
   thisObj.classList.add("visually-hidden");
   thisObj.addEventListener("transitionend", function hideForm() {
-      thisObj.classList.add("hidden");
-      thisObj.removeEventListener("transitionend", hideForm);
+    thisObj.classList.add("hidden");
+    thisObj.removeEventListener("transitionend", hideForm);
   });
 
   thisObj.nextElementSibling.classList.remove("hidden");
-  setTimeout(() => thisObj.nextElementSibling.classList.remove("visually-hidden"), 20);
-  
-
+  setTimeout(
+    () => thisObj.nextElementSibling.classList.remove("visually-hidden"),
+    20
+  );
 }
