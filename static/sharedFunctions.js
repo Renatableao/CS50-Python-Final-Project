@@ -31,30 +31,31 @@ async function openPriceList(thisObj) {
       .then(response => response.json())
       .catch(error => console.error(error));
   
-    for (const option of options) {
-      
-      const price = formatPrice(option.price.amount, currency_code, currencies)
-      const agent = results.agents[option.items[0].agentId];
-      var optionInfo = `
-          <div></div>
-          <div class="agent">
-            <p>${agent.name}</p>
-          </div>
-          <div></div>
-          <div class="agent-price">
-            <span>${price}</span>
-          </div>
-          <div>
-           <a target="_blank" href="${option.items[0].deepLink}" class="btn-select"> <img src="/static/icons8-advance-30.png"/></a>
-          </div>
-          <div>
-          </div>
-      `;
-      
-      const agentRow = document.createElement("DIV");
-      agentRow.setAttribute("id", "agent-row");
-      agentRow.innerHTML = optionInfo;
-      formContent.appendChild(agentRow)
+    for (let i = 0; i < 10 && i < options.length; i++) {
+        
+        const option = options[i];
+        const price = formatPrice(option.price.amount, currency_code, currencies)
+        const agent = results.agents[option.items[0].agentId];
+        var optionInfo = `
+            <div></div>
+            <div class="agent">
+              <p>${agent.name}</p>
+            </div>
+            <div></div>
+            <div class="agent-price">
+              <span>${price}</span>
+            </div>
+            <div>
+            <a target="_blank" href="${option.items[0].deepLink}" class="btn-select"> <img src="/static/icons8-advance-30.png"/></a>
+            </div>
+            <div>
+            </div>
+        `;
+        
+        const agentRow = document.createElement("DIV");
+        agentRow.setAttribute("id", "agent-row");
+        agentRow.innerHTML = optionInfo;
+        formContent.appendChild(agentRow)
     }
       
     form.classList.remove("hidden");
@@ -76,7 +77,19 @@ function formatPrice(price, currency_code, currencies) {
     const decimal_places = currency.decimalDigits;
     let price_str = decimal_places > 0 ? parseFloat(price).toFixed(decimal_places) : parseInt(price);
     let symbol = currency.symbol;
-    let formatted_price = currency.symbolOnLeft ? `${symbol}${price_str}` : `${price_str}${symbol}`;
+    let formatted_price;
+    if (currency.symbolOnLeft) {
+      formatted_price = `${symbol}${price_str}`
+      if (currency.spaceBetweenAmountAndSymbol) {
+        formatted_price = `${symbol} ${price_str}`
+      }
+    }
+    else {
+      formatted_price = `${price_str}${symbol}`;
+      if (currency.spaceBetweenAmountAndSymbol) {
+        formatted_price = `${price_str} ${symbol}`;
+      }
+    }
     formatted_price = currency.spaceBetweenAmountAndSymbol ? formatted_price.replace(symbol, `${symbol} `) : formatted_price;
     formatted_price = formatted_price.replace('.', currency.decimalSeparator);
     if (currency.thousandsSeparator !== " ") {
@@ -85,6 +98,7 @@ function formatPrice(price, currency_code, currencies) {
       return formatted_price;
     
 }
+
 
 /*-- Close price List -- */ 
 function closePriceList() {

@@ -50,14 +50,14 @@ db = con.cursor()
 
 
 @app.template_filter("datehours")
-def str_to_datetime(dict: dict) -> date:
+def obj_to_datetime_hours(dict: dict) -> date:
     date_parts = [dict[key] for key in ['year', 'month', 'day', 'hour', 'minute', 'second']]
     date_string = '{:04d}/{:02d}/{:02d} {:02d}:{:02d}:{:02d}'.format(*date_parts)
     date_object = datetime.strptime(date_string, '%Y/%m/%d %H:%M:%S')
     return date_object
 
 @app.template_filter("date")
-def str_to_datetime(dict: dict) -> date:
+def obj_to_datetime(dict: dict) -> date:
     date_parts = [dict[key] for key in ['year', 'month', 'day']]
     date_str = '/'.join(map(str, date_parts))
     date_object = datetime.strptime(date_str, "%Y/%m/%d")
@@ -103,8 +103,16 @@ def format_price():
             decimal_places = currency['decimalDigits']
             price_str = f"{float(price):.{decimal_places}f}" if decimal_places > 0 else f"{int(price)}"
             symbol = currency['symbol']
-            formatted_price = f"{symbol}{price_str}" if currency['symbolOnLeft'] else f"{price_str}{symbol}"
-            formatted_price = formatted_price.replace(symbol, f"{symbol} ") if currency['spaceBetweenAmountAndSymbol'] else formatted_price
+            if currency['symbolOnLeft']:
+                # If the symbol is on the left, put a space after it
+                formatted_price = f"{symbol}{price_str}"
+                if currency['spaceBetweenAmountAndSymbol']:
+                    formatted_price = f"{symbol} {price_str}"
+            else:
+                # If the symbol is on the right, put a space before it
+                formatted_price = f"{price_str}{symbol}"
+                if currency['spaceBetweenAmountAndSymbol']:
+                    formatted_price = f"{price_str} {symbol}"
             formatted_price = formatted_price.replace('.', currency['decimalSeparator'])
             if currency['thousandsSeparator'] != " ":
                 formatted_price = re.sub(r'(\d)(?=(\d{3})+(?!\d))', f"\\1{currency['thousandsSeparator']}", formatted_price)
