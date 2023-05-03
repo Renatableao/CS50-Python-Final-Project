@@ -309,6 +309,7 @@ def results():
         search_flights = search(
             market, locale, currency, query_legs, adults, children, cabin_class
         )
+        print(search_flights)
 
         if search_flights:
             sorted_search = search_flights["sortingOptions"]["cheapest"]
