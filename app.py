@@ -332,8 +332,8 @@ def results():
 
         else:
             message = "No API Response"
-            html = session.get('page')
-            return redirect("{}?message={}".format(html, message))
+            session["page"] = "/"
+            return render_template("index.html", message=message)
 
 
 @app.route("/favorites", methods=["GET", "POST"])
