@@ -23,7 +23,7 @@ def main():
     # print(search("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY"))
 
     # call api to update market.json list
-    print(get_market())
+    #get_market()
 
     # call api to update currency.json list
     # get_currency()
