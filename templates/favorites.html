@@ -421,9 +421,9 @@ flight[10]|fromjson %} {% endif %}
     <button
       class="btn-selection"
       name="open-price-list"
-      data-results="{{ search_results|tojson|safe }}"
-      data-itinerary="{{ itinerary_info|tojson|safe }}"
-      data-currency="{{ flight[5] }}"
+      data-results='{{ search_results|tojson|safe }}'
+      data-itinerary='{{ itinerary_info|tojson|safe }}'
+      data-currency='{{ flight[5] }}'
       onclick="openPriceList(this)"
     >
       Open
