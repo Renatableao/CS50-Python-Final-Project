@@ -1369,7 +1369,7 @@ body {
 
 #saved-on {
   font-size: 0.8rem;
-  margin: -1.8rem 0rem 6rem 16rem;
+  margin: -1.8rem 0rem 6rem 25rem;
 }
 
 .delete-favorite {
@@ -1430,4 +1430,7 @@ footer a {
     font-size: 1.5rem;
   }
 
+  #saved-on {
+    margin: -1.8rem 0rem 6rem 15rem;
+  }
 }
