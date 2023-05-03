@@ -143,7 +143,7 @@ def after_request(response):
     return response
 
 
-@app.route("/index", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"])
 def index():
     # User reached route via POST
     if request.method == "POST":
@@ -181,7 +181,7 @@ def index():
         today = date.today()
         session["today"] = today
         session["oneyearlater"] = today + relativedelta(years=1)
-        session["page"] = "/index"
+        session["page"] = "/"
 
         if not session.get("market"):
             session["market"] = "US"
@@ -332,7 +332,7 @@ def results():
 
         else:
             message = "No API Response"
-            session["page"] = "/index"
+            session["page"] = "/"
             return render_template("index.html", message=message)
 
 
@@ -388,7 +388,7 @@ def config():
 
     # User reached route via GET
     else:
-        return redirect("/index")
+        return redirect("/")
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -429,7 +429,7 @@ def register():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return redirect("/index")
+        return redirect("/")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -473,7 +473,7 @@ def login():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return redirect("/index")
+        return redirect("/")
 
 
 @app.route("/password_link", methods=["GET", "POST"])
@@ -520,7 +520,7 @@ def password_link():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return redirect("/index")
+        return redirect("/")
 
 
 @app.route("/reset_password", methods=["GET", "POST"])
@@ -547,7 +547,7 @@ def reset_password():
     else:
         load_dotenv(find_dotenv())
         key = os.environ.get("SECRET_KEY")
-        session["page"] = "/index"
+        session["page"] = "/"
 
         try:
             # Check if token has expired
@@ -602,7 +602,7 @@ def change_password():
 
     # User reached route via GET
     else:
-        return redirect("/index")
+        return redirect("/")
 
 
 @app.route("/delete_account", methods=["GET", "POST"])
@@ -623,7 +623,7 @@ def delete_account():
 
     # User reached route via GET
     else:
-        return redirect("/index")
+        return redirect("/")
 
 
 @app.route("/logout")
@@ -637,7 +637,7 @@ def logout():
     if session.get("page") != "/favorite":
         html = session.get("page")
     else:
-        redirect("/index")
+        redirect("/")
 
     # Redirect user to login form
     return redirect(html)
