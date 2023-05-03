@@ -19,7 +19,7 @@ app = Flask(__name__)
 
 # Configure Flask_mail
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
-app.config["MAIL_PORT"] = int(os.environ.get('PORT', 5000))
+app.config["MAIL_PORT"] = int(os.environ.get('PORT', 465))
 app.config["MAIL_USERNAME"] = os.environ.get("email_username")
 app.config["MAIL_PASSWORD"] = os.environ.get("email_key")
 app.config["MAIL_USE_TLS"] = False
@@ -511,7 +511,7 @@ def password_link():
             sender=os.environ.get("email_username"),
             recipients=[user[3]],
         )
-        msg.body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user, _external=True)}"
+        msg.body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}"
         mail.send(msg)
         message = "Link sent"
         html = session.get("page")

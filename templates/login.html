@@ -31,7 +31,7 @@
             <p class="login-links">Not Registered? <span><a href="#" onclick="redirectForm('register-form')">Sign Up Here</a></p></span>
             <p class="login-links">Forgot password? <span><a href="#" onclick="redirectForm('forgot-form')">Reset here</a></p></span>
         <div class="popup-buttons">
-            <button type="submit" class="btn-save" id="log-submit" name="log-submit" onclick="loading(this, 'log-spinner')">Sign in</button>
+            <button type="submit" class="btn-save" id="log-submit" name="log-submit" onclick="loading('#login-form', this, 'log-spinner')">Sign in</button>
             <button class="btn-save spinner" type="button" id="log-spinner" name="log-spinner" style="display:none"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp&nbspLoading...</button>
             <button type="button" class="btn-cancel" onclick="closeForm('login-form')">Close</button>
         </div>

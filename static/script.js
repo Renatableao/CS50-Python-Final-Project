@@ -221,9 +221,17 @@ function redirectForm(form) {
 }
 
 /* -- Set loading spinner -- */
-function loading(thisObj, spinner) {
+function loading(form, thisObj, spinner) {
+
+  var requiredFields = document.querySelectorAll(form + ' input[required]');
+
+  for (var i = 0; i < requiredFields.length; i++) {
+    if (!requiredFields[i].value) {
+      return false
+  }
   thisObj.style.display = "none";
   document.getElementById(spinner).style.display = "inline-block";
+}
 }
 
 /* -- Set loading spinner on log out -- */
