@@ -6,6 +6,7 @@ from functools import wraps
 import json
 
 
+
 def main():
     querylegs = [
         {
@@ -28,6 +29,11 @@ def main():
     # call api to update currency.json list
     # get_currency()
 
+    # call api to update locations.json list
+    # get_locations()
+
+    # call api to update airports.json list
+    update_airports()
 
 def get_market():
     load_dotenv(find_dotenv())
@@ -79,6 +85,60 @@ def get_currency():
 
     except (KeyError, TypeError, ValueError):
         return None
+
+def get_locations():
+    load_dotenv(find_dotenv())
+    try:
+        url = "https://skyscanner-api.p.rapidapi.com/v3/geo/hierarchy/flights/en-US"
+
+        headers = {
+            "X-RapidAPI-Key": os.environ.get("API_key"),
+            "X-RapidAPI-Host": "skyscanner-api.p.rapidapi.com",
+        }
+
+        response = requests.request("GET", url, headers=headers)
+
+    except requests.RequestException:
+        return None
+
+    # Parse response
+    try:
+        result = response.json()
+        with open("static/locations.json", "w") as f:
+            json.dump(result["places"], f, indent=4)
+        return result
+
+    except (KeyError, TypeError, ValueError):
+        return None
+
+def update_airports():
+    
+    # Open the first JSON file
+    with open('static/locations.json') as f:
+        locations_data = json.load(f)
+
+    # Open the second JSON file
+    # source: https://gist.github.com/tdreyno/4278655
+    with open('static/airportsList.json') as f:
+        airportsList_data = json.load(f)
+
+    # Create a dictionary of airport data, keyed by iata code
+    airport_dict = {airport['code']: airport for airport in airportsList_data}
+   
+
+    # Combine the data from the two files
+    airport = []
+    for location in locations_data.values():
+        if location['iata'] in airport_dict:
+            airport_data = airport_dict[location['iata']]
+            airport_str = f"({location['iata']}) {airport_data['name']}, {airport_data['state']} - {airport_data['country']}"
+            airport.append(airport_str)
+
+    airport = [s.encode("ascii", "ignore").decode() for s in airport]
+
+    
+    with open('static/airports.json', 'w') as f:
+        json.dump(airport, f, indent=2)
 
 
 def search(market, locale, currency, queryLegs, adults, children, cabin_class):

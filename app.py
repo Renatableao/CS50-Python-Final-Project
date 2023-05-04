@@ -318,7 +318,7 @@ def results():
             itineraryIds = {}
             for itinerary in sorted_search:
                 if len(itineraryIds) >= 60:
-                    break
+                    break   
                 itineraryIds[itinerary["itineraryId"]] = itinerary["score"]
 
             message = request.args.get("message")
