@@ -28,6 +28,9 @@ flight[10]|fromjson %} {% endif %}
         {% if flight[4] == 1 %} 1 Adult,&nbsp {% else %} {{ flight[4] }}
         Passengers,&nbsp {% endif %} {{ flight[6] }}
       </h1>
+      <p id="saved-on">
+        <strong>Saved on:</strong> {{ session['today'].strftime('%A, %b %d, %Y') }}
+</p>
     </div>
     <div class="price-tag">
       {% set price =
@@ -430,9 +433,7 @@ flight[10]|fromjson %} {% endif %}
     </button>
   </div>
 </div>
-<p id="saved-on">
-  <strong>Saved on:</strong> {{ session['today'].strftime('%A, %b %d, %Y') }}
-</p>
+
 {% endfor %}
 
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" display="none">

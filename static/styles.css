@@ -1369,7 +1369,8 @@ body {
 
 #saved-on {
   font-size: 0.8rem;
-  margin: -1.8rem 0rem 6rem 21rem;
+  color:var(--black);
+  margin-left:1.5rem;
 }
 
 .delete-favorite {
