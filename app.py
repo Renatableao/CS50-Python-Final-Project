@@ -13,6 +13,7 @@ import re
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv, find_dotenv
 from helpers import login_required, search
+from celery import Celery
 
 # Configure application
 app = Flask(__name__)
@@ -142,6 +143,19 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+# Initialize Celery
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery.conf.update(app.config)
+
+@celery.task
+def send_reset_email(user, token):
+    msg = Message(
+        "Password reset request",
+        sender=os.environ.get("email_username"),
+        recipients=[user[3]],
+    )
+    msg.body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}"
+    mail.send(msg)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -506,14 +520,9 @@ def password_link():
         db.execute("UPDATE users SET token = ? WHERE id = ?", [token, user[0]])
         con.commit()
 
-        # Send email with reset link
-        msg = Message(
-            "Password reset request",
-            sender=os.environ.get("email_username"),
-            recipients=[user[3]],
-        )
-        msg.body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}"
-        mail.send(msg)
+        # Call the send_reset_email task asynchronously
+        send_reset_email.delay(user, token)
+
         message = "Link sent"
         html = session.get("page")
 
