@@ -56,6 +56,7 @@
     <script type="text/javascript" src="/static/script.js" async></script>
     {% block script %} {% endblock %}
 
+
     <title>CS50P Final Project: {% block title %}{% endblock %}</title>
   </head>
 
@@ -63,9 +64,12 @@
     <div id="overlay"></div>
     <div id="overlay2"></div>
 
-    {% include 'config.html' %} {% include 'register.html' %} {% include
-    'login.html' %} {% include 'forgot.html' %} {% include 'resetPassword.html'
-    %} {% include 'security.html' %}
+    {% include 'config.html' %} 
+    {% include 'register.html' %} 
+    {% include 'login.html' %} 
+    {% include 'forgot.html' %} 
+    {% include 'resetPassword.html'%} 
+    {% include 'security.html' %}
 
     <div class="header">
       <div>

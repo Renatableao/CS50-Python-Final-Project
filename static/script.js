@@ -254,3 +254,4 @@ function cancelDelete() {
   document.querySelector("#delete-form").style.display = "None";
   document.querySelector("#delete-account").style.display = "block";
 }
+

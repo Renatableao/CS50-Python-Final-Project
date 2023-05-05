@@ -1,6 +1,6 @@
 import sqlite3
 from ssl import VERIFY_X509_PARTIAL_CHAIN
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify
 from flask_session import Session
 from flask_mail import Mail, Message
 from time import time
@@ -13,7 +13,7 @@ import re
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv, find_dotenv
 from helpers import login_required, search
-import vonage
+import threading
 
 # Configure application
 app = Flask(__name__)
@@ -40,9 +40,6 @@ Session(app)
 # Configure SQLite to read database (if locally)
 con = sqlite3.connect("bookaseat.db", check_same_thread=False)
 db = con.cursor()
-
-client = vonage.Client(key=os.environ.get("vonage_key"), secret=os.environ.get("vonage_API_key"))
-sms = vonage.Sms(client)
 
 @app.template_filter("datehours")
 def obj_to_datetime_hours(dict: dict) -> date:
@@ -508,28 +505,34 @@ def password_link():
         db.execute("UPDATE users SET token = ? WHERE id = ?", [token, user[0]])
         con.commit()
 
-        responseData = sms.send_message(
-        {
-        "from": "Vonage APIs",
-        "to": request.form.get("user_phone"),
-        "text": f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}",
-        }
-        )
+        try:
 
-        if responseData["messages"][0]["status"] == "0":
-            print("Message sent successfully.")
-        else:
-            print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
-
-        message = "Link sent"
-        html = session.get("page")
-
+            msg = Message(subject="Reset password link", sender=os.environ.get("email_username"), recipients=[user[3]])
+            msg.body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}"
+            thread = threading.Thread(target=send_async_email, args=[msg])
+            thread.start()
+   
+            message = "Link sent"
+            html = session.get("page")
+        
+        except: 
+        
+            flash("Error sending email. Please try again!", "forgot-password")
+            message = "Forgot password Error"
+            html = session.get("page")
+        
         return redirect("{}?message={}".format(html, message))
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return redirect("/")
 
+def send_async_email(msg):
+    with app.app_context():
+        try:
+            mail.send(msg)
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)})
 
 @app.route("/reset_password", methods=["GET", "POST"])
 def reset_password():
