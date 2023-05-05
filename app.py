@@ -13,7 +13,7 @@ import re
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv, find_dotenv
 from helpers import login_required, search
-from celery import Celery
+import vonage
 
 # Configure application
 app = Flask(__name__)
@@ -41,6 +41,8 @@ Session(app)
 con = sqlite3.connect("bookaseat.db", check_same_thread=False)
 db = con.cursor()
 
+client = vonage.Client(key=os.environ.get("vonage_key"), secret=os.environ.get("vonage_API_key"))
+sms = vonage.Sms(client)
 
 @app.template_filter("datehours")
 def obj_to_datetime_hours(dict: dict) -> date:
@@ -142,20 +144,6 @@ def after_request(response):
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
-
-# Initialize Celery
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
-celery.conf.update(app.config)
-
-@celery.task
-def send_reset_email(user, token):
-    msg = Message(
-        "Password reset request",
-        sender=os.environ.get("email_username"),
-        recipients=[user[3]],
-    )
-    msg.body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}"
-    mail.send(msg)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -323,7 +311,7 @@ def results():
         search_flights = search(
             market, locale, currency, query_legs, adults, children, cabin_class
         )
-        print(search_flights)
+
 
         if search_flights:
             sorted_search = search_flights["sortingOptions"]["cheapest"]
@@ -513,15 +501,25 @@ def password_link():
         load_dotenv(find_dotenv())
         key = os.environ.get("SECRET_KEY")
         token = jwt.encode(
-            {"reset": user[3], "exp": time() + 120}, key, algorithm="HS256"
+            {"reset": user[3], "exp": time() + 360}, key, algorithm="HS256"
         )
 
         # Save token in database
         db.execute("UPDATE users SET token = ? WHERE id = ?", [token, user[0]])
         con.commit()
 
-        # Call the send_reset_email task asynchronously
-        send_reset_email.delay(user, token)
+        responseData = sms.send_message(
+        {
+        "from": "Vonage APIs",
+        "to": request.form.get("user_phone"),
+        "text": f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}",
+        }
+        )
+
+        if responseData["messages"][0]["status"] == "0":
+            print("Message sent successfully.")
+        else:
+            print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
 
         message = "Link sent"
         html = session.get("page")
@@ -651,3 +649,6 @@ def logout():
 
     # Redirect user to login form
     return redirect(html)
+
+if __name__ == '__main__':
+    app.run(debug=True)
