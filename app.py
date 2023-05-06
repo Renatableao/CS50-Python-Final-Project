@@ -539,10 +539,11 @@ def password_link():
 
 def send_async_email(msg):
     with app.app_context():
+        print('HELOOOOOOOOOOOOOOOOOOO')
         try:
             mail.send(msg)
         except Exception as e:
-            return jsonify({'status': 'error', 'message': str(e)})
+            print(jsonify({'status': 'error', 'message': str(e)}))
 
 @app.route("/reset_password", methods=["GET", "POST"])
 def reset_password():
