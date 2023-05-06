@@ -515,11 +515,9 @@ def password_link():
         db.execute("UPDATE users SET token = ? WHERE id = ?", [token, user[0]])
         con.commit()
 
-        msg = Message(subject="Reset password link", sender=os.environ.get("email_username"), recipients=[user[3]])
-        msg.body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}"
-        thread = threading.Thread(target=send_async_email, args=[msg])
-        thread.start()
-   
+        msg_body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}"
+        send_simple_message(user[3], msg_body)
+          
         message = "Link sent"
         html = session.get("page")
         
@@ -529,15 +527,14 @@ def password_link():
     else:
         return redirect("/")
 
-def send_async_email(msg):
-    with app.app_context():
-        print('HELOOOOOOOOOOOOOOOOOOO')
-        try:
-            mail.send(msg)
-            print("YESSSSSSSSSSSSSSSSSSSS")
-        except Exception as e:
-            print("NOOOOOOOOOOOOOOOOOOOO")
-            print("Error: ", str(e))
+def send_simple_message(user, body):
+	return requests.post(
+		"https://api.mailgun.net/v3/sandboxdcce62473860490e86c20946cf8983b8.mailgun.org/messages",
+		auth=("api", os.environ.get("mail_key")),
+		data={"from": "Excited User <mailgun@sandboxdcce62473860490e86c20946cf8983b8.mailgun.org",
+			"to": [user],
+			"subject": "Reset password link",
+			"text": body})
 
 @app.route("/reset_password", methods=["GET", "POST"])
 def reset_password():

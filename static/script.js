@@ -198,7 +198,7 @@ function checkMessage() {
   } else if (message == "Password changed") {
     alert("Password changed successfully!");
   } else if (message == "Link sent") {
-    alert("Please check your email. If you did not receive a link, you can try again later.");
+    alert("Please check your email. This might take a few minutes. If you do not receive a link, please try again later.");
   } else if (message == "Delete account") {
     alert("Account deleted successfully!");
   } else if (message == "Changes ok") {
