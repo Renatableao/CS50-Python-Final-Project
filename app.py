@@ -20,7 +20,7 @@ app = Flask(__name__)
 
 # Configure Flask_mail
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
-app.config["MAIL_PORT"] = int(os.environ.get('PORT', 465))
+app.config["MAIL_PORT"] = int(os.environ.get('PORT', 587))
 app.config["MAIL_USERNAME"] = os.environ.get("email_username")
 app.config["MAIL_PASSWORD"] = os.environ.get("email_key")
 app.config["MAIL_USE_TLS"] = False
