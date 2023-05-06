@@ -22,20 +22,19 @@ async function openPriceList(thisObj) {
     const form = document.querySelector('#price-list-window');
     const formContent = document.querySelector('#price-list');
     const currency_code = thisObj.dataset.currency
-    const results = JSON.parse(thisObj.dataset.results);
-    const itinerary = JSON.parse(thisObj.dataset.itinerary);
-    const options = itinerary['pricingOptions']
-  
+    const agents = JSON.parse(thisObj.dataset.agents);
+    const agentsInfo = JSON.parse(thisObj.dataset.agentsinfo);
+      
     // Load the currencies.json file
     const currencies = await fetch('./static/currencies.json')
       .then(response => response.json())
       .catch(error => console.error(error));
   
-    for (let i = 0; i < 10 && i < options.length; i++) {
+    for (let i = 0; i < 10 && i < agentsInfo.length; i++) {
         
-        const option = options[i];
-        const price = formatPrice(option.price.amount, currency_code, currencies)
-        const agent = results.agents[option.items[0].agentId];
+        const option = agentsInfo[i];
+        const price = formatPrice(option[0], currency_code, currencies)
+        const agent = agents[option[1]];
         var optionInfo = `
             <div></div>
             <div class="agent">
@@ -46,7 +45,7 @@ async function openPriceList(thisObj) {
               <span>${price}</span>
             </div>
             <div>
-            <a target="_blank" href="${option.items[0].deepLink}" class="btn-select"> <img src="/static/icons8-advance-30.png"/></a>
+            <a target="_blank" href="${option[2]}" class="btn-select"> <img src="/static/icons8-advance-30.png"/></a>
             </div>
             <div>
             </div>

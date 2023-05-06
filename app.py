@@ -41,6 +41,7 @@ Session(app)
 con = sqlite3.connect("bookaseat.db", check_same_thread=False)
 db = con.cursor()
 
+
 @app.template_filter("datehours")
 def obj_to_datetime_hours(dict: dict) -> date:
     date_parts = [
@@ -58,6 +59,10 @@ def obj_to_datetime(dict: dict) -> date:
     date_object = datetime.strptime(date_str, "%Y/%m/%d")
     return date_object
 
+@app.template_filter("dateobj")
+def str_to_datetime(str) -> date:
+    date_object = datetime.strptime(str, '%Y-%m-%d')
+    return date_object
 
 @app.template_filter("tohours")
 def min_to_hours(min: int) -> str:
@@ -196,34 +201,39 @@ def results():
     if request.method == "POST":
         # if user save flight result as favorite
         if request.form.get("favorite-data"):
-            search_results = request.form.get("favorite-data-results")
-            # search_results = json.loads(search_results_data)
+            places = request.form.get("favorite-data-places")
+            carriers = request.form.get("favorite-data-carriers")
+            segments = request.form.get("favorite-data-segments")
             itinerary_id = request.form.get("favorite-itinerary-id")
-            itinerary_info = request.form.get("favorite-data")
-            # itinerary = json.loads(itinerary_data)
+            agents_info = request.form.get("favorite-data")
             leg1_info = request.form.get("favorite-data-leg1")
-            # leg1_info = json.loads(leg1_info_data)
-            if session["flight_type"] == "roudtrip":
+            price = request.form.get('favorite-price')
+            agents = request.form.get('favorite-data-agents')
+
+            if session["flight_type"] == "roundtrip":
                 leg2_info = request.form.get("favorite-data-leg2")
             else:
                 leg2_info = None
-            # leg2_info = json.loads(leg2_info_data)
 
             session["page"] = "/favorites"
 
             db.execute(
-                "INSERT INTO user_flights(user_id, itinerary_id, flight_type, passengers, currency, cabin_class, results, itinerary_info, leg1, leg2, saved_on) SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM user_flights WHERE itinerary_id = ? AND user_id = ?)",
+                "INSERT INTO user_flights(user_id, itinerary_id, flight_type, price, passengers, currency, cabin_class, leg1, leg2, places, carriers, segments, agents_info, agents, saved_on) SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM user_flights WHERE itinerary_id = ? AND user_id = ?)",
                 [
                     session.get("user_id"),
                     itinerary_id,
                     session.get("flight_type"),
+                    price, 
                     session.get("passengers"),
                     session.get("currency"),
                     session.get("cabin_class"),
-                    search_results,
-                    itinerary_info,
                     leg1_info,
                     leg2_info,
+                    places,
+                    carriers,
+                    segments,
+                    agents_info,
+                    agents,
                     session.get("today").isoformat(),
                     itinerary_id,
                     session.get("user_id"),

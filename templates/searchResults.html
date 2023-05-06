@@ -520,20 +520,30 @@ block section %}
     {% endif %}
   </div>
 
+  {% set agents_info = [] %}
+  {% for options in itinerary_info['pricingOptions'] %}
+    {% set agent = [options['price']['amount'], options['items'][0]['agentId'], options['items'][0]['deepLink']] %}
+    {{ agents_info.append(agent) }}
+  {% endfor %}
+
     <div class="open-save-selection">
     {% if session['user_id'] %}
     <form action="/results" method="post" autocomplete="off">
-      <button class="btn-selection favorite" name="favorite-data" value='{{ itinerary_info|tojson|safe }}' title="Save as favorite" onclick="saveAsFavorite(this)">Save</button>
+      <button class="btn-selection favorite" name="favorite-data" value='{{ agents_info|tojson|safe }}' title="Save as favorite" onclick="saveAsFavorite(this)">Save</button>
       <button class="favorite-heart hidden visually-hidden"><img src="/static/heart.png"></button>
       <input type="hidden" name="favorite-data-leg1" value='{{ leg1_info|tojson|safe }}'>
       {% if session['flight_type'] == 'roundtrip' %}
         <input type="hidden" name="favorite-data-leg2" value='{{ leg2_info|tojson|safe }}'>
       {% endif %}
-      <input type="hidden" name="favorite-data-results" value='{{ search_results|tojson|safe }}'>
+      <input type="hidden" name="favorite-price" value='{{ price }}'>
+      <input type="hidden" name="favorite-data-places" value='{{ search_results['places']|tojson|safe }}'>
+      <input type="hidden" name="favorite-data-carriers" value='{{ search_results['carriers']|tojson|safe }}'>
+      <input type="hidden" name="favorite-data-segments" value='{{ search_results['segments']|tojson|safe }}'>
+      <input type="hidden" name="favorite-data-agents" value='{{ search_results['agents']|tojson|safe }}'>
       <input type="hidden" name="favorite-itinerary-id" value='{{ itinerary }}'>
     </form>
     {% endif %}
-    <button class="btn-selection" name="open-price-list" data-results='{{ search_results|tojson|safe }}' data-itinerary='{{ itinerary_info|tojson|safe }}' data-currency="{{ session['currency'] }}" onclick="openPriceList(this)">Open</button>
+    <button class="btn-selection" name="open-price-list" data-agents='{{ search_results['agents']|tojson|safe }}' data-agentsinfo='{{ agents_info|tojson|safe }}' data-currency="{{ session['currency'] }}" onclick="openPriceList(this)">Open</button>
   </div>
 </div>
 {% endfor %}

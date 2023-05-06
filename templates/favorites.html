@@ -16,27 +16,30 @@
   terms and conditions on the booking website before making your reservation as
   the information saved here may be out of date.
 </p>
-{% for flight in user_flights_info %} {% set search_results = flight[7]|fromjson
-%} {% set itinerary_info = flight[8]|fromjson %} {% set leg1_info =
-flight[9]|fromjson %} {% if flight[10] != None %} {% set leg2_info =
-flight[10]|fromjson %} {% endif %}
+{% for flight in user_flights_info %} 
+  {% set places = flight[10]|fromjson%} 
+  {% set carriers = flight[11]|fromjson%} 
+  {% set segments = flight[12]|fromjson%} 
+  {% set agents_info = flight[13]|fromjson%} 
+  {% set leg1_info =flight[8]|fromjson %} 
+  {% if flight[9] != None %} 
+    {% set leg2_info = flight[9]|fromjson %} 
+  {% endif %}
 
-<div class="results-section">
+<div class="results-section" style="margin-bottom:8rem">
   <div class="tags">
     <div class="type-tag">
       <h1>
-        {% if flight[4] == 1 %} 1 Adult,&nbsp {% else %} {{ flight[4] }}
-        Passengers,&nbsp {% endif %} {{ flight[6] }}
+        {% if flight[5] == 1 %} 1 Adult,&nbsp {% else %} {{ flight[5] }}
+        Passengers,&nbsp {% endif %} {{ flight[7] }}
       </h1>
       <p id="saved-on">
-        <strong>Saved on:</strong> {{ session['today'].strftime('%A, %b %d, %Y') }}
+        {% set saved = flight[15]|dateobj %}
+        <strong>Saved on:</strong> {{ saved.strftime('%A, %b %d, %Y') }}
 </p>
     </div>
-    <div class="price-tag">
-      {% set price =
-      format_price(itinerary_info["pricingOptions"][0]['price']['amount'],
-      flight[5]) %}
-      <h1>{{ price }}</h1>
+    <div class="price-tag"> 
+      <h1>{{ flight[4] }}</h1>
     </div>
   </div>
 
@@ -54,7 +57,7 @@ flight[10]|fromjson %} {% endif %}
                 <div class="dr-row">
                   <span class="al-name">
                     {% for carrier in leg1_info["operatingCarrierIds"] %} {{
-                    search_results['carriers'][carrier]['name'] }}{% if not
+                    carriers[carrier]['name'] }}{% if not
                     loop.last %} +{% endif %} {% endfor %}
                   </span>
                   {% set depart_arrives_in =
@@ -87,16 +90,16 @@ flight[10]|fromjson %} {% endif %}
                       %}
                       <span class="stops"
                         >{% for segment in leg1_info['segmentIds'][0:-1] %} {{
-                        search_results['places'][search_results['segments'][segment]['destinationPlaceId']]['iata']
+                        places[segments[segment]['destinationPlaceId']]['iata']
                         }}{% if not loop.last %},{% endif %} {% endfor %}</span
                       >
                     </span>
 
                     {% for segment in leg1_info['segmentIds'] %} {% if not
                     loop.first %} {% set origin_airport =
-                    search_results['segments'][segment]['originPlaceId'] %} {%
+                    segments[segment]['originPlaceId'] %} {%
                     set destination_airport =
-                    search_results['segments'][leg1_info['segmentIds'][loop.index0
+                    segments[leg1_info['segmentIds'][loop.index0
                     - 1]]['destinationPlaceId'] %} {% if origin_airport !=
                     destination_airport %}
                     <span class="change-airport"
@@ -115,12 +118,12 @@ flight[10]|fromjson %} {% endif %}
                     </div>
                     <div class="port">
                       {{
-                      search_results['places'][leg1_info['originPlaceId']]['iata']
+                      places[leg1_info['originPlaceId']]['iata']
                       }}
                     </div>
                     <div class="name">
                       {{
-                      search_results['places'][leg1_info['originPlaceId']]['name']
+                      places[leg1_info['originPlaceId']]['name']
                       }}
                     </div>
                   </div>
@@ -136,12 +139,12 @@ flight[10]|fromjson %} {% endif %}
                     </div>
                     <div class="port">
                       {{
-                      search_results['places'][leg1_info['destinationPlaceId']]['iata']
+                      places[leg1_info['destinationPlaceId']]['iata']
                       }}
                     </div>
                     <div class="name">
                       {{
-                      search_results['places'][leg1_info['destinationPlaceId']]['name']
+                      places[leg1_info['destinationPlaceId']]['name']
                       }}
                     </div>
                   </div>
@@ -151,19 +154,19 @@ flight[10]|fromjson %} {% endif %}
 
             <div id="favorite-demo{{ loop.index }}" class="fly-wrap collapse">
               {% for segment in leg1_info['segmentIds'] %} {% set
-              depart_segment_info = search_results['segments'][segment] %} {% if
+              depart_segment_info = segments[segment] %} {% if
               not loop.first %}
 
               <div class="delay-frame">
                 <div class="welc">
                   <i class="bi bi-clock"></i>Layover {{
-                  hours_difference(search_results['segments'][leg1_info['segmentIds'][loop.index0
+                  hours_difference(segments[leg1_info['segmentIds'][loop.index0
                   - 1]]['arrivalDateTime']|datehours,
                   depart_segment_info['departureDateTime']|datehours) }} {% set
                   origin_airport =
-                  search_results['segments'][segment]['originPlaceId'] %} {% set
+                  segments[segment]['originPlaceId'] %} {% set
                   destination_airport =
-                  search_results['segments'][leg1_info['segmentIds'][loop.index0
+                  segments[leg1_info['segmentIds'][loop.index0
                   - 1]]['destinationPlaceId'] %} {% if origin_airport !=
                   destination_airport %}
                   <span class="transfer"> + Self Transfer</span>
@@ -178,8 +181,8 @@ flight[10]|fromjson %} {% endif %}
                   <div class="airway-title">
                     <img
                       class="airline-logo"
-                      src="{{ search_results['carriers'][depart_segment_info['operatingCarrierId']]['imageUrl'] }}"
-                      onError="this.onerror=null;this.src='';this.parentElement.innerText='{{ search_results['carriers'][depart_segment_info['operatingCarrierId']]['name'] }}';"
+                      src="{{ carriers[depart_segment_info['operatingCarrierId']]['imageUrl'] }}"
+                      onError="this.onerror=null;this.src='';this.parentElement.innerText='{{ carriers[depart_segment_info['operatingCarrierId']]['name'] }}';"
                     />
                   </div>
                   <div class="root-de">
@@ -209,16 +212,16 @@ flight[10]|fromjson %} {% endif %}
                     <div class="itin-target">
                       <div class="tar-label">
                         {{
-                        search_results['places'][depart_segment_info['originPlaceId']]['iata']
+                        places[depart_segment_info['originPlaceId']]['iata']
                         }} {{
-                        search_results['places'][depart_segment_info['originPlaceId']]['name']
+                        places[depart_segment_info['originPlaceId']]['name']
                         }}
                       </div>
                       <div class="tar-label">
                         {{
-                        search_results['places'][depart_segment_info['destinationPlaceId']]['iata']
+                        places[depart_segment_info['destinationPlaceId']]['iata']
                         }} {{
-                        search_results['places'][depart_segment_info['destinationPlaceId']]['name']
+                        places[depart_segment_info['destinationPlaceId']]['name']
                         }}
                       </div>
                     </div>
@@ -248,7 +251,7 @@ flight[10]|fromjson %} {% endif %}
                 <div class="dr-row">
                   <span class="al-name">
                     {% for carrier in leg2_info["operatingCarrierIds"] %} {{
-                    search_results['carriers'][carrier]['name'] }}{% if not
+                    carriers[carrier]['name'] }}{% if not
                     loop.last %} +{% endif %} {% endfor %}
                   </span>
                   {% set return_arrives_in =
@@ -281,7 +284,7 @@ flight[10]|fromjson %} {% endif %}
                       %}
                       <span class="stops"
                         >{% for segment in leg2_info['segmentIds'][0:-1] %} {{
-                        search_results['places'][search_results['segments'][segment]['destinationPlaceId']]['iata']
+                        places[segments[segment]['destinationPlaceId']]['iata']
                         }}{% if not loop.last %},{% endif %} {% endfor %}</span
                       >
                     </span>
@@ -297,12 +300,12 @@ flight[10]|fromjson %} {% endif %}
                     </div>
                     <div class="port">
                       {{
-                      search_results['places'][leg2_info['originPlaceId']]['iata']
+                      places[leg2_info['originPlaceId']]['iata']
                       }}
                     </div>
                     <div class="name">
                       {{
-                      search_results['places'][leg2_info['originPlaceId']]['name']
+                      places[leg2_info['originPlaceId']]['name']
                       }}
                     </div>
                   </div>
@@ -318,12 +321,12 @@ flight[10]|fromjson %} {% endif %}
                     </div>
                     <div class="port">
                       {{
-                      search_results['places'][leg2_info['destinationPlaceId']]['iata']
+                      places[leg2_info['destinationPlaceId']]['iata']
                       }}
                     </div>
                     <div class="name">
                       {{
-                      search_results['places'][leg2_info['destinationPlaceId']]['name']
+                      places[leg2_info['destinationPlaceId']]['name']
                       }}
                     </div>
                   </div>
@@ -333,13 +336,13 @@ flight[10]|fromjson %} {% endif %}
 
             <div id="favorite-demo{{ loop.index }}" class="fly-wrap collapse">
               {% for segment in leg2_info['segmentIds'] %} {% set
-              return_segment_info = search_results['segments'][segment] %} {% if
+              return_segment_info = segments[segment] %} {% if
               not loop.first %}
 
               <div class="delay-frame">
                 <div class="welc">
                   <i class="bi bi-clock"></i>Layover {{
-                  hours_difference(search_results['segments'][leg2_info['segmentIds'][loop.index0
+                  hours_difference(segments[leg2_info['segmentIds'][loop.index0
                   - 1]]['arrivalDateTime']|datehours,
                   return_segment_info['departureDateTime']|datehours ) }}
                 </div>
@@ -352,8 +355,8 @@ flight[10]|fromjson %} {% endif %}
                   <div class="airway-title">
                     <img
                       class="airline-logo"
-                      src="{{ search_results['carriers'][return_segment_info['operatingCarrierId']]['imageUrl'] }}"
-                      onError="this.onerror=null;this.src='';this.parentElement.innerText='{{ search_results['carriers'][return_segment_info['operatingCarrierId']]['name'] }}';"
+                      src="{{ carriers[return_segment_info['operatingCarrierId']]['imageUrl'] }}"
+                      onError="this.onerror=null;this.src='';this.parentElement.innerText='{{ carriers[return_segment_info['operatingCarrierId']]['name'] }}';"
                     />
                   </div>
                   <div class="root-de">
@@ -383,16 +386,16 @@ flight[10]|fromjson %} {% endif %}
                     <div class="itin-target">
                       <div class="tar-label">
                         {{
-                        search_results['places'][return_segment_info['originPlaceId']]['iata']
+                        places[return_segment_info['originPlaceId']]['iata']
                         }} {{
-                        search_results['places'][return_segment_info['originPlaceId']]['name']
+                        places[return_segment_info['originPlaceId']]['name']
                         }}
                       </div>
                       <div class="tar-label">
                         {{
-                        search_results['places'][return_segment_info['destinationPlaceId']]['iata']
+                        places[return_segment_info['destinationPlaceId']]['iata']
                         }} {{
-                        search_results['places'][return_segment_info['destinationPlaceId']]['name']
+                        places[return_segment_info['destinationPlaceId']]['name']
                         }}
                       </div>
                     </div>
@@ -424,9 +427,9 @@ flight[10]|fromjson %} {% endif %}
     <button
       class="btn-selection"
       name="open-price-list"
-      data-results='{{ search_results|tojson|safe }}'
-      data-itinerary='{{ itinerary_info|tojson|safe }}'
-      data-currency='{{ flight[5] }}'
+      data-agentsinfo='{{ agents_info|tojson|safe }}'
+      data-agents='{{ flight[14] }}'
+      data-currency='{{ flight[6] }}'
       onclick="openPriceList(this)"
     >
       Open
