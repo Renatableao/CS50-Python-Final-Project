@@ -542,7 +542,9 @@ def send_async_email(msg):
         print('HELOOOOOOOOOOOOOOOOOOO')
         try:
             mail.send(msg)
+            print("YESSSSSSSSSSSSSSSSSSSS")
         except Exception as e:
+            print("NOOOOOOOOOOOOOOOOOOOO")
             print(jsonify({'status': 'error', 'message': str(e)}))
 
 @app.route("/reset_password", methods=["GET", "POST"])
