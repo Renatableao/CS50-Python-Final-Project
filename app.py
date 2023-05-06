@@ -515,21 +515,13 @@ def password_link():
         db.execute("UPDATE users SET token = ? WHERE id = ?", [token, user[0]])
         con.commit()
 
-        try:
-
-            msg = Message(subject="Reset password link", sender=os.environ.get("email_username"), recipients=[user[3]])
-            msg.body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}"
-            thread = threading.Thread(target=send_async_email, args=[msg])
-            thread.start()
+        msg = Message(subject="Reset password link", sender=os.environ.get("email_username"), recipients=[user[3]])
+        msg.body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}"
+        thread = threading.Thread(target=send_async_email, args=[msg])
+        thread.start()
    
-            message = "Link sent"
-            html = session.get("page")
-        
-        except: 
-        
-            flash("Error sending email. Please try again!", "forgot-password")
-            message = "Forgot password Error"
-            html = session.get("page")
+        message = "Link sent"
+        html = session.get("page")
         
         return redirect("{}?message={}".format(html, message))
 
@@ -545,7 +537,7 @@ def send_async_email(msg):
             print("YESSSSSSSSSSSSSSSSSSSS")
         except Exception as e:
             print("NOOOOOOOOOOOOOOOOOOOO")
-            print(jsonify({'status': 'error', 'message': str(e)}))
+            print("Error: ", str(e))
 
 @app.route("/reset_password", methods=["GET", "POST"])
 def reset_password():
