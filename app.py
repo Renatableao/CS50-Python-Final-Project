@@ -13,7 +13,7 @@ import re
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv, find_dotenv
 from helpers import login_required, search
-import threading
+import requests
 
 # Configure application
 app = Flask(__name__)
@@ -517,7 +517,8 @@ def password_link():
 
         msg_body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}"
         send_simple_message(user[3], msg_body)
-          
+        
+  
         message = "Link sent"
         html = session.get("page")
         
