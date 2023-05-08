@@ -16,9 +16,14 @@
 
         <div class="col-md">
             <div class="col-md">
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom:0">
                 <span class="form-label">E-mail</span>
                 <input autocomplete="off" class="form-control shadow-none config-options" id="forgot-email" name="forgot-email" placeholder="E-mail" type="email" onchange="checkEmail(this)" required>
+                <span class="form-label">Phone Number</span>
+            </div>
+            <div class="phone-container" style="margin: 1rem 0 1rem 0">
+                <input id="user-phone" type="tel" name="user-phone" onchange="document.querySelector('#btn-phone').click()" required/>
+                <input type="button" id="btn-phone" onclick="process(event)" value="Verify number" style="display: none;"/>
             </div>
         </div>
         <div class="popup-buttons">

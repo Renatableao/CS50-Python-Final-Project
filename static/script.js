@@ -198,7 +198,7 @@ function checkMessage() {
   } else if (message == "Password changed") {
     alert("Password changed successfully!");
   } else if (message == "Link sent") {
-    alert("Please check your email. This might take a few minutes. If you do not receive a link, please try again later.");
+    alert("Please check your phone. This might take a few minutes. If you do not receive a link, please try again later.");
   } else if (message == "Delete account") {
     alert("Account deleted successfully!");
   } else if (message == "Changes ok") {
@@ -223,7 +223,7 @@ function redirectForm(form) {
 /* -- Set loading spinner -- */
 function loading(form, thisObj, spinner) {
 
-  var requiredFields = document.querySelectorAll(form + ' input[required]');
+  var requiredFields = document.querySelectorAll(form + 'input[required]');
 
   for (var i = 0; i < requiredFields.length; i++) {
     if (!requiredFields[i].value) {
@@ -255,3 +255,42 @@ function cancelDelete() {
   document.querySelector("#delete-account").style.display = "block";
 }
 
+
+/* -- Set up and validate phone input -- */
+function getIp(callback) {
+  fetch('https://ipinfo.io/json?token=672212dc6d0aaf', { headers: { 'Accept': 'application/json' }})
+  .then((resp) => resp.json())
+  .catch(() => {
+      return {
+      country: 'us',
+  };
+  })
+  .then((resp) => callback(resp.country));
+}
+const phoneInputField = document.querySelector("#user-phone");
+const phoneInput = window.intlTelInput(phoneInputField, {
+  initialCountry: "auto",
+  geoIpLookup: getIp,
+  preferredCountries: ["us", "br"],
+  utilsScript:
+    "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+});
+
+function process(event) {
+    event.preventDefault();
+
+    const userInput = document.querySelector('#user-phone')
+    const phoneNumber = phoneInput.getNumber();
+
+    if (!phoneInput.isValidNumber()) {
+      userInput.classList.add("error")
+      userInput.value = "";
+      userInput.placeholder = "Invalid number";
+      userInput.style.border = "2px solid red";
+      userInput.style.setProperty("--c", "red");
+      userInput.classList.add("error");
+    } else {
+      userInput.style.border = "1px solid var(--transp_grey)";
+      userInput.value = phoneNumber;
+}
+}

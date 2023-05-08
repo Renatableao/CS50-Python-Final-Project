@@ -1,8 +1,7 @@
 import sqlite3
 from ssl import VERIFY_X509_PARTIAL_CHAIN
-from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify
+from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
-from flask_mail import Mail, Message
 from time import time
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
@@ -13,21 +12,10 @@ import re
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv, find_dotenv
 from helpers import login_required, search
-import requests
+import vonage
 
 # Configure application
 app = Flask(__name__)
-
-# Configure Flask_mail
-app.config["MAIL_SERVER"] = "smtp.gmail.com"
-app.config["MAIL_PORT"] = int(os.environ.get('PORT', 587))
-app.config["MAIL_USERNAME"] = os.environ.get("email_username")
-app.config["MAIL_PASSWORD"] = os.environ.get("email_key")
-app.config["MAIL_USE_TLS"] = False
-app.config["MAIL_USE_SSL"] = True
-app.config["MAIL_MAX_EMAILS"] = None
-app.config["MAIL_ASCII_ATTACHMENTS"] = False
-mail = Mail(app)
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -36,6 +24,11 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+
+# Configure Vonage
+client = vonage.Client(key=os.environ.get("vonage_key"), secret=os.environ.get("vonage_API_key"))
+sms = vonage.Sms(client)
+
 
 # Configure SQLite to read database (if locally)
 con = sqlite3.connect("bookaseat.db", check_same_thread=False)
@@ -410,7 +403,7 @@ def register():
         username = request.form.get("reg-username").title()
 
         # Query database for username
-        user = db.execute("SELECT * FROM users WHERE email = ?", [email]).fetchone()
+        user = db.execute("SELECT id FROM users WHERE email = ?", [email]).fetchone()
 
         # Ensure username is not already used
         if user is not None:
@@ -429,7 +422,7 @@ def register():
         con.commit()
 
         # Remember which user has logged in
-        user = db.execute("SELECT * FROM users WHERE email = ?", [email]).fetchone()
+        user = db.execute("SELECT id, username FROM users WHERE email = ?", [email]).fetchone()
         session["user_id"] = user[0]
         session["user_username"] = user[1]
 
@@ -454,7 +447,7 @@ def login():
     if request.method == "POST":
         # Query database for user
         user = db.execute(
-            "SELECT * FROM users WHERE email = ?",
+            "SELECT id, username, hash FROM users WHERE email = ?",
             [request.form.get("log-email").lower()],
         ).fetchone()
 
@@ -492,7 +485,7 @@ def password_link():
     if request.method == "POST":
         # Query database for user
         user = db.execute(
-            "SELECT * FROM users WHERE email = ?",
+            "SELECT id, username FROM users WHERE email = ?",
             [request.form.get("forgot-email").lower()],
         ).fetchone()
 
@@ -508,17 +501,26 @@ def password_link():
         load_dotenv(find_dotenv())
         key = os.environ.get("SECRET_KEY")
         token = jwt.encode(
-            {"reset": user[3], "exp": time() + 360}, key, algorithm="HS256"
+            {"reset": user[1], "exp": time() + 240}, key, algorithm="HS256"
         )
 
         # Save token in database
         db.execute("UPDATE users SET token = ? WHERE id = ?", [token, user[0]])
         con.commit()
 
-        msg_body = f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}"
-        send_simple_message(user[3], msg_body)
-        
-  
+        responseData = sms.send_message(
+        {
+        "from": "Vonage APIs",
+        "to": request.form.get("user-phone"),
+        "text": f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}",
+        }
+        )
+
+        if responseData["messages"][0]["status"] == "0":
+            print("Message sent successfully.")
+        else:
+            print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
+
         message = "Link sent"
         html = session.get("page")
         
@@ -527,15 +529,6 @@ def password_link():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return redirect("/")
-
-def send_simple_message(user, body):
-	return requests.post(
-		"https://api.mailgun.net/v3/sandboxdcce62473860490e86c20946cf8983b8.mailgun.org/messages",
-		auth=("api", os.environ.get("mail_key")),
-		data={"from": "Excited User <mailgun@sandboxdcce62473860490e86c20946cf8983b8.mailgun.org",
-			"to": [user],
-			"subject": "Reset password link",
-			"text": body})
 
 @app.route("/reset_password", methods=["GET", "POST"])
 def reset_password():
