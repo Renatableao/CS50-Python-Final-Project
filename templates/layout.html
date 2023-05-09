@@ -44,29 +44,17 @@
     />
 
     <!-- JavaScript plugin for entering and validating international telephone numbers -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.css">
-    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
-    <script>
-      var input = document.querySelector("#phone");
-      window.intlTelInput(input, {
-      utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js",
-      });
-    </script>
- 
-    <!-- Google translate -->
-    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-    <!--Store variables -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.css"
+      async
+    />
+        <!--Store variables -->
     <script>
       var message = "{{ message }}";
       var market = "{{ session['market'] }}";
       var currency = "{{ session['currency'] }}";
     </script>
-
-    <!-- Javascript -->
-    <script type="text/javascript" src="/static/script.js" async></script>
-    {% block script %} {% endblock %}
-
 
     <title>CS50P Final Project: {% block title %}{% endblock %}</title>
   </head>
@@ -75,12 +63,9 @@
     <div id="overlay"></div>
     <div id="overlay2"></div>
 
-    {% include 'config.html' %} 
-    {% include 'register.html' %} 
-    {% include 'login.html' %} 
-    {% include 'forgot.html' %} 
-    {% include 'resetPassword.html'%} 
-    {% include 'security.html' %}
+    {% include 'config.html' %} {% include 'register.html' %} {% include
+    'login.html' %} {% include 'forgot.html' %} {% include
+    'resetPassword.html'%} {% include 'security.html' %}
 
     <div class="header">
       <div>
@@ -90,30 +75,42 @@
       <div class="nav-right">
         {% if session["user_id"] %}
         <a href="#" id="greeting">Hello, {{ session["user_username"] }}!</a>
-        {% endif %}  
-      
+        {% endif %}
+
         <div class="nav-icons">
-        {% if session["user_id"] %}
+          {% if session["user_id"] %}
           <a class="config" href="/favorites" title="Favorites">
             <img src="/static/icons8-heart-96.png" />
           </a>
-          <button class="config" onclick="openForm('security-form')" title="Settings">
+          <button
+            class="config"
+            onclick="openForm('security-form')"
+            title="Settings"
+          >
             <img src="/static/icons8-settings-96.png" />
           </button>
-          <a class="config" href="/logout" onclick="loggingOut(this)" title="Logout">
+          <a
+            class="config"
+            href="/logout"
+            onclick="loggingOut(this)"
+            title="Logout"
+          >
             <img src="/static/icons8-logout-rounded-96.png" />
           </a>
-          <a href="#" class="config" style="display:none" id="logout-spinner"><span
-                  class="spinner-border text-light spinner-border"
-                  role="status"
-                  aria-hidden="true"></span></a>
-        {% else %}
+          <a href="#" class="config" style="display: none" id="logout-spinner"
+            ><span
+              class="spinner-border text-light spinner-border"
+              role="status"
+              aria-hidden="true"
+            ></span
+          ></a>
+          {% else %}
           <button class="config" onclick="openForm('login-form')">
-            <img src="/static/icons8-male-user-96.png"/>
+            <img src="/static/icons8-male-user-96.png" />
           </button>
-        {% endif %}
+          {% endif %}
           <button class="config" onclick="openForm('config-form')">
-            <img src="/static/icons8-earth-planet-96.png"/>
+            <img src="/static/icons8-earth-planet-96.png" />
           </button>
         </div>
       </div>
@@ -132,5 +129,22 @@
         >
       </div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js" async></script>
+    <script>
+      var input = document.querySelector("#phone");
+      window.intlTelInput(input, {
+        utilsScript:
+          "https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js",
+      });
+    </script>
+
+    <!-- Google translate -->
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+
+    <!-- Javascript -->
+    <script type="text/javascript" src="/static/script.js" async></script>
+    {% block script %} {% endblock %}
+    
   </body>
 </html>

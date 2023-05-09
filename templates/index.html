@@ -1,7 +1,8 @@
-{% extends "layout.html" %} {% block script %}
-<script type="text/javascript" src="/static/index.js" async></script>
-{% endblock %} {% block title %} Search Flights {% endblock %} {% block section
-%}
+{% extends "layout.html" %} 
+
+{% block title %} Search Flights {% endblock %} 
+
+{% block section %}
 
 <div>
   <!--Form tamplate: https://colorlib.com/wp/template/colorlib-booking-5/-->
@@ -191,3 +192,7 @@
 <div class="loading-text">0%</div>
 <!-- end document-->
 {% endblock %}
+
+{% block script %}
+<script type="text/javascript" src="/static/index.js" async></script>
+{% endblock %} 
