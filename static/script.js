@@ -204,7 +204,7 @@ function checkMessage() {
   } else if (message == "Changes ok") {
     alert("Changes saved successfully!");
   } else if (message == "No API Response") {
-    alert("Sorry, we found no results on these parameters.");
+    alert("We're sorry, but we were unable to find any results for your search based on the parameters you provided. Please check your search criteria. Alternatively, we may be experiencing some connectivity issues with our server at the moment. Please try again later.");
   }
 }
 
