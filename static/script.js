@@ -266,6 +266,7 @@ function getIp(callback) {
   })
   .then((resp) => callback(resp.country));
 }
+
 const phoneInputField = document.querySelector("#user-phone");
 const phoneInput = window.intlTelInput(phoneInputField, {
   initialCountry: "auto",
