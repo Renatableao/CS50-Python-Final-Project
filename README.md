@@ -7,7 +7,7 @@
 I've developed a responsive website built upon the data and functionality of an existing application called Skyscanner API through requests sent to the Rapid API platform (<https://rapidapi.com/hub>).
 A flight search engine website is a platform that allows users to search for flight tickets to different destinations based on specific dates, prices, and airlines. This website uses a flight search engine that searches and compares the prices of various airlines, enabling users to find the most affordable deals.
 
-#### You can browse and test it at: <https://cs50-bookaseat.herokuapp.com/>
+#### This project is deployed on Heroku at the following URL: <https://cs50-bookaseat.herokuapp.com/>
 
 ### Technologies Used
 
@@ -18,13 +18,17 @@ This website was built using the following technologies:
 * JavaScript
 * Python
 * API (application programming interface)
+     * Skyscanner API
+     * Vonage
 * JSON
 * SQLite
 * Flask
-* Flask-mail
 * BootStrap
 * Jinja
 * Pytest
+* Others: 
+     * Google Translate Button: free multilingual machine translation service
+     * intl-tel-input: JavaScript plugin for entering and validating international telephone numbers
 
 ### How to use
 
@@ -40,7 +44,7 @@ Additionally, users can choose their country and currency preferences, which det
 
 ### Login
 
-Users can create an account on the website to save their flight search results and access them later on a personal page. The website also includes a login functionality with a forgot password feature created via Flask-mail. If a user forgets their password, they can request a recovery link to be sent to their email. 
+Users can create an account on the website to save their flight search results and access them later on a personal page. The website also includes a login functionality with a forgot password feature created via Flask-mail. If a user forgets their password, they can request a recovery link to be sent via SMS through Vonage API. 
 
 ### Personal Page
 
@@ -55,6 +59,6 @@ Those informations are then accessed by SQLite3 commands to, for example, start 
 
 ### Other information
 
-Sensitive information as API key, passwords and SECRET_KEY are stored in local file as environment variables in a file called .env and prevented to be pushed to an open repository by .gitignore.
+Sensitive information as API key, passwords and SECRET_KEY are stored in local file as environment variables in a file called .env and prevented to be pushed to an open repository by .gitignore. 
 
 
