@@ -523,9 +523,9 @@ block section %}
   {% set agents_info = [] %}
   {% for options in itinerary_info['pricingOptions'] %}
     {% set agent = [options['price']['amount'], options['items'][0]['agentId'], options['items'][0]['deepLink']] %}
-    {{ agents_info.append(agent) }}
+    {% set _ = agents_info.append(agent) %}
   {% endfor %}
-
+  
     <div class="open-save-selection">
     {% if session['user_id'] %}
     <form action="/results" method="post" autocomplete="off">

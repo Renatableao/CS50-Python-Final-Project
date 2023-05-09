@@ -90,53 +90,30 @@
       <div class="nav-right">
         {% if session["user_id"] %}
         <a href="#" id="greeting">Hello, {{ session["user_username"] }}!</a>
-        {% endif %}
-        <div class="menu">
-          <input type="checkbox" id="check" />
-          <label for="check" class="button">
-            <span></span>
-            <span></span>
-            <span></span>
-          </label>
-          <nav>
-            {% if session["user_id"] %}
-            <a href="/favorites">Favorites</a>
-            <a
-              href="#"
-              onclick="openForm('security-form')"
-              id="security"
-              name="security"
-              >Security</a
-            >
-            <a href="/logout" onclick="loggingOut(this)">Log out</a>
-            <div style="display: inline-block">
-              <a href="#" style="display: none" id="logout-spinner"
-                ><span
-                  class="spinner-border spinner-border-sm"
+        {% endif %}  
+      
+        <div class="nav-icons">
+        {% if session["user_id"] %}
+          <a class="config" href="/favorites" title="Favorites">
+            <img src="/static/icons8-heart-96.png" />
+          </a>
+          <button class="config" onclick="openForm('security-form')" title="Settings">
+            <img src="/static/icons8-settings-96.png" />
+          </button>
+          <a class="config" href="/logout" onclick="loggingOut(this)" title="Logout">
+            <img src="/static/icons8-logout-rounded-96.png" />
+          </a>
+          <a href="#" class="config" style="display:none" id="logout-spinner"><span
+                  class="spinner-border text-light spinner-border"
                   role="status"
-                  aria-hidden="true"
-                ></span
-                >&nbspBye-Bye!</a
-              >
-            </div>
-            {% else %}
-            <a
-              href="#"
-              onclick="openForm('register-form')"
-              id="register"
-              name="register"
-              >Register</a
-            >
-            <a href="#" onclick="openForm('login-form')" id="login" name="login"
-              >Sign in</a
-            >
-            {% endif %}
-          </nav>
-        </div>
-
-        <div>
+                  aria-hidden="true"></span></a>
+        {% else %}
+          <button class="config" onclick="openForm('login-form')">
+            <img src="/static/icons8-male-user-96.png"/>
+          </button>
+        {% endif %}
           <button class="config" onclick="openForm('config-form')">
-            <img src="/static/icons8-earth-planet-96.png" />
+            <img src="/static/icons8-earth-planet-96.png"/>
           </button>
         </div>
       </div>

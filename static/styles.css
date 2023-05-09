@@ -118,103 +118,6 @@ button {
   height: 4rem;
 }
 
-/*Toggled Menu*/
-.menu {
-  text-align: right;
-  z-index: 102;
-}
-
-#check {
-  display: none;
-}
-
-.button {
-  width: 5rem;
-  height: 5rem;
-  background: var(--orange);
-  padding: 1.1rem;
-  display: inline-block;
-  cursor: pointer;
-  transition: all 0.2s ease-in;
-  padding-top: 1.5rem;
-  line-height: 0.8rem;
-  text-align: left;
-  z-index: 103;
-}
-
-.button:hover {
-  scale: 1.1;
-}
-
-.button span {
-  height: 0.3rem;
-  width: 100%;
-  background: var(--white);
-  display: inline-block;
-  transition: all 0.5s cubic-bezier(0.62, 0.43, 0.35, 1.47);
-}
-
-/* toggle icon animation */
-#check:checked ~ .button span:nth-child(1) {
-  width: 100%;
-  transform: rotate(45deg) translateY(0.3rem) translateX(0.3rem);
-  background-color: var(--white);
-}
-#check:checked ~ .button span:nth-child(2) {
-  width: 0;
-}
-
-#check:checked ~ .button span:nth-child(3) {
-  width: 100%;
-  transform: rotate(-45deg) translateY(-0.6rem) translateX(0.6rem);
-  background-color: var(--white);
-}
-
-/* Navigation menu */
-/*the nav height is set to 0 when the navbar is closed */
-nav {
-  text-align: left;
-  overflow: hidden;
-  transition: all 0.4s ease;
-  position: absolute;
-  top: 2rem;
-  right: 25rem;
-  width: 0;
-  background: var(--orange);
-  height: fit-content;
-  border-radius: 20px;
-}
-
-nav a,
-nav a:focus {
-  text-decoration: none;
-  font-family: "Poppins", "Arial", "Helvetica Neue", sans-serif;
-  color: var(--white);
-  display: inline-flex;
-  font-size: 2rem;
-  transition: all 1s cubic-bezier(0.22, 0.43, 0.35, 1.5);
-  opacity: 0;
-  transform: scale(0);
-  transform-origin: top;
-  text-align: center;
-}
-
-nav a:hover {
-  color: var(--white);
-  text-decoration: none;
-  scale: 1.1;
-}
-
-#check:checked ~ nav {
-  width: fit-content;
-}
-
-#check:checked ~ nav a {
-  padding: 1rem;
-  opacity: 1;
-  transform: scale(1);
-}
-
 #greeting {
   text-decoration: none;
   font-family: "Poppins", "Arial", "Helvetica Neue", sans-serif;
@@ -224,11 +127,15 @@ nav a:hover {
   cursor: default;
 }
 
+.config {
+  padding: 1px 6px;
+}
+
 /* Configuration button and popUp forms*/
 .config img {
   /*position: fixed; */
   top: 3.1rem;
-  height: 3rem;
+  height: 2.7rem;
   /*right: 15.5rem;*/
   transition: 0.2s all ease-in;
 }
@@ -387,7 +294,8 @@ div#goog-gt- {
   text-decoration: none;
 }
 
-.nav span {
+.nav-icons {
+  display: flex;
   align-items: center;
 }
 
@@ -1449,6 +1357,10 @@ footer a {
 
   .tp-flight-plan .it-1 .flight-seg .port {
     margin-top: 3rem;
+  }
+
+  .tp-flight-plan .fly-wrap .itin-lines {
+    left: 0.3rem;
   }
 
   nav a {
