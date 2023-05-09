@@ -7,7 +7,7 @@
 I've developed a responsive website built upon the data and functionality of an existing application called Skyscanner API through requests sent to the Rapid API platform (<https://rapidapi.com/hub>).
 A flight search engine website is a platform that allows users to search for flight tickets to different destinations based on specific dates, prices, and airlines. This website uses a flight search engine that searches and compares the prices of various airlines, enabling users to find the most affordable deals.
 
-#### You can browse and test it at: <URL>
+#### You can browse and test it at: <https://cs50-bookaseat.herokuapp.com/>
 
 ### Technologies Used
 
