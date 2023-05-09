@@ -21,7 +21,7 @@ def main():
         },
     ]
 
-    print(search("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY"))
+    print(len(search("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY")['sortingOptions']['cheapest']))
 
     # call api to update market.json list
     #get_market()

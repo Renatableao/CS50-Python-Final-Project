@@ -123,7 +123,7 @@ button {
   font-family: "Poppins", "Arial", "Helvetica Neue", sans-serif;
   color: var(--white);
   font-size: 2rem;
-  margin-right: 2rem;
+  margin-right: 1rem;
   cursor: default;
 }
 
@@ -1362,8 +1362,12 @@ footer a {
     left: 0.3rem;
   }
 
-  nav a {
-    font-size: 1.5rem;
+  .config {
+    padding: 0.5rem
+  }
+
+  #greeting {
+    margin-right: 1rem;
   }
 
 }
