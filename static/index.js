@@ -27,6 +27,7 @@ async function fetchAirportsData() {
     //initiate the autocomplete function on the "airports" element, and pass along the array as possible autocomplete values:
     autocomplete(document.querySelector("#airports-from"), airports);
     autocomplete(document.querySelector("#airports-to"), airports);
+    
   } catch (error) {
     console.error(error);
   }

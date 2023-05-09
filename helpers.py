@@ -21,7 +21,7 @@ def main():
         },
     ]
 
-    print(len(search("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY")['sortingOptions']['cheapest']))
+    #print(len(search("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY")['sortingOptions']['cheapest']))
 
     # call api to update market.json list
     #get_market()
@@ -135,6 +135,7 @@ def update_airports():
             airport.append(airport_str)
 
     airport = [s.encode("ascii", "ignore").decode() for s in airport]
+    airport = list(set(airport))
 
     
     with open('static/airports.json', 'w') as f:
