@@ -11,17 +11,17 @@ def main():
     querylegs = [
         {
             "originPlaceId": {"iata": "CNF"},
-            "destinationPlaceId": {"iata": "SAO"},
+            "destinationPlaceId": {"iata": "GRU"},
             "date": {"year": 2023, "month": 6, "day": 23},
         },
         {
-            "originPlaceId": {"iata": "SAO"},
+            "originPlaceId": {"iata": "GRU"},
             "destinationPlaceId": {"iata": "CNF"},
             "date": {"year": 2023, "month": 7, "day": 10},
         },
     ]
 
-    # print(search("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY"))
+    print(search("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY"))
 
     # call api to update market.json list
     #get_market()
@@ -33,7 +33,7 @@ def main():
     # get_locations()
 
     # call api to update airports.json list
-    update_airports()
+    # update_airports()
 
 def get_market():
     load_dotenv(find_dotenv())
