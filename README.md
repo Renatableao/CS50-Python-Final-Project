@@ -69,7 +69,7 @@ Building the website was very exciting but challenging. Throughout the developme
      * Initially relying on Flask-Mail, I encountered issues with email delivery being blocked by the hosting platform, Heroku. To overcome this, I integrated Vonage SMS services, enabling reliable delivery of account recovery links to users.
      * Occasional server downtime of API
      
-### Conclusion
+## Conclusion
 
 The website now offers a user-friendly flight search experience, with features such as language and currency configuration, user login and personal pages, and data storage in a secure database.
 
