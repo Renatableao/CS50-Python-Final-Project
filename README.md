@@ -61,4 +61,17 @@ Those informations are then accessed by SQLite3 commands to, for example, start 
 
 Sensitive information as API key, passwords and SECRET_KEY are stored in local file as environment variables in a file called .env and prevented to be pushed to an open repository by .gitignore. 
 
+### Challenges
+     
+Building the website was very exciting but challenging. Throughout the development I encountered several obstacles such as:
+     * Ensuring that the website looks and functions optimally across different devices and screen sizes.
+     * After deploying the website I discovered performance issues caused by slow queries and requests, which resulted in resource runout and errors. 
+     * Initially relying on Flask-Mail, I encountered issues with email delivery being blocked by the hosting platform, Heroku. To overcome this, I integrated Vonage SMS services, enabling reliable delivery of account recovery links to users.
+     * Occasional server downtime of API
+     
+### Conclusion
 
+The website now offers a user-friendly flight search experience, with features such as language and currency configuration, user login and personal pages, and data storage in a secure database.
+
+I am proud of the progress made in developing this project where I could learn new skills and knowledge in web development. It was fun!  
+     
