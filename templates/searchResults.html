@@ -1,6 +1,8 @@
 {% extends "layout.html" %} {% block title %} Flight Results {% endblock %} {%
 block section %}
 
+  {% include 'loadingResults.html '%}
+  
   <!--Form tamplate: https://colorlib.com/wp/template/colorlib-booking-5/-->
   <div id="booking-results">
     <div class="section-center-results">
@@ -555,6 +557,7 @@ block section %}
     </g>
   </symbol>
 </svg>
+
 <!-- end document-->
 {% endblock %}
 

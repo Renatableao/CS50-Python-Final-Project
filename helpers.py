@@ -11,18 +11,19 @@ def main():
     querylegs = [
         {
             "originPlaceId": {"iata": "CNF"},
-            "destinationPlaceId": {"iata": "GRU"},
+            "destinationPlaceId": {"iata": "NAT"},
             "date": {"year": 2023, "month": 6, "day": 23},
         },
         {
-            "originPlaceId": {"iata": "GRU"},
+            "originPlaceId": {"iata": "NAT"},
             "destinationPlaceId": {"iata": "CNF"},
             "date": {"year": 2023, "month": 7, "day": 10},
         },
     ]
 
-    #print(len(search("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY")['sortingOptions']['cheapest']))
-
+    #print(get_session_token("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY"))
+    #print(token)
+    
     # call api to update market.json list
     #get_market()
 
@@ -34,6 +35,9 @@ def main():
 
     # call api to update airports.json list
     # update_airports()
+
+    # call unsplash api to update pictures.json list
+    # get_pictures()
 
 def get_market():
     load_dotenv(find_dotenv())
@@ -142,11 +146,11 @@ def update_airports():
         json.dump(airport, f, indent=2)
 
 
-def search(market, locale, currency, queryLegs, adults, children, cabin_class):
+def get_session_token(market, locale, currency, queryLegs, adults, children, cabin_class):
     load_dotenv(find_dotenv())
 
     try:
-        url = "https://skyscanner-api.p.rapidapi.com/v3e/flights/live/search/synced"
+        url = "https://partners.api.skyscanner.net/apiservices/v3/flights/live/search/create"
 
         payload = {
             "query": {
@@ -161,22 +165,85 @@ def search(market, locale, currency, queryLegs, adults, children, cabin_class):
         }
         headers = {
             "content-type": "application/json",
-            "X-RapidAPI-Key": os.environ.get("API_key"),
-            "X-RapidAPI-Host": "skyscanner-api.p.rapidapi.com",
+            "x-api-key": os.environ.get("API_key")
         }
 
         response = requests.request("POST", url, json=payload, headers=headers)
+        result = response.json()
+
+        try:
+            token = result["sessionToken"]
+            return token
+        
+        except:
+            return None
 
     except requests.RequestException:
         return None
 
+def search(token):
     # Parse response
     try:
-        result = response.json()
-        return result["content"]
+        
+        url = f"https://partners.api.skyscanner.net/apiservices/v3/flights/live/search/poll/{token}"
 
+        headers = {
+	        "x-api-key": os.environ.get("API_key")
+        }
+
+        response = requests.post(url, headers=headers)
+
+    except requests.RequestException:
+        return None
+    
+    try: 
+        
+        result = response.json()
+        return result['content']
+        
     except (KeyError, TypeError, ValueError):
         return None
+
+
+def get_pictures():
+
+    # Set the endpoint URL
+    url = 'https://api.unsplash.com/search/photos'
+
+    # Set the headers with your access key
+    headers = {
+        'Authorization': f"Client-ID {os.environ.get('Access_key')}"
+    }
+
+    # Set the query parameters
+    params = {
+        'query': 'travel',
+        'orientation': 'landscape',
+        'page': 1,
+        'per_page': 20
+    }
+
+    # Send the GET request to the API
+    response = requests.get(url, headers=headers, params=params)
+
+    # Check the response status code
+    if response.status_code == 200:
+
+        # Extract the JSON data from the response
+        data = response.json()
+        results = data['results']
+        
+        # Save results in list and json file
+        urls = {}
+        for result in results:
+            description = result['description'].encode("ascii", "ignore").decode() if result['description'] else ""
+            urls[result['urls']['regular']] = description
+
+        with open('static/pictures.json', 'w') as f:    
+            json.dump(urls, f, indent=2)
+
+    else:
+        print("Error:", response.status_code)
 
 
 def login_required(f):

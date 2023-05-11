@@ -150,7 +150,8 @@ button {
 #forgot-form,
 #reset-form,
 #security-form,
-#price-list-window {
+#price-list-window, 
+#loading-form {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -160,7 +161,6 @@ button {
   border-radius: 5px;
   font-size: 1.3rem;
 }
-
 
 .hidden {
   display: none;
@@ -376,17 +376,166 @@ body {
   font-weight: 400;
 }
 
+/*Loading page*/
+#slider {
+  width: 640px;
+  height: 485px;
+  overflow: hidden;
+  margin: auto;
+  background: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 50%, transparent 50%), 
+    linear-gradient(to right, rgba(0, 0, 0, 0.2) 50%, transparent 50%), 
+    linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 125, 255, 0.5), rgba( 125, 255,0, 0.75)) no-repeat bottom left rgba(100, 100, 100, 0.75);
+  background-size: 100% 100%, 100% 100%, 0% 5px;
+  border: 10px solid rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 5px white;
+  border-radius: 3px;
+}
+
+#move figure {
+  display: block;
+  margin: 0;
+  padding: 0;
+  height: 485px;
+  position: relative;
+}
+
+#move img {
+  display: block;
+  margin: 0;
+}
+
+#slider {
+  animation: progress 10s infinite;
+}
+
+#move {
+  animation: slideup 100s infinite 1.5s;
+}
+
+#move figure {
+  animation: fade 100s infinite 1.5s;
+}
+
+@keyframes slideup {
+  0%,
+  10% {
+    margin-top: 0;
+  }
+  10.1%,
+  20% {
+    margin-top: -485px;
+  }
+  20.1%,
+  30% {
+    margin-top: -970px;
+  }
+  30.1%,
+  40% {
+    margin-top: -1455px;
+  }
+  40.1%,
+  50% {
+    margin-top: -1940px;
+  }
+  50.1%,
+  60% {
+    margin-top: -2425px;
+  }
+  60.1%,
+  70% {
+    margin-top: -2910px;
+  }
+  70.1%,
+  80% {
+    margin-top: -3395px;
+  }
+  80.1%,
+  90% {
+    margin-top: -3880px;
+  }
+  90.1%,
+  100% {
+    margin-top: -4365px;
+  }
+}
+
+@keyframes fade {
+  10%,
+  20%,
+  30%,
+  40%,
+  50%,
+  60%,
+  70%,
+  80%,
+  90%,
+  100% {
+    opacity: 0;
+  }
+  2%,
+  8%,
+  13%,
+  18%,
+  23%,
+  28%,
+  33%,
+  38%,
+  43%,
+  48%,
+  53%,
+  58%,
+  63%,
+  68%,
+  73%,
+  78%,
+  83%,
+  88%,
+  93%,
+  98% {
+    opacity: 1
+  }
+}
+
+@keyframes progress {
+  to {
+    background-size: 100% 100%, 100% 100%, 100% 5px;
+  }
+}
+
 /*Search form*/
 .loading-text {
   text-align: center;
   font-size: 8rem;
   color: var(--orange);
   font-weight: 100;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
+}
+
+#barcontainer{
+  width: 60%;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+#meter{
+  position: relative;
+  width: 0px;
+  height: 0.2rem;
+  background-color: var(--orange);
+  box-shadow: 0 0 3px var(--orange);
+  border-radius: 0 15px 15px 0;
+  transition: width 5s;
+  animation: loading 10s ease-out infinite;
+}
+
+@keyframes loading{
+  0%{
+    width: 0px;
+  }
+
+  100%{
+    width: 100%;
+  }
 }
 
 .section {
@@ -412,7 +561,7 @@ body {
   background-position: center;
 }
 
-#booking img, #booking-results img {
+#booking img, #booking-results img, #booking-loading-results img {
   height: 2rem;
   margin-right: 0.5rem;
 }
@@ -631,11 +780,11 @@ body {
 }
 
 /*Flights results*/
-#booking-results {
+#booking-results, #booking-loading-results {
   transition: all 1s ease-in;
 }
 
-#plus {
+#plus, #plus-loading {
   cursor: pointer;
   font-size: 2.5rem;
   color: var(--white);
@@ -1296,8 +1445,6 @@ body {
 }
 
 /* Forgot form */
-
-
 #user-phone {
   padding-top: 6px;
   padding-bottom: 6px;

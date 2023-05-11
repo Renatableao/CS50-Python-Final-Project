@@ -198,3 +198,63 @@ function saveAsFavorite(thisObj) {
     20
   );
 }
+
+/* -- Set searching spinner while getting API request -- */
+document.addEventListener("DOMContentLoaded", function () {
+  
+    // by: https://codepen.io/nietoperq/pen/LYBgdwr
+    const loadText = document.querySelector(".loading-text");
+
+    let load = 0;
+
+    let interval = setInterval(blurring, 250);
+
+    function blurring() {
+      load++;
+      if (load > 99) {
+        clearInterval(interval);
+      }
+      loadText.innerText = `${load}%`;
+      loadText.style.opacity = 1 - load / 100;
+      loadText.style.filter = `blur(${30 - (load * 30) / 100}px)`;
+    }
+})
+
+/*-- Create img elements -- */
+function loadImages() {
+
+  try {
+    fetch('./static/pictures.json')
+      .then(response => response.json())
+      .then(data => {
+        
+        const imgDiv = document.getElementById('move');
+
+        // Iterate over each key-value pair in the JSON data
+        for (const [key, value] of Object.entries(data)) {
+        // Create a figure element
+        const figure = document.createElement('figure');
+      
+        // Create an image element
+        const img = document.createElement('img');
+        img.src = key;
+        img.alt = value;
+
+        // Append the image to the figure element
+        figure.appendChild(img);
+
+        // Append the figure to the slider container
+        imgDiv.appendChild(figure);
+        }
+      })
+  }
+  catch (error) {
+    console.error(error);
+}
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", loadImages);
+} else {
+  loadImages();
+}

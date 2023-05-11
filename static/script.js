@@ -205,7 +205,10 @@ function checkMessage() {
     alert("Changes saved successfully!");
   } else if (message == "No API Response") {
     alert("We're sorry, but we were unable to find any results for your search based on the parameters you provided. Please check your search criteria. Alternatively, we may be experiencing some connectivity issues with our server at the moment. Please try again later.");
+  } else if (message == "Loading") {
+    openForm('loading-form')
   }
+
 }
 
 if (document.readyState === "loading") {
@@ -222,7 +225,7 @@ function redirectForm(form) {
 
 /* -- Set loading spinner -- */
 function loading(form, thisObj, spinner) {
-  console.log("YESSSSSSS")
+
   var requiredFields = document.querySelectorAll(form + ' input[required]');
 
   for (var i = 0; i < requiredFields.length; i++) {
@@ -294,3 +297,16 @@ function process(event) {
       userInput.value = phoneNumber;
 }
 }
+
+
+/* -- Redirect page --
+
+setTimeout(function() {
+    const msg = "Finished";
+    
+    // Check if the message matches a specific value
+    if (message === "Loading") {
+      window.location.href = `/search_results?message=${encodeURIComponent(msg)}`;
+    }
+  }, 30000); // 30 seconds in milliseconds
+*/

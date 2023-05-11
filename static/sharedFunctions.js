@@ -67,6 +67,7 @@ async function openPriceList(thisObj) {
 /*-- Format price according to user selected currency -- */ 
 function formatPrice(price, currency_code, currencies) {
 
+    price = parseInt(price) / 1000;
     // Find the currency object that matches the code
     const currency = currencies.find(c => c.code === currency_code);
     if (!currency) {
