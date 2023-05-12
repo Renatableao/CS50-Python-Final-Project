@@ -34,7 +34,7 @@ def main():
     # get_locations()
 
     # call api to update airports.json list
-    update_airports()
+    # update_airports()
 
     # call unsplash api to update pictures.json list
     # get_pictures()
