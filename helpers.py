@@ -6,7 +6,6 @@ from functools import wraps
 import json
 
 
-
 def main():
     querylegs = [
         {
@@ -21,11 +20,11 @@ def main():
         },
     ]
 
-    #print(get_session_token("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY"))
-    #print(token)
-    
+    # print(get_session_token("BR", "pt-BR", "BRL", querylegs, 2, [], "CABIN_CLASS_ECONOMY"))
+    # print(token)
+
     # call api to update market.json list
-    #get_market()
+    # get_market()
 
     # call api to update currency.json list
     # get_currency()
@@ -38,6 +37,7 @@ def main():
 
     # call unsplash api to update pictures.json list
     # get_pictures()
+
 
 def get_market():
     load_dotenv(find_dotenv())
@@ -90,6 +90,7 @@ def get_currency():
     except (KeyError, TypeError, ValueError):
         return None
 
+
 def get_locations():
     load_dotenv(find_dotenv())
     try:
@@ -115,38 +116,38 @@ def get_locations():
     except (KeyError, TypeError, ValueError):
         return None
 
+
 def update_airports():
-    
     # Open the first JSON file
-    with open('static/locations.json') as f:
+    with open("static/locations.json") as f:
         locations_data = json.load(f)
 
     # Open the second JSON file
     # source: https://gist.github.com/tdreyno/4278655
-    with open('static/airportsList.json') as f:
+    with open("static/airportsList.json") as f:
         airportsList_data = json.load(f)
 
     # Create a dictionary of airport data, keyed by iata code
-    airport_dict = {airport['code']: airport for airport in airportsList_data}
-   
+    airport_dict = {airport["code"]: airport for airport in airportsList_data}
 
     # Combine the data from the two files
     airport = []
     for location in locations_data.values():
-        if location['iata'] in airport_dict:
-            airport_data = airport_dict[location['iata']]
+        if location["iata"] in airport_dict:
+            airport_data = airport_dict[location["iata"]]
             airport_str = f"({location['iata']}) {airport_data['name']}, {airport_data['state']} - {airport_data['country']}"
             airport.append(airport_str)
 
     airport = [s.encode("ascii", "ignore").decode() for s in airport]
     airport = list(set(airport))
 
-    
-    with open('static/airports.json', 'w') as f:
+    with open("static/airports.json", "w") as f:
         json.dump(airport, f, indent=2)
 
 
-def get_session_token(market, locale, currency, queryLegs, adults, children, cabin_class):
+def get_session_token(
+    market, locale, currency, queryLegs, adults, children, cabin_class
+):
     load_dotenv(find_dotenv())
 
     try:
@@ -165,7 +166,7 @@ def get_session_token(market, locale, currency, queryLegs, adults, children, cab
         }
         headers = {
             "content-type": "application/json",
-            "x-api-key": os.environ.get("API_key")
+            "x-api-key": os.environ.get("API_key"),
         }
 
         response = requests.request("POST", url, json=payload, headers=headers)
@@ -174,72 +175,64 @@ def get_session_token(market, locale, currency, queryLegs, adults, children, cab
         try:
             token = result["sessionToken"]
             return token
-        
+
         except:
             return None
 
     except requests.RequestException:
         return None
 
+
 def search(token):
     # Parse response
     try:
-        
         url = f"https://partners.api.skyscanner.net/apiservices/v3/flights/live/search/poll/{token}"
 
-        headers = {
-	        "x-api-key": os.environ.get("API_key")
-        }
+        headers = {"x-api-key": os.environ.get("API_key")}
 
         response = requests.post(url, headers=headers)
 
     except requests.RequestException:
         return None
-    
-    try: 
-        
+
+    try:
         result = response.json()
-        return result['content']
-        
+        return result["content"]
+
     except (KeyError, TypeError, ValueError):
         return None
 
 
 def get_pictures():
-
     # Set the endpoint URL
-    url = 'https://api.unsplash.com/search/photos'
+    url = "https://api.unsplash.com/search/photos"
 
     # Set the headers with your access key
-    headers = {
-        'Authorization': f"Client-ID {os.environ.get('Access_key')}"
-    }
+    headers = {"Authorization": f"Client-ID {os.environ.get('Access_key')}"}
 
     # Set the query parameters
-    params = {
-        'query': 'travel',
-        'orientation': 'landscape',
-        'page': 1,
-        'per_page': 20
-    }
+    params = {"query": "travel", "orientation": "landscape", "page": 1, "per_page": 20}
 
     # Send the GET request to the API
     response = requests.get(url, headers=headers, params=params)
 
     # Check the response status code
     if response.status_code == 200:
-
         # Extract the JSON data from the response
         data = response.json()
-        results = data['results']
-        
+        results = data["results"]
+
         # Save results in list and json file
         urls = {}
         for result in results:
-            description = result['description'].encode("ascii", "ignore").decode() if result['description'] else ""
-            urls[result['urls']['regular']] = description
+            description = (
+                result["description"].encode("ascii", "ignore").decode()
+                if result["description"]
+                else ""
+            )
+            urls[result["urls"]["regular"]] = description
 
-        with open('static/pictures.json', 'w') as f:    
+        with open("static/pictures.json", "w") as f:
             json.dump(urls, f, indent=2)
 
     else:

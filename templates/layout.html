@@ -69,7 +69,7 @@
 
     <div class="header">
       <div>
-        <a href="/"><img class="logo" src="/static/bookaseat1.png" /></a>
+        <a href="/"><img class="logo" src="/static/images/bookaseat1.png" /></a>
       </div>
 
       <div class="nav-right">
@@ -80,14 +80,14 @@
         <div class="nav-icons">
           {% if session["user_id"] %}
           <a class="config" href="/favorites" title="Favorites">
-            <img src="/static/icons8-heart-96.png" />
+            <img src="/static/images/icons8-heart-96.png" />
           </a>
           <button
             class="config"
             onclick="openForm('security-form')"
             title="Settings"
           >
-            <img src="/static/icons8-settings-96.png" />
+            <img src="/static/images/icons8-settings-96.png" />
           </button>
           <a
             class="config"
@@ -95,7 +95,7 @@
             onclick="loggingOut(this)"
             title="Logout"
           >
-            <img src="/static/icons8-logout-rounded-96.png" />
+            <img src="/static/images/icons8-logout-rounded-96.png" />
           </a>
           <a href="#" class="config" style="display: none" id="logout-spinner"
             ><span
@@ -106,11 +106,11 @@
           ></a>
           {% else %}
           <button class="config" onclick="openForm('login-form')">
-            <img src="/static/icons8-male-user-96.png" />
+            <img src="/static/images/icons8-male-user-96.png" />
           </button>
           {% endif %}
           <button class="config" onclick="openForm('config-form')">
-            <img src="/static/icons8-earth-planet-96.png" />
+            <img src="/static/images/icons8-earth-planet-96.png" />
           </button>
         </div>
       </div>
@@ -137,7 +137,7 @@
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 
     <!-- Javascript -->
-    <script type="text/javascript" src="/static/script.js" async></script>
+    <script type="text/javascript" src="/static/js/script.js" async></script>
     {% block script %} {% endblock %}
     
   </body>

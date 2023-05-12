@@ -26,7 +26,9 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure Vonage
-client = vonage.Client(key=os.environ.get("vonage_key"), secret=os.environ.get("vonage_API_key"))
+client = vonage.Client(
+    key=os.environ.get("vonage_key"), secret=os.environ.get("vonage_API_key")
+)
 sms = vonage.Sms(client)
 
 
@@ -52,10 +54,12 @@ def obj_to_datetime(dict: dict) -> date:
     date_object = datetime.strptime(date_str, "%Y/%m/%d")
     return date_object
 
+
 @app.template_filter("dateobj")
 def str_to_datetime(str) -> date:
-    date_object = datetime.strptime(str, '%Y-%m-%d')
+    date_object = datetime.strptime(str, "%Y-%m-%d")
     return date_object
+
 
 @app.template_filter("tohours")
 def min_to_hours(min: int) -> str:
@@ -90,7 +94,7 @@ def hours_difference():
 
 
 # Load the currencies.json file
-with open("./static/currencies.json", "r") as f:
+with open("./static/json/currencies.json", "r") as f:
     currencies = json.load(f)
 
 
@@ -98,9 +102,8 @@ with open("./static/currencies.json", "r") as f:
 def format_price():
     # Define a template filter to format prices using a given currency code
     def _format_price(price, currency_code):
-
         price = int(price) / 1000
-        
+
         # Find the currency object that matches the code
         currency = next((c for c in currencies if c["code"] == currency_code), None)
         if currency:
@@ -143,67 +146,69 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-def get_token(): 
-    
-        # get user inputs and save as session variables
-        origin = session.get("origin")
-        destination = session.get("destination")
 
-        # add ages to children's list
-        children = []
-        for _ in range(session["toddler"]):
-            children.append(1)
-        for _ in range(session["child"]):
-            children.append(5)
+def get_token():
+    # get user inputs and save as session variables
+    origin = session.get("origin")
+    destination = session.get("destination")
 
-        session["children"] = children
-        session["passengers"] = session["adults"] + len(children)
-        
-        departing_date = session.get("departing_date").split("-")
-        market = session.get("market", "US")
-        locale = session.get("locale", "en-US")
-        currency = session.get("currency", "USD")
+    # add ages to children's list
+    children = []
+    for _ in range(session["toddler"]):
+        children.append(1)
+    for _ in range(session["child"]):
+        children.append(5)
 
-        # define oneway or roundtrip legs
-        query_legs = []
-        first_leg = {
-            "originPlaceId": {"iata": origin[1:4]},
-            "destinationPlaceId": {"iata": destination[1:4]},
+    session["children"] = children
+    session["passengers"] = session["adults"] + len(children)
+
+    departing_date = session.get("departing_date").split("-")
+    market = session.get("market", "US")
+    locale = session.get("locale", "en-US")
+    currency = session.get("currency", "USD")
+
+    # define oneway or roundtrip legs
+    query_legs = []
+    first_leg = {
+        "originPlaceId": {"iata": origin[1:4]},
+        "destinationPlaceId": {"iata": destination[1:4]},
+        "date": {
+            "year": int(departing_date[0]),
+            "month": int(departing_date[1]),
+            "day": int(departing_date[2]),
+        },
+    }
+    query_legs.append(first_leg)
+    if session["flight_type"] == "roundtrip":
+        returning_date = session.get("returning_date").split("-")
+        second_leg = {
+            "originPlaceId": {"iata": destination[1:4]},
+            "destinationPlaceId": {"iata": origin[1:4]},
             "date": {
-                "year": int(departing_date[0]),
-                "month": int(departing_date[1]),
-                "day": int(departing_date[2]),
+                "year": int(returning_date[0]),
+                "month": int(returning_date[1]),
+                "day": int(returning_date[2]),
             },
         }
-        query_legs.append(first_leg)
-        if session["flight_type"] == "roundtrip":
-            returning_date = session.get("returning_date").split("-")
-            second_leg = {
-                "originPlaceId": {"iata": destination[1:4]},
-                "destinationPlaceId": {"iata": origin[1:4]},
-                "date": {
-                    "year": int(returning_date[0]),
-                    "month": int(returning_date[1]),
-                    "day": int(returning_date[2]),
-                },
-            }
-            query_legs.append(second_leg)
+        query_legs.append(second_leg)
 
-        # get cabine class especification
-        classes = {
-            "Economy class": "CABIN_CLASS_ECONOMY",
-            "First class": "CABIN_CLASS_FIRST",
-            "Business class": "CABIN_CLASS_BUSINESS",
-        }
-        cabin_class = classes[session["cabin_class"]]
+    # get cabine class especification
+    classes = {
+        "Economy class": "CABIN_CLASS_ECONOMY",
+        "First class": "CABIN_CLASS_FIRST",
+        "Business class": "CABIN_CLASS_BUSINESS",
+    }
+    cabin_class = classes[session["cabin_class"]]
 
-        return get_session_token(market, locale, currency, query_legs, session['adults'], children, cabin_class)
-    
+    return get_session_token(
+        market, locale, currency, query_legs, session["adults"], children, cabin_class
+    )
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     # User reached route via POST
     if request.method == "POST":
-        
         session["flight_type"] = request.form.get("flight-type")
         session["origin"] = request.form.get("airports-from")
         session["destination"] = request.form.get("airports-to")
@@ -218,12 +223,12 @@ def index():
             session["returning_date"] = request.form.get("returning")
         else:
             session["returning_date"] = None
-        
-        session['token'] = get_token()
+
+        session["token"] = get_token()
         session["page"] = "/search_results"
         message = "Loading"
 
-        return redirect("{}?message={}".format('/search_results', message))
+        return redirect("{}?message={}".format("/search_results", message))
 
     # User reached route via GET
     else:
@@ -239,6 +244,7 @@ def index():
         message = request.args.get("message")
         return render_template("index.html", message=message)
 
+
 @app.route("/search_results", methods=["GET", "POST"])
 def results():
     # User reached route via POST
@@ -251,8 +257,8 @@ def results():
             itinerary_id = request.form.get("favorite-itinerary-id")
             agents_info = request.form.get("favorite-data")
             leg1_info = request.form.get("favorite-data-leg1")
-            price = request.form.get('favorite-price')
-            agents = request.form.get('favorite-data-agents')
+            price = request.form.get("favorite-price")
+            agents = request.form.get("favorite-data-agents")
 
             if session["flight_type"] == "roundtrip":
                 leg2_info = request.form.get("favorite-data-leg2")
@@ -267,7 +273,7 @@ def results():
                     session.get("user_id"),
                     itinerary_id,
                     session.get("flight_type"),
-                    price, 
+                    price,
                     session.get("passengers"),
                     session.get("currency"),
                     session.get("cabin_class"),
@@ -302,40 +308,43 @@ def results():
         else:
             session["returning_date"] = None
 
-        session['token'] = get_token()
-        session['page'] = '/search_results'
+        session["token"] = get_token()
+        session["page"] = "/search_results"
         message = "Loading"
 
-        return redirect("{}?message={}".format('/search_results', message))
+        return redirect("{}?message={}".format("/search_results", message))
 
     else:
-       
-       token = session.get("token")
-       
-       search_flights = search(token)
-       
-       if search_flights:
+        token = session.get("token")
+
+        search_flights = search(token)
+
+        if search_flights:
             sorted_search = search_flights["sortingOptions"]["cheapest"]
             search_results = search_flights["results"]
-        
+
             itinerary_ids = {}
             for itinerary in sorted_search:
                 if len(itinerary_ids) >= 60:
-                    break   
+                    break
                 itinerary_ids[itinerary["itineraryId"]] = itinerary["score"]
-                
-            session["page"] = "/results"
 
-            message = request.args.get('message')
-            return render_template('searchResults.html', search_results=search_results, itineraryIds=itinerary_ids, message=message)
+            session["page"] = "/search_results"
 
+            message = request.args.get("message")
+            return render_template(
+                "searchResults.html",
+                search_results=search_results,
+                itineraryIds=itinerary_ids,
+                message=message,
+            )
 
-       else:
+        else:
             message = "No API Response"
             session["page"] = "/"
             return render_template("index.html", message=message)
-       
-       
+
+
 @app.route("/favorites", methods=["GET", "POST"])
 @login_required
 def favorites():
@@ -419,7 +428,9 @@ def register():
         con.commit()
 
         # Remember which user has logged in
-        user = db.execute("SELECT id, username FROM users WHERE email = ?", [email]).fetchone()
+        user = db.execute(
+            "SELECT id, username FROM users WHERE email = ?", [email]
+        ).fetchone()
         session["user_id"] = user[0]
         session["user_username"] = user[1]
 
@@ -506,26 +517,29 @@ def password_link():
         con.commit()
 
         responseData = sms.send_message(
-        {
-        "from": "Vonage APIs",
-        "to": request.form.get("user-phone"),
-        "text": f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}",
-        }
+            {
+                "from": "Vonage APIs",
+                "to": request.form.get("user-phone"),
+                "text": f"To reset your password, please follow this link:  {url_for('reset_password', token=token, user=user[0], _external=True)}",
+            }
         )
 
         if responseData["messages"][0]["status"] == "0":
             print("Message sent successfully.")
         else:
-            print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
+            print(
+                f"Message failed with error: {responseData['messages'][0]['error-text']}"
+            )
 
         message = "Link sent"
         html = session.get("page")
-        
+
         return redirect("{}?message={}".format(html, message))
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return redirect("/")
+
 
 @app.route("/reset_password", methods=["GET", "POST"])
 def reset_password():
@@ -646,5 +660,6 @@ def logout():
     # Redirect user to login form
     return redirect(html)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run(debug=True)

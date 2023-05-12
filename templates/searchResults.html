@@ -9,7 +9,7 @@ block section %}
       <div class="container">
         <div class="row">
           <div class="booking-form">
-            <form action="/results" method="post" autocomplete="off">
+            <form action="/search_results" method="post" autocomplete="off">
               <div class="form-group">
                 <div class="form-checkbox checkbox-results">
                 <div>
@@ -41,7 +41,7 @@ block section %}
                 <div class="col-md-6">
                   <div class="form-group">
                     <span class="form-label"
-                      ><img src="/static/takeoff.png" />Flying from</span
+                      ><img src="/static/images/takeoff.png" />Flying from</span
                     >
                     <input
                       class="form-control"
@@ -57,7 +57,7 @@ block section %}
                 <div class="col-md-6">
                   <div class="form-group">
                     <span class="form-label"
-                      ><img src="/static/flight.png" />Flying to</span
+                      ><img src="/static/images/flight.png" />Flying to</span
                     >
                     <input
                       class="form-control"
@@ -75,7 +75,7 @@ block section %}
                 <div class="col-md-3">
                   <div class="form-group">
                     <span class="form-label"
-                      ><img src="/static/calendario.png" />Departing</span
+                      ><img src="/static/images/calendario.png" />Departing</span
                     >
                     <input
                       class="form-control"
@@ -93,7 +93,7 @@ block section %}
                 <div class="col-md-3">
                   <div class="form-group">
                     <span class="form-label"
-                      ><img src="/static/calendario.png" />Returning</span
+                      ><img src="/static/images/calendario.png" />Returning</span
                     >
                     <input
                       class="form-control"
@@ -110,7 +110,7 @@ block section %}
                 <div class="col-md-2 off" style="display: none;">
                   <div class="form-group">
                     <span class="form-label"
-                      ><img src="/static/man.png"/>Adults (12+)</span
+                      ><img src="/static/images/man.png"/>Adults (12+)</span
                     >
                     <select class="form-control" id="adults-results" name="adults-results">
                       <option {% if session['adults'] == 1 %}selected{% endif %}>1</option>
@@ -128,7 +128,7 @@ block section %}
                 <div class="col-md-2 off" style="display: none;">
                   <div class="form-group">
                     <span class="form-label"
-                      ><img src="/static/child.png"/>Children (2-11)</span
+                      ><img src="/static/images/child.png"/>Children (2-11)</span
                     >
                     <select class="form-control" id="child-results" name="child-results">
                       <option {% if session['child'] == 0 %}selected{% endif %}>0</option>
@@ -143,7 +143,7 @@ block section %}
                 <div class="col-md-2 off" style="display: none;">
                   <div class="form-group">
                     <span class="form-label"
-                      ><img src="/static/baby.png"/>Infants (0-2)</span
+                      ><img src="/static/images/baby.png"/>Infants (0-2)</span
                     >
                     <select class="form-control" id="toddler-results" name="toddler-results">
                       <option {% if session['toddler'] == 0 %}selected{% endif %}>0</option>
@@ -161,7 +161,7 @@ block section %}
                 <div class="col-md-3 off" style="display: none;">
                   <div class="form-group">
                     <span class="form-label"
-                      ><img src="/static/seat.png" />Travel class</span
+                      ><img src="/static/images/seat.png" />Travel class</span
                     >
                     <select
                       class="form-control"
@@ -525,9 +525,9 @@ block section %}
   
     <div class="open-save-selection">
     {% if session['user_id'] %}
-    <form action="/results" method="post" autocomplete="off">
+    <form action="/search_results" method="post" autocomplete="off">
       <button class="btn-selection favorite" name="favorite-data" value='{{ agents_info|tojson|safe }}' title="Save as favorite" onclick="saveAsFavorite(this)">Save</button>
-      <button class="favorite-heart hidden visually-hidden"><img src="/static/heart.png"></button>
+      <button class="favorite-heart hidden visually-hidden"><img src="/static/images/heart.png"></button>
       <input type="hidden" name="favorite-data-leg1" value='{{ leg1_info|tojson|safe }}'>
       {% if session['flight_type'] == 'roundtrip' %}
         <input type="hidden" name="favorite-data-leg2" value='{{ leg2_info|tojson|safe }}'>
@@ -563,6 +563,6 @@ block section %}
 
 
 {% block script %} 
-  <script type="text/javascript" src="/static/searchResults.js"></script>
-  <script type="text/javascript" src="/static/sharedFunctions.js"></script>
+  <script type="text/javascript" src="/static/js/searchResults.js"></script>
+  <script type="text/javascript" src="/static/js/sharedFunctions.js"></script>
 {% endblock %} 

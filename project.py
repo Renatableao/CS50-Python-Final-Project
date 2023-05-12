@@ -34,7 +34,7 @@ def obj_to_datetime(dict: dict) -> date:
 
 
 # Load the currencies.json file
-with open("./static/currencies.json", "r") as f:
+with open("./static/json/currencies.json", "r") as f:
     currencies = json.load(f)
 
 

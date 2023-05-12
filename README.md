@@ -4,7 +4,7 @@
      
 ### Overview
 
-I've developed a responsive website built upon the data and functionality of an existing application called Skyscanner API through requests sent to the Rapid API platform (<https://rapidapi.com/hub>).
+I've developed a responsive website built upon the data and functionality of an existing application called Skyscanner API.
 A flight search engine website is a platform that allows users to search for flight tickets to different destinations based on specific dates, prices, and airlines. This website uses a flight search engine that searches and compares the prices of various airlines, enabling users to find the most affordable deals.
 
 #### This project is deployed on Heroku at the following URL: <https://cs50-bookaseat.herokuapp.com/>
@@ -20,6 +20,7 @@ This website was built using the following technologies:
 * API (application programming interface)
      * Skyscanner API
      * Vonage
+     * Unsplash
 * JSON
 * SQLite
 * Flask
@@ -67,7 +68,10 @@ Building the website was very exciting but challenging. Throughout the developme
      * Ensuring that the website looks and functions optimally across different devices and screen sizes.
      * After deploying the website I discovered performance issues caused by slow queries and requests, which resulted in resource runout and errors. 
      * Initially relying on Flask-Mail, I encountered issues with email delivery being blocked by the hosting platform, Heroku. To overcome this, I integrated Vonage SMS services, enabling reliable delivery of account recovery links to users.
-     * Occasional server downtime of API
+     * Initially, the project relied on an API from Rapid API, which provided a single endpoint that allowed both the creation of a search request and polling for the results in one call. This approach provided the complete set of results, simplifying the integration process. Unfortunately, the Rapid API was blocked and could no longer be used, necessitating a switch to the official Skyscanner API. The official API followed a different structure, requiring two separate endpoints for creating the search request and polling for the results.
+          * The /create endpoint in the official Skyscanner API is used to initiate the search request and returns an incomplete cached subset of results.
+          * To retrieve the complete list of results, the /poll endpoint is used in the official Skyscanner API. This endpoint is invoked with a sessionToken, which is obtained from the result of the /create call. 
+     The migration from the Rapid API to the official Skyscanner API required significant changes in the implementation. The code needed to be modified to separate the create and poll requests and handle the asynchronous nature of fetching the complete results. 
      
 ## Conclusion
 
