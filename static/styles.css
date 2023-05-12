@@ -1335,6 +1335,27 @@ div#goog-gt- {
 }
 /* end of new flight plan*/
 
+#show-more-div {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10rem;
+}
+
+#show-more {
+  position: relative;
+  padding: 1rem 3rem;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--orange);
+  color: var(--white);
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+
+#show-more {
+  opacity: 0.9;
+}
+
 /* Price List */
 #price-list-window h2 {
   margin-bottom: 0.5rem;

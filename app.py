@@ -325,7 +325,7 @@ def results():
 
             itinerary_ids = {}
             for itinerary in sorted_search:
-                if len(itinerary_ids) >= 30:
+                if len(itinerary_ids) >= 60:
                     break
                 itinerary_ids[itinerary["itineraryId"]] = itinerary["score"]
 

@@ -220,8 +220,16 @@ block section %}
 {% set itinerary_info = search_results['itineraries'][itinerary] %}
 
 
+{% if loop.index < 11 %}
 
 <div class="results-section" style="margin-bottom:8rem">
+
+{% else %}
+
+<div class="results-section" style="margin-bottom:8rem;display:none">
+
+{% endif %} 
+
   <div class="tags">
     <div class="type-tag">
       <h1>{% if session['passengers'] == 1 %}
@@ -557,7 +565,9 @@ block section %}
     </g>
   </symbol>
 </svg>
-
+<div id="show-more-div">
+  <button type="button" onclick="showMore()" id="show-more">Show more results</button>
+</div> 
 <!-- end document-->
 {% endblock %}
 

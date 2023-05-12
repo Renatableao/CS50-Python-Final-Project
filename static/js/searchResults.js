@@ -300,3 +300,10 @@ if (document.readyState === "loading") {
   loadImages();
 }
 
+function showMore() {
+  document.querySelector('#show-more').style.display = "None"
+  const resultsSections = document.querySelectorAll('.results-section');
+  resultsSections.forEach(section => {
+    section.style.display = 'block';
+  });
+}
