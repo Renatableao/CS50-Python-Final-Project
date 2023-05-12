@@ -393,7 +393,12 @@ def config():
         session["market"] = market[-3:-1]
         session["currency"] = currency
 
-        return "", 204
+        if session['page'] == '/search_results':
+  
+            return redirect("/search_results")
+    
+        else: 
+            return "", 204
 
     # User reached route via GET
     else:
