@@ -619,7 +619,7 @@ div#goog-gt- {
   text-transform: uppercase;
   line-height: 2.5rem;
   height: 2, 5rem;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: var(--white);
 }
 
@@ -1468,7 +1468,7 @@ footer a {
 
 @media screen and (max-width: 960px) {
   html {
-    font-size: 4px;
+    font-size: 5px;
   }
 
   .tp-flight-plan .crop .anime-airplane {
@@ -1481,7 +1481,7 @@ footer a {
   }
 
   .tp-flight-plan .it-1 .flight-seg .port {
-    margin-top: 3rem;
+    margin-top: 4rem;
   }
 
   .tp-flight-plan .fly-wrap .itin-lines {
@@ -1494,5 +1494,9 @@ footer a {
 
   #greeting {
     margin-right: 1rem;
+  }
+
+  .header {
+    padding: 0 10rem 0 10rem;
   }
 }
