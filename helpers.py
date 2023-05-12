@@ -4,6 +4,7 @@ from dotenv import load_dotenv, find_dotenv
 from flask import redirect, session
 from functools import wraps
 import json
+import re
 
 
 def main():
@@ -33,7 +34,7 @@ def main():
     # get_locations()
 
     # call api to update airports.json list
-    # update_airports()
+    update_airports()
 
     # call unsplash api to update pictures.json list
     # get_pictures()
@@ -57,7 +58,7 @@ def get_market():
     # Parse response
     try:
         result = response.json()
-        with open("static/markets.json", "w") as f:
+        with open("static/json/markets.json", "w") as f:
             json.dump(result["markets"], f, indent=4)
         return result
 
@@ -83,7 +84,7 @@ def get_currency():
     # Parse response
     try:
         result = response.json()
-        with open("static/currencies.json", "w") as f:
+        with open("static/json/currencies.json", "w") as f:
             json.dump(result["currencies"], f, indent=4)
         return result
 
@@ -109,7 +110,7 @@ def get_locations():
     # Parse response
     try:
         result = response.json()
-        with open("static/locations.json", "w") as f:
+        with open("static/json/locations.json", "w") as f:
             json.dump(result["places"], f, indent=4)
         return result
 
@@ -119,12 +120,12 @@ def get_locations():
 
 def update_airports():
     # Open the first JSON file
-    with open("static/locations.json") as f:
+    with open("static/json/locations.json") as f:
         locations_data = json.load(f)
 
     # Open the second JSON file
     # source: https://gist.github.com/tdreyno/4278655
-    with open("static/airportsList.json") as f:
+    with open("static/json/airportsList.json") as f:
         airportsList_data = json.load(f)
 
     # Create a dictionary of airport data, keyed by iata code
@@ -136,12 +137,16 @@ def update_airports():
         if location["iata"] in airport_dict:
             airport_data = airport_dict[location["iata"]]
             airport_str = f"({location['iata']}) {airport_data['name']}, {airport_data['state']} - {airport_data['country']}"
+            airport_str = re.sub(",  -", f", {airport_data['country']} -", airport_str)
+            airport_str = re.sub("\) ,", f") {airport_data['city']},", airport_str)
+            
             airport.append(airport_str)
+
 
     airport = [s.encode("ascii", "ignore").decode() for s in airport]
     airport = list(set(airport))
 
-    with open("static/airports.json", "w") as f:
+    with open("static/json/airports.json", "w") as f:
         json.dump(airport, f, indent=2)
 
 
@@ -232,7 +237,7 @@ def get_pictures():
             )
             urls[result["urls"]["regular"]] = description
 
-        with open("static/pictures.json", "w") as f:
+        with open("static/json/pictures.json", "w") as f:
             json.dump(urls, f, indent=2)
 
     else:
