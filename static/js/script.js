@@ -311,4 +311,4 @@ setTimeout(function() {
     if (message === "Loading") {
       window.location.href = `/search_results?message=${encodeURIComponent(msg)}`;
     }
-  }, 15000); // 15 seconds in milliseconds
+  }, 20000); // 20 seconds in milliseconds
