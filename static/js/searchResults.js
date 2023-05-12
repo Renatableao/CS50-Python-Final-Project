@@ -253,6 +253,7 @@ function loadImages() {
 
         // Convert JSON object into an array
         const dataArray = Object.entries(data);
+    
         // Randomly pick images from the array
         const randomIndexes = getRandomIndexes(dataArray.length);
 
