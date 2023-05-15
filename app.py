@@ -247,16 +247,20 @@ def index():
 
         if not session.get("market"):
             
-            market = get_user_country()
-            session["market"] = market if market else "US"
-
             with open('./static/json/markets.json') as file:
                 countries = json.load(file)
 
-            # Find the country's default currency
-            for c in countries:
-                if c['code'] == market:
-                    session['currency'] = c['currency']
+            market = get_user_country()
+                       
+            for country in countries:
+                if country['code'] == market:
+                    session['market'] = country['code']
+                    session['currency'] = country['currency']
+                    break
+            else:
+                # If the user's country is not found in the countries data, set default values
+                session['market'] = 'US'
+                session['currency'] = 'USD'
             
 
         message = request.args.get("message")
