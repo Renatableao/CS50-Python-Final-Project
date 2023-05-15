@@ -164,7 +164,6 @@ def get_token():
 
     departing_date = session.get("departing_date").split("-")
     market = session.get("market", "US")
-    locale = session.get("locale", "en-US")
     currency = session.get("currency", "USD")
 
     # define oneway or roundtrip legs
@@ -201,7 +200,7 @@ def get_token():
     cabin_class = classes[session["cabin_class"]]
 
     return get_session_token(
-        market, locale, currency, query_legs, session["adults"], children, cabin_class
+        market, "en-US", currency, query_legs, session["adults"], children, cabin_class
     )
 
 
@@ -370,26 +369,9 @@ def favorites():
 def config():
     # User reached route via POST
     if request.method == "POST":
-        saved_language = request.form.get("input_language")
-
-        if saved_language == "undefined":
-            saved_language = "en"
-        else:
-            saved_language = saved_language[-2:].lower()
-
-        languages_codes = {
-            "en": "en-US",
-            "es": "es-ES",
-            "fr": "fr-FR",
-            "de": "de-DE",
-            "pt": "pt-BR",
-            "cn": "zh-CN",
-            "it": "it-IT",
-        }
-
+        
         market = request.form.get("country-select")
         currency = request.form.get("currency-select")
-        session["locale"] = languages_codes[saved_language]
         session["market"] = market[-3:-1]
         session["currency"] = currency
 

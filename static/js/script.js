@@ -20,41 +20,6 @@ function closeForm(form) {
   document.querySelector("#overlay2").style.display = "none";
 }
 
-/* -- Google Translate API -- */
-function googleTranslateElementInit() {
-  /* set API properties and languages*/
-  new google.translate.TranslateElement(
-    {
-      autoDisplay: "true",
-      pageLanguage: "en",
-      includedLanguages: "de,en,zh-CN,es,fr,pt,it",
-      layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL,
-    },
-    "google_translate_element"
-  );
-}
-
-//Get chosen languaged
-function readCookie(name) {
-  var c = document.cookie.split("; "),
-    cookies = {},
-    i,
-    C;
-
-  for (i = c.length - 1; i >= 0; i--) {
-    C = c[i].split("=");
-    cookies[C[0]] = C[1];
-  }
-
-  return cookies[name];
-}
-
-// Save chosen language as input
-function selectLanguage() {
-  var clicked_name = readCookie("googtrans");
-  document.querySelector("#input_language").value = clicked_name;
-}
-
 /* -- Upload countries and currency data -- */
 // List from  market.json
 async function fetchMarketData() {

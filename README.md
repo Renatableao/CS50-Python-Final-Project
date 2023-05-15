@@ -27,9 +27,7 @@ This website was built using the following technologies:
 * BootStrap
 * Jinja
 * Pytest
-* Others: 
-     * Google Translate Button: free multilingual machine translation service
-     * intl-tel-input: JavaScript plugin for entering and validating international telephone numbers
+* intl-tel-input: JavaScript plugin for entering and validating international telephone numbers
 
 ### How to use
 
@@ -37,11 +35,9 @@ The website's index page displays a flight search box that allows users to enter
 
 The search engine then displays a list of flights based on the search criteria. Those results include the airlines, flight duration, departure and arrival times, connections and price of the ticket. It also provides a list of agencies where the user can book their flights. When the user selects a chosen fare, they are redirected to the agency's website where they can complete the booking process based on their preferences.
 
-### Language and Currency Configuration
+### Currency Configuration
 
-The website provides a configuration menu that offers users the flexibility to customize their experience. Users have the option to select their preferred language, which enables the website to translate all of the website's content into their chosen language using the Google translate button.
-
-Additionally, users can choose their country and currency preferences, which determines the currency used for displaying flight prices and the country-specific search results. This feature helps users plan their travel budget and find the best deals in their local currency, making the website more user-friendly for global audiences.
+The website provides a configuration menu that offers users the flexibility to customize their experience. Users can choose their country and currency preferences, which determines the currency used for displaying flight prices and the country-specific search results. This feature helps users plan their travel budget and find the best deals in their local currency, making the website more user-friendly for global audiences.
 
 ### Login
 
@@ -77,7 +73,7 @@ The migration from the Rapid API to the official Skyscanner API required signifi
 
 ## Conclusion
 
-The website now offers a user-friendly flight search experience, with features such as language and currency configuration, user login and personal pages, and data storage in a secure database.
+The website now offers a user-friendly flight search experience, with features such as currency configuration, user login and personal pages, and data storage in a secure database.
 
 I am proud of the progress made in developing this project where I could learn new skills and knowledge in web development. It was fun!  
      

@@ -4,18 +4,6 @@
       <h2>Regional settings</h2>
       <div class="col-md">
         <div class="form-group">
-          <span class="form-label" id="language">Translate to</span>
-          <input
-            type="hidden"
-            id="input_language"
-            name="input_language"
-            value="en"
-          />
-          <div id="google_translate_element"></div>
-        </div>
-      </div>
-      <div class="col-md">
-        <div class="form-group">
           <span class="form-label" id="country">Country</span>
           <select
             class="form-control shadow-none config-options"
@@ -39,7 +27,7 @@
         <button
           type="submit"
           class="btn-save"
-          onclick="selectLanguage();closeForm('config-form')"
+          onclick="closeForm('config-form')"
         >
           Save
         </button>
