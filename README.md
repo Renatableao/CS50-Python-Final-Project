@@ -1,5 +1,5 @@
 # CS50's Phython Final Project: "Bookaseat"
-#### Video Demo:  <URL HERE>
+
 ## Description:
      
 ### Overview
