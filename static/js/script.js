@@ -80,7 +80,7 @@ function getCurrencies() {
     if (options[i].text == currency) {
       options[i].selected = true;
       break;
-    }
+    } 
   }
 }
 
@@ -225,19 +225,18 @@ function cancelDelete() {
   document.querySelector("#delete-account").style.display = "block";
 }
 
+
 /* -- Set up and validate phone input -- */
 function getIp(callback) {
   
-  const token = process.env.IP_token;
-
-  fetch(`https://ipinfo.io/json?token=${token}`, {
+  fetch("https://ipinfo.io/json?token=672212dc6d0aaf", {
     headers: { Accept: "application/json" },
   })
     .then((resp) => resp.json())
     .catch(() => {
       return {
         country: "us",
-      };
+      };  
     })
     .then((resp) => callback(resp.country));
 }
