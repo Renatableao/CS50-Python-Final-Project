@@ -253,7 +253,7 @@ function loadImages() {
 
         // Convert JSON object into an array
         const dataArray = Object.entries(data);
-    
+
         // Randomly pick images from the array
         const randomIndexes = getRandomIndexes(dataArray.length);
 
@@ -301,9 +301,28 @@ if (document.readyState === "loading") {
 }
 
 function showMore() {
-  document.querySelector('#show-more').style.display = "None"
-  const resultsSections = document.querySelectorAll('.results-section');
-  resultsSections.forEach(section => {
-    section.style.display = 'block';
+  document.querySelector("#show-more").style.display = "None";
+  const resultsSections = document.querySelectorAll(".results-section");
+  resultsSections.forEach((section) => {
+    section.style.display = "block";
   });
 }
+
+/* -- Redirect page --*/
+
+setTimeout(function () {
+  const msg = "Finished";
+
+  // Check if the message matches a specific value
+  if (message === "Loading") {
+    window.location.href = `/search_results?message=${encodeURIComponent(msg)}`;
+  }
+}, 25000); // 25 seconds in milliseconds
+
+/*-- Display show-more button --*/
+
+document.addEventListener("DOMContentLoaded", function () {
+  if (message === "Finished") {
+    document.querySelector("#show-more").style.display = "inline-block";
+  }
+});

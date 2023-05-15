@@ -301,14 +301,3 @@ function process(event) {
     userInput.value = phoneNumber;
   }
 }
-
-/* -- Redirect page --*/
-
-setTimeout(function() {
-    const msg = "Finished";
-    
-    // Check if the message matches a specific value
-    if (message === "Loading") {
-      window.location.href = `/search_results?message=${encodeURIComponent(msg)}`;
-    }
-  }, 25000); // 25 seconds in milliseconds
