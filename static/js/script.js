@@ -174,7 +174,7 @@ function checkMessage() {
     alert(
       "We're sorry, but we were unable to find any results for your search based on the parameters you provided. Please check your search criteria. Alternatively, we may be experiencing some connectivity issues with our server at the moment. Please try again later."
     );
-  } else if (message == "Loading") {
+  } else if (loadStatus == "Loading") {
     openForm("loading-form");
   }
 }

@@ -314,15 +314,15 @@ setTimeout(function () {
   const msg = "Finished";
 
   // Check if the message matches a specific value
-  if (message === "Loading") {
-    window.location.href = `/search_results?message=${encodeURIComponent(msg)}`;
+  if (loadStatus === "Loading") {
+    window.location.href = `/search_results?status=${encodeURIComponent(msg)}`;
   }
 }, 25000); // 25 seconds in milliseconds
 
 /*-- Display show-more button --*/
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (message === "Finished") {
+  if (loadStatus === "Finished") {
     document.querySelector("#show-more").style.display = "inline-block";
   }
 });

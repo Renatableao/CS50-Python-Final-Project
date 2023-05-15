@@ -234,9 +234,9 @@ def index():
 
         session["token"] = get_token()
         session["page"] = "/search_results"
-        message = "Loading"
+        status = "Loading"
 
-        return redirect("{}?message={}".format("/search_results", message))
+        return redirect("{}?status={}".format("/search_results", status))
 
     # User reached route via GET
     else:
@@ -328,9 +328,9 @@ def results():
 
         session["token"] = get_token()
         session["page"] = "/search_results"
-        message = "Loading"
+        status = "Loading"
 
-        return redirect("{}?message={}".format("/search_results", message))
+        return redirect("{}?status={}".format("/search_results", status))
 
     else:
         token = session.get("token")
@@ -350,11 +350,13 @@ def results():
             session["page"] = "/search_results"
 
             message = request.args.get("message")
+            status = request.args.get("status")
             return render_template(
                 "searchResults.html",
                 search_results=search_results,
                 itineraryIds=itinerary_ids,
                 message=message,
+                status=status
             )
 
         else:
@@ -421,9 +423,10 @@ def register():
         if user is not None:
             flash("User already exists! Please register another one.", "register")
             message = "Registration Error"
+            status = "Finished"
 
             html = session.get("page")
-            return redirect("{}?message={}".format(html, message))
+            return redirect("{}?message={}&status={}".format(html, message, status))
 
         hash = generate_password_hash(request.form.get("reg-password"))
 
@@ -470,15 +473,17 @@ def login():
             flash("Email not registered!", "login")
             message = "Log in Error"
             html = session.get("page")
+            status = 'Finished'
 
-            return redirect("{}?message={}".format(html, message))
+            return redirect("{}?message={}&status={}".format(html, message, status))
 
         elif not check_password_hash(user[2], request.form.get("log-password")):
             flash("Invalid password!", "login")
             message = "Log in Error"
 
             html = session.get("page")
-            return redirect("{}?message={}".format(html, message))
+            status = 'Finished'
+            return redirect("{}?message={}&status={}".format(html, message, status))
 
         else:
             # Remember which user has logged in
@@ -486,7 +491,9 @@ def login():
             session["user_username"] = user[1]
 
             html = session.get("page")
-            return redirect(html)
+            status = 'Finished'
+
+            return redirect("{}?status={}".format(html, status))
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -509,7 +516,9 @@ def password_link():
             message = "Forgot password Error"
 
             html = session.get("page")
-            return redirect("{}?message={}".format(html, message))
+            status = 'Finished'
+
+            return redirect("{}?message={}&status={}".format(html, message, status))
 
         # Generate reset token
         load_dotenv(find_dotenv())
@@ -540,7 +549,10 @@ def password_link():
         message = "Link sent"
         html = session.get("page")
 
-        return redirect("{}?message={}".format(html, message))
+        status = 'Finished'
+
+        return redirect("{}?message={}&status={}".format(html, message, status))
+        
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -563,7 +575,7 @@ def reset_password():
         )
         con.commit()
         message = "Valid password reset"
-        html = session.get("page")
+        html = "/"
 
         return redirect("{}?message={}".format(html, message))
 
@@ -622,7 +634,8 @@ def change_password():
         message = "Changes ok"
         html = session.get("page")
 
-        return redirect("{}?message={}".format(html, message))
+        status = 'Finished'
+        return redirect("{}?message={}&status={}".format(html, message, status))
 
     # User reached route via GET
     else:
@@ -643,7 +656,9 @@ def delete_account():
         message = "Delete account"
         html = session.get("page")
 
-        return redirect("{}?message={}".format(html, message))
+        status = 'Finished'
+
+        return redirect("{}?message={}&status={}".format(html, message, status))
 
     # User reached route via GET
     else:
