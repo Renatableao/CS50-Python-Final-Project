@@ -205,10 +205,10 @@ def get_token():
     )
 
 def get_user_country():
-    url = f"https://ipinfo.io/json?token={os.environ.get('IP_token')}"
+    ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
+    url = f"https://ipinfo.io/{ip_address}/json?token={os.environ.get('IP_token')}"
     response = requests.get(url)
     data = response.json()
-    print(data)
     country_code = data.get("country")
     return country_code
 
