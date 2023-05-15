@@ -205,11 +205,11 @@ def get_token():
     )
 
 def get_user_country():
-    url = f"http://api.ipstack.com/{request.remote_addr}?access_key={os.environ.get('IPStack_key')}"
+    url = f"https://ipinfo.io/json?token={os.environ.get('IP_token')}"
     response = requests.get(url)
     data = response.json()
     print(data)
-    country_code = data.get("country_code")
+    country_code = data.get("country")
     return country_code
 
 
@@ -240,7 +240,6 @@ def index():
 
     # User reached route via GET
     else:
-        session.clear()
         today = date.today()
         session["today"] = today
         session["oneyearlater"] = today + relativedelta(years=1)
@@ -248,8 +247,17 @@ def index():
 
         if not session.get("market"):
             
-            session["market"] = (get_user_country(), "US")
-            session["currency"] = "USD"
+            market = get_user_country()
+            session["market"] = market if market else "US"
+
+            with open('./static/json/markets.json') as file:
+                countries = json.load(file)
+
+            # Find the country's default currency
+            for c in countries:
+                if c['code'] == market:
+                    session['currency'] = c['currency']
+            
 
         message = request.args.get("message")
         return render_template("index.html", message=message)

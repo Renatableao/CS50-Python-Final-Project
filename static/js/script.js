@@ -227,7 +227,10 @@ function cancelDelete() {
 
 /* -- Set up and validate phone input -- */
 function getIp(callback) {
-  fetch("https://ipinfo.io/json?token=672212dc6d0aaf", {
+  
+  const token = process.env.IP_token;
+
+  fetch(`https://ipinfo.io/json?token=${token}`, {
     headers: { Accept: "application/json" },
   })
     .then((resp) => resp.json())
