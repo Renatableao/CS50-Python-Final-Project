@@ -145,10 +145,10 @@ function checkMessage() {
   // Check if the message variable has the value 'Error'
   if (message == "Registration Error") {
     // Follow the link: open registration form
-    regLink.click();
+    openForm("register-form");
   } else if (message == "Log in Error") {
     // Follow the link: open log in form
-    logLink.click();
+    openForm("login-form");
   } else if (message == "Forgot password Error") {
     // Open forgot password form
     openForm("forgot-form");
