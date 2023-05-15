@@ -208,6 +208,7 @@ def get_user_country():
     url = f"http://api.ipstack.com/{request.remote_addr}?access_key={os.environ.get('IPStack_key')}"
     response = requests.get(url)
     data = response.json()
+    print(data)
     country_code = data.get("country_code")
     return country_code
 
