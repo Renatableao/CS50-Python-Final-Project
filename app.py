@@ -13,6 +13,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv, find_dotenv
 from helpers import login_required, search, get_session_token
 import vonage
+import requests
 
 # Configure application
 app = Flask(__name__)
@@ -203,6 +204,13 @@ def get_token():
         market, "en-US", currency, query_legs, session["adults"], children, cabin_class
     )
 
+def get_user_country():
+    url = f"http://api.ipstack.com/{request.remote_addr}?access_key={os.environ.get('IPStack_key')}"
+    response = requests.get(url)
+    data = response.json()
+    country_code = data.get("country_code")
+    return country_code
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -231,13 +239,15 @@ def index():
 
     # User reached route via GET
     else:
+        session.clear()
         today = date.today()
         session["today"] = today
         session["oneyearlater"] = today + relativedelta(years=1)
         session["page"] = "/"
 
         if not session.get("market"):
-            session["market"] = "US"
+            
+            session["market"] = (get_user_country(), "US")
             session["currency"] = "USD"
 
         message = request.args.get("message")
