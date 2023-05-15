@@ -248,6 +248,7 @@ def index():
         if not session.get("market"):
             
             market = get_user_country()
+            print(market)
             session["market"] = market if market else "US"
 
             with open('./static/json/markets.json') as file:
